@@ -2,6 +2,8 @@ package com.example.yin.login;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.AssetManager;
+import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -9,10 +11,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -25,12 +31,15 @@ public class MainActivity extends AppCompatActivity {
 
     Map<String,String> Account = new HashMap<String,String>();
     boolean loginState;
+    String readDataFromHttp;
+    String account_in, pass_in;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         loginState = false;
+
 
         //exampleAccount
         Account.put("hihi","1234");
@@ -43,8 +52,8 @@ public class MainActivity extends AppCompatActivity {
         bt.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String account_in = acc.getText().toString();
-                String pass_in = pass.getText().toString();
+                account_in = acc.getText().toString();
+                pass_in = pass.getText().toString();
                 if(account_in.isEmpty()){
                     Alert("Account can't be empty.");
 
@@ -63,10 +72,31 @@ public class MainActivity extends AppCompatActivity {
             if(Account.get(account).equals(password)){
                 loginState = true;
                 Alert("Success");
-                String correct = httpGet();
-                System.out.println(correct);
+                myTaskPost httpPost = new myTaskPost();
+                httpPost.execute("");
 
-                //goMap();
+                //open file
+                /*String readData = "";
+                try {
+                    AssetManager assetManager = getAssets();
+                    InputStream inputStream = null;
+                    inputStream = assetManager.open("login.json");
+                    BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
+                    String temp = br.readLine(); //readLine()讀取一整行
+                    while (temp!=null){
+                        readData+=temp;
+                        temp=br.readLine();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }*/
+
+                if(Parsejson(readDataFromHttp)==1){
+                    System.out.println("success");
+                    //goMap();
+                }else{
+                    System.out.println("fail");
+                }
 
             }else{
                 Alert("Wrong password!!!");
@@ -87,6 +117,20 @@ public class MainActivity extends AppCompatActivity {
                 }).show();
     }
 
+    int Parsejson (String info){
+        System.out.println(info);
+        int correct=0;
+        try {
+            JSONObject jObject = new JSONObject(info);
+            JSONObject payload = new JSONObject(jObject.getString("payload"));
+            correct = payload.getInt("correct");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return correct;
+    }
+
+    //===================Intent==========================
     void goMap(){
         Intent intent = new Intent();
         intent.setClass(MainActivity.this,MapsActivity.class);
@@ -94,106 +138,139 @@ public class MainActivity extends AppCompatActivity {
         finish();
     }
 
-    //發送HttpURLConnection_POST(網址,資料內容,編碼方式)
-    public String sendHttpURLConnectionPOST() {
-        URL url;
-        HttpURLConnection urlConnection = null;
-        try {
-            url = new URL("");
-            urlConnection = (HttpURLConnection) url.openConnection();
 
-            //連線方式
-            urlConnection.setRequestMethod("POST");
-
-            //設置輸出入流串
-            urlConnection.setDoInput(true);
-            urlConnection.setDoOutput(true);
-
-            //POST方法不能緩存數據,需手動設置使用緩存的值為false
-            urlConnection.setUseCaches(false);
-
-            //Send request
-            DataOutputStream wr = new DataOutputStream(
-                    urlConnection.getOutputStream());
-
-            wr.writeBytes("");
-            //InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-            //readStream(in);
-        }catch(Exception e){
-            e.printStackTrace();
-            System.out.printf(e.toString());
+    //===================HTTP==========================
+    //HTTPGet
+    class myTaskGet extends AsyncTask<Void,Void,String>{
+        @Override
+        public void onPreExecute() {
+            super.onPreExecute();
         }
+        @Override
+        public String doInBackground(Void...arg0) {
+            URL url = null;
+            BufferedReader reader = null;
+            StringBuilder stringBuilder;
+
+            try
+            {
+                // create the HttpURLConnection
+
+                //url = new URL("file:///D:/login.json");
+                url = new URL("https://www.google.com.tw");
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+                // 使用甚麼方法做連線
+                connection.setRequestMethod("GET");
+
+                // 是否添加參數(ex : json...等)
+                //connection.setDoOutput(true);
+
+                // 設定TimeOut時間
+                connection.setReadTimeout(15*1000);
+                connection.connect();
+
+                // 伺服器回來的參數
+                reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                stringBuilder = new StringBuilder();
+
+                String line = null;
+                while ((line = reader.readLine()) != null)
+                {
+                    stringBuilder.append(line + "\n");
+                }
+                return stringBuilder.toString();
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+            finally
+            {
+                // close the reader; this can throw an exception too, so
+                // wrap it in another try/catch block.
+                if (reader != null)
+                {
+                    try
+                    {
+                        reader.close();
+                    }
+                    catch (Exception e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            return null;
+        }
+        @Override
+        public void onPostExecute(String result) {
+            super.onPostExecute(result);
+            readDataFromHttp = result;
+        }
+
+    }
+
+    //HTTPPost
+    class myTaskPost extends AsyncTask<String,Void,String>{
+
+        @Override
+        public void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            URL url;
+            HttpURLConnection urlConnection = null;
+            BufferedReader reader = null;
+            StringBuilder stringBuilder;
+
+            try {
+                url = new URL(params.toString());
+                urlConnection = (HttpURLConnection) url.openConnection();
+
+                //連線方式
+                urlConnection.setRequestMethod("POST");
+
+                //設置輸出入流串
+                urlConnection.setDoInput(true);
+                urlConnection.setDoOutput(true);
+
+                //POST方法不能緩存數據,需手動設置使用緩存的值為false
+                urlConnection.setUseCaches(false);
+
+                //Send request
+                DataOutputStream wr = new DataOutputStream(
+                        urlConnection.getOutputStream());
+
+                wr.writeBytes("?email=" + account_in + "&password=" + pass_in);
+                reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+                stringBuilder = new StringBuilder();
+                String line = null;
+
+                while ((line = reader.readLine()) != null)
+                {
+                    stringBuilder.append(line + "\n");
+                }
+                return stringBuilder.toString();
+
+            }catch(Exception e){
+                e.printStackTrace();
+            }
         /*finally {
             urlConnection.disconnect();
         }*/
 
-        return "";
+            return "";
+        }
+
+        @Override
+        public void onPostExecute(String result) {
+            super.onPostExecute(result);
+            readDataFromHttp = result;
+        }
+
     }
-
-    public String httpGet(  ) {
-
-        URL url = null;
-        BufferedReader reader = null;
-        StringBuilder stringBuilder;
-
-        try
-        {
-            // create the HttpURLConnection
-            /*FileReader fr = new FileReader("D:\\login.json");
-            BufferedReader br=new BufferedReader(fr);
-            String line;
-            while ((line=br.readLine()) != null) {
-                return line;
-            }*/
-
-            //url = new URL("file:///D:/login.json");
-            url = new URL("http://www.android.com/");
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-
-            // 使用甚麼方法做連線
-            connection.setRequestMethod("GET");
-
-            // 是否添加參數(ex : json...等)
-            //connection.setDoOutput(true);
-
-            // 設定TimeOut時間
-            connection.setReadTimeout(15*1000);
-            connection.connect();
-
-            // 伺服器回來的參數
-            reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            stringBuilder = new StringBuilder();
-
-            String line = null;
-            while ((line = reader.readLine()) != null)
-            {
-                stringBuilder.append(line + "\n");
-            }
-            return stringBuilder.toString();
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-        finally
-        {
-            // close the reader; this can throw an exception too, so
-            // wrap it in another try/catch block.
-            if (reader != null)
-            {
-                try
-                {
-                    reader.close();
-                }
-                catch (Exception e)
-                {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        return null;
-    }
-
-
 }
+
