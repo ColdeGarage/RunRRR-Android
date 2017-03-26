@@ -16,22 +16,25 @@ import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity {
 
     Map<String,String> Account = new HashMap<String,String>();
     boolean loginState;
-    String readDataFromHttp;
     String account_in, pass_in;
 
     @Override
@@ -61,48 +64,29 @@ public class MainActivity extends AppCompatActivity {
                     Alert("Password can't be empty.");
 
                 }else {
-                    checkAccount(account_in,pass_in);
+                    checkAccount();
                 }
             }
         });
     }
 
-    void checkAccount(String account, String password){
-        if(Account.containsKey(account)){
-            if(Account.get(account).equals(password)){
-                loginState = true;
-                Alert("Success");
-                myTaskPost httpPost = new myTaskPost();
-                httpPost.execute("");
+    void checkAccount(){
+        loginState = true;
+        String readDataFromHttp = null;
+        myTaskPost httpPost = new myTaskPost();
+        httpPost.execute();
+        try {
+            readDataFromHttp = httpPost.get();
+            System.out.println(readDataFromHttp);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-                //open file
-                /*String readData = "";
-                try {
-                    AssetManager assetManager = getAssets();
-                    InputStream inputStream = null;
-                    inputStream = assetManager.open("login.json");
-                    BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
-                    String temp = br.readLine(); //readLine()讀取一整行
-                    while (temp!=null){
-                        readData+=temp;
-                        temp=br.readLine();
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }*/
-
-                if(Parsejson(readDataFromHttp)==1){
-                    System.out.println("success");
-                    //goMap();
-                }else{
-                    System.out.println("fail");
-                }
-
-            }else{
-                Alert("Wrong password!!!");
-            }
+        if(Parsejson(readDataFromHttp)==0){
+            Alert("Success");
+            //goMap();
         }else{
-            Alert("Account doesn't exist.");
+            Alert("Fail");
         }
     }
 
@@ -118,7 +102,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     int Parsejson (String info){
-        System.out.println(info);
         int correct=0;
         try {
             JSONObject jObject = new JSONObject(info);
@@ -140,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     //===================HTTP==========================
-    //HTTPGet
+    //HTTPGet, we will not use it in this Activity
     class myTaskGet extends AsyncTask<Void,Void,String>{
         @Override
         public void onPreExecute() {
@@ -206,13 +189,13 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onPostExecute(String result) {
             super.onPostExecute(result);
-            readDataFromHttp = result;
+            //readDataFromHttp = result;
         }
 
     }
 
     //HTTPPost
-    class myTaskPost extends AsyncTask<String,Void,String>{
+    class myTaskPost extends AsyncTask<Void,Void,String>{
 
         @Override
         public void onPreExecute() {
@@ -220,14 +203,14 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        protected String doInBackground(String... params) {
+        protected String doInBackground(Void... params) {
             URL url;
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
             StringBuilder stringBuilder;
 
             try {
-                url = new URL(params.toString());
+                url = new URL("http://192.168.0.2:8081/api/v1/member/login");
                 urlConnection = (HttpURLConnection) url.openConnection();
 
                 //連線方式
@@ -241,10 +224,14 @@ public class MainActivity extends AppCompatActivity {
                 urlConnection.setUseCaches(false);
 
                 //Send request
+
                 DataOutputStream wr = new DataOutputStream(
                         urlConnection.getOutputStream());
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(wr, "UTF-8"));
 
-                wr.writeBytes("?email=" + account_in + "&password=" + pass_in);
+                writer.write("email=" + account_in + "&password=" + pass_in);
+                writer.flush();
+
                 reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
                 stringBuilder = new StringBuilder();
                 String line = null;
@@ -258,9 +245,9 @@ public class MainActivity extends AppCompatActivity {
             }catch(Exception e){
                 e.printStackTrace();
             }
-        /*finally {
+        finally {
             urlConnection.disconnect();
-        }*/
+        }
 
             return "";
         }
@@ -268,7 +255,6 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onPostExecute(String result) {
             super.onPostExecute(result);
-            readDataFromHttp = result;
         }
 
     }
