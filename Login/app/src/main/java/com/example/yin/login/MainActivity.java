@@ -33,7 +33,6 @@ import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity {
 
-    Map<String,String> Account = new HashMap<String,String>();
     boolean loginState;
     String account_in, pass_in;
 
@@ -42,11 +41,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         loginState = false;
-
-
-        //exampleAccount
-        Account.put("hihi","1234");
-        Account.put("byebye","8888");
 
         Button bt = (Button) findViewById(R.id.button);
         final EditText acc = (EditText) findViewById(R.id.editText2);
@@ -59,11 +53,10 @@ public class MainActivity extends AppCompatActivity {
                 pass_in = pass.getText().toString();
                 if(account_in.isEmpty()){
                     Alert("Account can't be empty.");
-
                 }else if(pass_in.isEmpty()) {
                     Alert("Password can't be empty.");
-
                 }else {
+                    //if account&password aren't empty, check whether it's valid
                     checkAccount();
                 }
             }
@@ -71,25 +64,30 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void checkAccount(){
-        loginState = true;
         String readDataFromHttp = null;
+        //POST email&password to server
         myTaskPost httpPost = new myTaskPost();
         httpPost.execute();
+
         try {
+            //get result from function "onPostExecute" in class "myTaskPost"
             readDataFromHttp = httpPost.get();
-            System.out.println(readDataFromHttp);
+            //System.out.println(readDataFromHttp);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+        //If return value=0, login success
         if(Parsejson(readDataFromHttp)==0){
             Alert("Success");
+            loginState = true;
             //goMap();
         }else{
             Alert("Fail");
         }
     }
 
+    //show an alert dialog
     void Alert(String mes){
         new AlertDialog.Builder(MainActivity.this)
                 .setMessage(mes)
@@ -101,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
                 }).show();
     }
 
+    //Parse json received from server
     int Parsejson (String info){
         int correct=0;
         try {
@@ -139,8 +138,7 @@ public class MainActivity extends AppCompatActivity {
             {
                 // create the HttpURLConnection
 
-                //url = new URL("file:///D:/login.json");
-                url = new URL("https://www.google.com.tw");
+                url = new URL("https://www.google.com.tw"); //Just use to try this function is able to work or not
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
                 // 使用甚麼方法做連線
@@ -189,7 +187,6 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onPostExecute(String result) {
             super.onPostExecute(result);
-            //readDataFromHttp = result;
         }
 
     }
@@ -224,14 +221,19 @@ public class MainActivity extends AppCompatActivity {
                 urlConnection.setUseCaches(false);
 
                 //Send request
-
                 DataOutputStream wr = new DataOutputStream(
                         urlConnection.getOutputStream());
+
+                //encode data in UTF-8
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(wr, "UTF-8"));
 
                 writer.write("email=" + account_in + "&password=" + pass_in);
-                writer.flush();
 
+                //flush the data in buffer to server and close the writer
+                writer.flush();
+                writer.close();
+
+                //read response
                 reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
                 stringBuilder = new StringBuilder();
                 String line = null;
@@ -247,9 +249,22 @@ public class MainActivity extends AppCompatActivity {
             }
         finally {
             urlConnection.disconnect();
+                // close the reader; this can throw an exception too, so
+                // wrap it in another try/catch block.
+                if (reader != null)
+                {
+                    try
+                    {
+                        reader.close();
+                    }
+                    catch (Exception e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
         }
 
-            return "";
+            return null;
         }
 
         @Override
