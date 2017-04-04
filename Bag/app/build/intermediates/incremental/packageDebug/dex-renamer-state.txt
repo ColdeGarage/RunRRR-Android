@@ -1,0 +1,7 @@
+#Tue Apr 04 22:07:52 CST 2017
+base.0=D\:\\sharon\\app\\RunRRR-Android\\Bag\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\10\\instant-run-bootstrap_21aa1ad5924b23510c405df063b6b833e154a8e7
+renamed.1=classes.dex
+renamed.0=classes2.dex
+file.1=D\:\\sharon\\app\\RunRRR-Android\\Bag\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\10\\instant-run_e8647dce85a2388129774d995a30db2e9db9bf83\\classes.dex
+base.1=D\:\\sharon\\app\\RunRRR-Android\\Bag\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\10\\instant-run_e8647dce85a2388129774d995a30db2e9db9bf83
+file.0=D\:\\sharon\\app\\RunRRR-Android\\Bag\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\10\\instant-run-bootstrap_21aa1ad5924b23510c405df063b6b833e154a8e7\\classes.dex
