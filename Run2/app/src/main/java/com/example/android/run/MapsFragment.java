@@ -34,7 +34,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MapsFragment extends Fragment
 {
-    //顯示文字內容
+    //show text content
     private String text = "";
 
     @Override
@@ -42,31 +42,15 @@ public class MapsFragment extends Fragment
     {
         super.onAttach(activity);
 
-        //取得MainActivity的方法，將文字放入text字串
+        //access MainActivity and put text content into text
         MainActivity mMainActivity = (MainActivity) activity;
         text = mMainActivity.getMapsText();
     }
-
-    /*@Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
-        //導入Tab分頁的Fragment Layout
-        return inflater.inflate(R.layout.fragment, container, false);
-    }*/
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
-
-        /*
-        //取得TextView元件並帶入text字串
-        TextView mText = (TextView) getView().findViewById(R.id.text);
-        mText.setText(text);
-
-        //取得ImageView元件並帶入指定圖片
-        ImageView mImg = (ImageView) getActivity().findViewById(R.id.img);
-        mImg.setImageResource(R.drawable.a);*/
     }
 
     MapView mMapView;
@@ -98,8 +82,6 @@ public class MapsFragment extends Fragment
 
 
                 // For dropping a marker at a point on the Map
-                //LatLng sydney = new LatLng(-34, 151);
-                //googleMap.addMarker(new MarkerOptions().position(sydney).title("Marker Title").snippet("Marker Description"));
 
                 LatLng place = new LatLng(25.033408, 121.564099);
                 googleMap.addMarker(new MarkerOptions().position(place).title("Mission"));
@@ -113,7 +95,7 @@ public class MapsFragment extends Fragment
         return rootView;
     }
 
-    @Override
+    /*@Override
     public void onResume() {
         super.onResume();
         mMapView.onResume();
@@ -135,5 +117,5 @@ public class MapsFragment extends Fragment
     public void onLowMemory() {
         super.onLowMemory();
         mMapView.onLowMemory();
-    }
+    }*/
 }
