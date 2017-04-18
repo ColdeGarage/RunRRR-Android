@@ -2,7 +2,7 @@ package com.example.yin.login;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.AssetManager;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -14,22 +14,13 @@ import android.widget.EditText;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -41,6 +32,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         loginState = false;
+        //internalWrite("");
+
+        /*get Preference file
+        * if user has logged in before
+        * he/she will be directly leaded to Map*/
+        if(readPrefs()){
+            //goMap();
+            Alert("Skip Login");
+        }
 
         Button bt = (Button) findViewById(R.id.button);
         final EditText acc = (EditText) findViewById(R.id.editText2);
@@ -65,8 +65,9 @@ public class MainActivity extends AppCompatActivity {
 
     void checkAccount(){
         String readDataFromHttp = null;
+
         //POST email&password to server
-        myTaskPost httpPost = new myTaskPost();
+        MyTaskPost httpPost = new MyTaskPost();
         httpPost.execute();
 
         try {
@@ -77,10 +78,11 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        //If return value=0, login success
+        //If brea=0, login success
         if(Parsejson(readDataFromHttp)==0){
-            Alert("Success");
             loginState = true;
+            storePrefs();
+            Alert("Success");
             //goMap();
         }else{
             Alert("Fail");
@@ -120,17 +122,30 @@ public class MainActivity extends AppCompatActivity {
         finish();
     }
 
+    //===================內存=========================
+    private String KEY = "Login";
+    //store login state
+    private void storePrefs(){
+        SharedPreferences settings = getSharedPreferences("data",MODE_PRIVATE);
+        settings.edit().putBoolean(KEY,loginState)
+                .commit();
+    }
+    //read login state
+    private boolean readPrefs(){
+        SharedPreferences settings = getSharedPreferences("data",MODE_PRIVATE);
+        return settings.getBoolean(KEY,false);
+    }
 
     //===================HTTP==========================
     //HTTPGet, we will not use it in this Activity
-    class myTaskGet extends AsyncTask<Void,Void,String>{
+    class MyTaskGet extends AsyncTask<Void,Void,String>{
         @Override
         public void onPreExecute() {
             super.onPreExecute();
         }
         @Override
         public String doInBackground(Void...arg0) {
-            URL url = null;
+            URL url;
             BufferedReader reader = null;
             StringBuilder stringBuilder;
 
@@ -138,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
             {
                 // create the HttpURLConnection
 
-                url = new URL("https://www.google.com.tw"); //Just use to try this function is able to work or not
+                url = new URL("https://www.google.com.tw"); //Just use this to try the function is able to work or not
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
                 // 使用甚麼方法做連線
@@ -155,7 +170,7 @@ public class MainActivity extends AppCompatActivity {
                 reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                 stringBuilder = new StringBuilder();
 
-                String line = null;
+                String line;
                 while ((line = reader.readLine()) != null)
                 {
                     stringBuilder.append(line + "\n");
@@ -192,7 +207,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //HTTPPost
-    class myTaskPost extends AsyncTask<Void,Void,String>{
+    class MyTaskPost extends AsyncTask<Void,Void,String>{
 
         @Override
         public void onPreExecute() {
@@ -207,7 +222,7 @@ public class MainActivity extends AppCompatActivity {
             StringBuilder stringBuilder;
 
             try {
-                url = new URL("http://192.168.0.2:8081/api/v1/member/login");
+                url = new URL("http://coldegarage.tech:8081/api/v1/member/login");
                 urlConnection = (HttpURLConnection) url.openConnection();
 
                 //連線方式
@@ -236,7 +251,7 @@ public class MainActivity extends AppCompatActivity {
                 //read response
                 reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
                 stringBuilder = new StringBuilder();
-                String line = null;
+                String line ;
 
                 while ((line = reader.readLine()) != null)
                 {
