@@ -101,6 +101,7 @@ public class MissionsFragment extends Fragment
         // Set numbers of List in RecyclerView.
         private int LENGTH;
 
+        // Get information from values/arrays.xml
         private final String[] mName;
         private final String[] mTime;
         private final Drawable[] mType;
@@ -108,13 +109,19 @@ public class MissionsFragment extends Fragment
 
         public ContentAdapter(Context context) {
                 Resources resources = context.getResources();
+
+                // Set missions number
                 LENGTH = resources.getStringArray(R.array.mission_name).length;
+
+                // Set missions data
                 mName = resources.getStringArray(R.array.mission_name);
                 mTime = resources.getStringArray(R.array.mission_time);
                 TypedArray a = resources.obtainTypedArray(R.array.mission_type);
                 TypedArray b = resources.obtainTypedArray(R.array.mission_state);
                 mType = new Drawable[a.length()];
                 mState = new Drawable[b.length()];
+
+                // Get drawables from array
                 for (int i = 0; i < mType.length; i++) {
                     mType[i] = a.getDrawable(i);
                     mState[i] = b.getDrawable(i);
@@ -130,6 +137,7 @@ public class MissionsFragment extends Fragment
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
+            // Use holder to get data from arrays in ContentAdapter
             holder.type.setImageDrawable(mType[position % mType.length]);
             holder.name.setText(mName[position % mName.length]);
             holder.time.setText(mTime[position % mTime.length]);
