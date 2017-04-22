@@ -52,89 +52,77 @@ public class MissionsFragment extends Fragment
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
-        //導入Tab分頁的Fragment Layout
-        return inflater.inflate(R.layout.item_missions, container, false);
-    }
-    /*@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         RecyclerView recyclerView = (RecyclerView) inflater.inflate(
                 R.layout.recycler_view, container, false);
-        ContentAdapter adapter = new ContentAdapter(recyclerView.getContext());
+        MissionsFragment.ContentAdapter adapter = new MissionsFragment.ContentAdapter(recyclerView.getContext());
         recyclerView.setAdapter(adapter);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         return recyclerView;
-    }*/
+    }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
-
-        //取得TextView元件並帶入text字串
-        TextView mText = (TextView) getView().findViewById(R.id.list_title);
-        mText.setText(text);
-
-        //取得TextView元件並帶入text字串
-        TextView mText2 = (TextView) getView().findViewById(R.id.list_time);
-        mText2.setText("03:00");
-
-        //取得ImageView元件並帶入指定圖片
-        ImageView mImg = (ImageView) getActivity().findViewById(R.id.list_avatar);
-        mImg.setImageResource(R.drawable.missions_main);
-
-        //取得ImageView元件並帶入指定圖片
-        ImageView mImg2 = (ImageView) getActivity().findViewById(R.id.list_check);
-        mImg2.setImageResource(R.drawable.missions_check);
-
     }
 
-    /*public static class ViewHolder extends RecyclerView.ViewHolder {
-        public ImageView avator;
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        public ImageView type;
         public TextView name;
-        public TextView description;
+        public TextView time;
+        public ImageView state;
         public ViewHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.item_missions, parent, false));
-            avator = (ImageView) itemView.findViewById(R.id.list_avatar);
-            name = (TextView) itemView.findViewById(R.id.list_title);
-            description = (TextView) itemView.findViewById(R.id.list_time);
+            type = (ImageView) itemView.findViewById(R.id.list_type);
+            name = (TextView) itemView.findViewById(R.id.list_name);
+            time = (TextView) itemView.findViewById(R.id.list_time);
+            state = (ImageView) itemView.findViewById(R.id.list_state);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    int id = v.getId();
+                    //TODO:Intent to other activity
                     Context context = v.getContext();
-                    //Intent intent = new Intent(context, DetailActivity.class);
-                    //intent.putExtra(DetailActivity.EXTRA_POSITION, getAdapterPosition());
-                    //context.startActivity(intent);
+                    Intent intent = new Intent(context, MissionPopActivity.class);
+                    intent.putExtra(MissionPopActivity.EXTRA_POSITION, getAdapterPosition());
+                    context.startActivity(intent);
                 }
             });
         }
-    }*/
+    }
 
     /**
      * Adapter to display recycler view.
      */
-    /*public static class ContentAdapter extends RecyclerView.Adapter<ViewHolder> {
+    public static class ContentAdapter extends RecyclerView.Adapter<ViewHolder> {
         // Set numbers of List in RecyclerView.
-        private static final int LENGTH = 18;
+        private int LENGTH;
 
-        private final String[] mPlaces;
-        private final String[] mPlaceDesc;
-        private final Drawable[] mPlaceAvators;
+        private final String[] mName;
+        private final String[] mTime;
+        private final Drawable[] mType;
+        private final Drawable[] mState;
 
         public ContentAdapter(Context context) {
-            Resources resources = context.getResources();
-            mPlaces = resources.getStringArray(R.array.places);
-            mPlaceDesc = resources.getStringArray(R.array.place_desc);
-            TypedArray a = resources.obtainTypedArray(R.array.place_avator);
-            mPlaceAvators = new Drawable[a.length()];
-            for (int i = 0; i < mPlaceAvators.length; i++) {
-                mPlaceAvators[i] = a.getDrawable(i);
-            }
-            a.recycle();
+                Resources resources = context.getResources();
+                LENGTH = resources.getStringArray(R.array.mission_name).length;
+                mName = resources.getStringArray(R.array.mission_name);
+                mTime = resources.getStringArray(R.array.mission_time);
+                TypedArray a = resources.obtainTypedArray(R.array.mission_type);
+                TypedArray b = resources.obtainTypedArray(R.array.mission_state);
+                mType = new Drawable[a.length()];
+                mState = new Drawable[b.length()];
+                for (int i = 0; i < mType.length; i++) {
+                    mType[i] = a.getDrawable(i);
+                    mState[i] = b.getDrawable(i);
+                }
+                a.recycle();
+                b.recycle();
         }
+
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             return new ViewHolder(LayoutInflater.from(parent.getContext()), parent);
@@ -142,14 +130,15 @@ public class MissionsFragment extends Fragment
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
-            holder.avator.setImageDrawable(mPlaceAvators[position % mPlaceAvators.length]);
-            holder.name.setText(mPlaces[position % mPlaces.length]);
-            holder.description.setText(mPlaceDesc[position % mPlaceDesc.length]);
+            holder.type.setImageDrawable(mType[position % mType.length]);
+            holder.name.setText(mName[position % mName.length]);
+            holder.time.setText(mTime[position % mTime.length]);
+            holder.state.setImageDrawable(mState[position % mState.length]);
         }
 
         @Override
         public int getItemCount() {
             return LENGTH;
         }
-    }*/
+    }
 }

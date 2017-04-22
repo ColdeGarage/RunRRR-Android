@@ -23,7 +23,7 @@
     <!--android:padding="@dimen/md_keylines">-->
 
     <ImageView
-        android:id="@+id/list_avatar"
+        android:id="@+id/list_type"
         android:layout_width="@dimen/avator_size"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
@@ -31,7 +31,7 @@
         tools:src="@drawable/missions_main" />
 
     <TextView
-        android:id="@+id/list_title"
+        android:id="@+id/list_name"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
@@ -58,7 +58,7 @@
             android:textSize="@dimen/list_body" />
 
         <ImageView
-            android:id="@+id/list_check"
+            android:id="@+id/list_state"
             android:layout_width="@dimen/check_size"
             android:layout_height="@dimen/check_size"
             android:scaleType="centerCrop"

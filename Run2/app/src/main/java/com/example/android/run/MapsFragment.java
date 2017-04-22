@@ -17,6 +17,8 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -82,9 +84,15 @@ public class MapsFragment extends Fragment
 
 
                 // For dropping a marker at a point on the Map
-
                 LatLng place = new LatLng(25.033408, 121.564099);
-                googleMap.addMarker(new MarkerOptions().position(place).title("Mission"));
+
+                // Create marker
+                MarkerOptions marker = new MarkerOptions().position(place).title("Mission 1");
+                // Changing marker icon
+                marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.mission_marker));
+                // add marker
+                googleMap.addMarker(marker);
+                //googleMap.addMarker(new MarkerOptions().position(place).title("Mission"));
 
                 // For zooming automatically to the location of the marker
                 CameraPosition cameraPosition = new CameraPosition.Builder().target(place).zoom(12).build();

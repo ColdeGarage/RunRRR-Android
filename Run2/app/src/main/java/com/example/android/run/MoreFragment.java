@@ -79,10 +79,10 @@ public class MoreFragment extends Fragment {
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView name;
+        public TextView more_name;
         public ViewHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.item_more, parent, false));
-            name = (TextView) itemView.findViewById(R.id.list_title);
+            more_name = (TextView) itemView.findViewById(R.id.list_title);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -117,7 +117,7 @@ public class MoreFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
-            holder.name.setText(mPlaces[position % mPlaces.length]);
+            holder.more_name.setText(mPlaces[position % mPlaces.length]);
         }
 
         @Override

@@ -21,15 +21,29 @@
         <item>求救</item>
         <item>登出</item>
     </string-array>
-    <string-array name="place_desc">
-        <item>The Palais Garnier which locates in Paris was built from 1861 for
-        the Paris Opera.
-        </item>
-        <item>Piazza del Duomo the cathedral which locates in Florence.</item>
-        <item>Manhattan is the district in New York City</item>
-        <item>Senso-ji is the Shrine locates in Asakusa Tokyo</item>
-        <item>Sultan Ahmed Mosque is mosque locates in Istabul, Turkey</item>
-        <item>Table Mountain is mountain and park locates in Cape Town, South Africa.</item>
+    <string-array name="mission_name">
+        <item>mission 1</item>
+        <item>mission 2</item>
+        <item>mission 3</item>
+        <item>mission 4</item>
+        <item>mission 5</item>
+        <item>mission 6</item>
+        <item>mission 7</item>
+        <item>mission 8</item>
+        <item>mission 9</item>
+        <item>mission 10</item>
+    </string-array>
+    <string-array name="mission_time">
+        <item>03:00</item>
+        <item>03:00</item>
+        <item>03:00</item>
+        <item>03:00</item>
+        <item>03:00</item>
+        <item>03:00</item>
+        <item>03:00</item>
+        <item>03:00</item>
+        <item>03:00</item>
+        <item>03:00</item>
     </string-array>
     <string-array name="place_details">
         <item>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
@@ -83,20 +97,28 @@
         <item>At Meydanı No:7, 34122 Fatih/İstanbul, Turkey</item>
         <item>Cape Town, South Africa</item>
     </string-array>
-    <array name="place_avator">
-        <item>@drawable/a_avator</item>
-        <item>@drawable/b_avator</item>
-        <item>@drawable/c_avator</item>
-        <item>@drawable/d_avator</item>
-        <item>@drawable/e_avator</item>
-        <item>@drawable/f_avator</item>
+    <array name="mission_type">
+        <item>@drawable/missions_main_2</item>
+        <item>@drawable/missions_main_2</item>
+        <item>@drawable/missions_sub</item>
+        <item>@drawable/missions_urg</item>
+        <item>@drawable/missions_main_2</item>
+        <item>@drawable/missions_sub</item>
+        <item>@drawable/missions_urg</item>
+        <item>@drawable/missions_sub</item>
+        <item>@drawable/missions_sub</item>
+        <item>@drawable/missions_main_2</item>
     </array>
-    <array name="places_picture">
-        <item>@drawable/a</item>
-        <item>@drawable/b</item>
-        <item>@drawable/c</item>
-        <item>@drawable/d</item>
-        <item>@drawable/e</item>
-        <item>@drawable/f</item>
+    <array name="mission_state">
+        <item>@drawable/state_passed</item>
+        <item>@drawable/state_failed</item>
+        <item>@drawable/state_failed</item>
+        <item>@drawable/state_passed</item>
+        <item>@drawable/state_passed</item>
+        <item>@drawable/state_failed</item>
+        <item>@drawable/state_failed</item>
+        <item>@drawable/state_passed</item>
+        <item>@drawable/state_passed</item>
+        <item>@drawable/state_passed</item>
     </array>
 </resources>
