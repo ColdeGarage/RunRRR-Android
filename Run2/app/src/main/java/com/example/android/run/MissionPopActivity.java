@@ -17,6 +17,8 @@ import com.example.android.run.R;
 
 public class MissionPopActivity extends AppCompatActivity {
 
+    public static final String EXTRA_POSITION = "position";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,14 +27,25 @@ public class MissionPopActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+
+        // Get postion of RecyclerView
+        int postion = getIntent().getIntExtra(EXTRA_POSITION, 0);
+        Resources resources = getResources();
+
+        // Set title with mission name
+        TypedArray MissionTypes = resources.obtainTypedArray(R.array.mission_type);
+        ImageView Type = (ImageView) findViewById(R.id.list_type);
+        Type.setImageDrawable(MissionTypes.getDrawable((postion % MissionTypes.length())));
+
+        // Set title with mission name
+        String[] MissionNames = resources.getStringArray(R.array.mission_name);
+        TextView Name = (TextView) findViewById(R.id.list_name);
+        Name.setText(MissionNames[postion % MissionNames.length]);
+
+        // Set title with mission name
+        TypedArray MissionPictures = resources.obtainTypedArray(R.array.mission_picture);
+        ImageView Picture = (ImageView) findViewById(R.id.mission_picture);
+        Picture.setImageDrawable(MissionPictures.getDrawable((postion % MissionPictures.length())));
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
