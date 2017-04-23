@@ -23,6 +23,7 @@ public class MoreDetailsActivity extends AppCompatActivity {
         // Get postion of RecyclerView
         int postion = getIntent().getIntExtra(EXTRA_POSITION, 0);
 
+        // Inflat layout for each item selected
         super.onCreate(savedInstanceState);
         switch (postion) {
             case 0:
@@ -42,6 +43,7 @@ public class MoreDetailsActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        // Set Appbar title for each layout
         switch (postion) {
             case 0:
                 getSupportActionBar().setTitle("Die");
@@ -66,24 +68,6 @@ public class MoreDetailsActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
-
-        /*int postion = getIntent().getIntExtra(EXTRA_POSITION, 0);
-        Resources resources = getResources();
-        //String[] places = resources.getStringArray(R.array.places);
-
-        //String[] placeDetails = resources.getStringArray(R.array.place_details);
-        TextView placeDetail = (TextView) findViewById(R.id.place_detail);
-        placeDetail.setText(placeDetails[postion % placeDetails.length]);
-
-        String[] placeLocations = resources.getStringArray(R.array.place_locations);
-        TextView placeLocation =  (TextView) findViewById(R.id.place_location);
-        placeLocation.setText(placeLocations[postion % placeLocations.length]);
-
-        TypedArray placePictures = resources.obtainTypedArray(R.array.places_picture);
-        ImageView placePicutre = (ImageView) findViewById(R.id.image);
-        placePicutre.setImageDrawable(placePictures.getDrawable(postion % placePictures.length()));
-
-        placePictures.recycle();*/
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
