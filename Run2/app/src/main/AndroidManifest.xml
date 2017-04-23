@@ -34,7 +34,6 @@
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -51,7 +50,12 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".AboutUsActivity"
+            android:name="MissionPopActivity"
+            android:label="@string/title_activity_mission_pop"
+            android:theme="@style/AppTheme"></activity>
+
+        <activity
+            android:name=".MoreDetailsActivity"
             android:label="@string/title_activity_about_us"
             android:theme="@style/AppTheme"></activity>
     </application>

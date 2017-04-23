@@ -75,7 +75,7 @@ public class MissionsFragment extends Fragment
                     //TODO:Intent to other activity
                     Context context = v.getContext();
                     Intent intent = new Intent(context, MissionPopActivity.class);
-                    intent.putExtra(MissionPopActivity.EXTRA_POSITION, getAdapterPosition());
+                    //intent.putExtra(MissionPopActivity.EXTRA_POSITION, getAdapterPosition());
                     context.startActivity(intent);
                 }
             });

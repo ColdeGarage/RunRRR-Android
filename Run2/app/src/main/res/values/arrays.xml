@@ -15,11 +15,11 @@
   ~ limitations under the License.
   -->
 <resources>
-    <string-array name="places">
-        <item>輸入序號</item>
-        <item>關於我們</item>
-        <item>求救</item>
-        <item>登出</item>
+    <string-array name="more">
+        <item>GG你死惹</item>
+        <item>不告訴你</item>
+        <item>救我5487</item>
+        <item>要出去嗎?</item>
     </string-array>
     <string-array name="mission_name">
         <item>mission 1</item>

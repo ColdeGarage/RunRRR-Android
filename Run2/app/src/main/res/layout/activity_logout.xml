@@ -39,7 +39,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/dark_grey"
-                android:text="About us 822 YiChun 8787"
+                android:text="Are you sure to logout???\nAre you really sure???????"
                 android:textSize="20dp" />
 
         </LinearLayout>

@@ -20,8 +20,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.content.res.TypedArray;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -29,7 +27,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
@@ -37,7 +34,7 @@ import android.widget.TextView;
  */
 public class MoreFragment extends Fragment {
     //顯示文字內容
-    private String text = "";
+    /*private String text = "";
 
     @Override
     public void onAttach(Activity activity) {
@@ -46,7 +43,7 @@ public class MoreFragment extends Fragment {
         //取得MainActivity的方法，將文字放入text字串
         MainActivity mMainActivity = (MainActivity) activity;
         text = mMainActivity.getMissionsText();
-    }
+    }*/
 
     /*@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -72,25 +69,21 @@ public class MoreFragment extends Fragment {
     {
         super.onActivityCreated(savedInstanceState);
 
-        //取得TextView元件並帶入text字串
-        //TextView mText = (TextView) getView().findViewById(R.id.list_title);
-        //mText.setText("輸入序號");
-
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView more_name;
+        public TextView list_more;
         public ViewHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.item_more, parent, false));
-            more_name = (TextView) itemView.findViewById(R.id.list_title);
+            list_more = (TextView) itemView.findViewById(R.id.list_title);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     int id = v.getId();
                     //TODO:Intent to other activity
                     Context context = v.getContext();
-                    Intent intent = new Intent(context, AboutUsActivity.class);
-                    //intent.putExtra(DetailActivity.EXTRA_POSITION, getAdapterPosition());
+                    Intent intent = new Intent(context, MoreDetailsActivity.class);
+                    intent.putExtra(MoreDetailsActivity.EXTRA_POSITION, getAdapterPosition());
                     context.startActivity(intent);
                 }
             });
@@ -102,13 +95,14 @@ public class MoreFragment extends Fragment {
      */
     public static class ContentAdapter extends RecyclerView.Adapter<ViewHolder> {
         // Set numbers of List in RecyclerView.
-        private static final int LENGTH = 4;
+        private int LENGTH;
 
-        private final String[] mPlaces;
+        private final String[] mMore;
 
         public ContentAdapter(Context context) {
             Resources resources = context.getResources();
-            mPlaces = resources.getStringArray(R.array.places);
+            LENGTH = resources.getStringArray(R.array.more).length;
+            mMore = resources.getStringArray(R.array.more);
         }
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -117,7 +111,7 @@ public class MoreFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
-            holder.more_name.setText(mPlaces[position % mPlaces.length]);
+            holder.list_more.setText(mMore[position % mMore.length]);
         }
 
         @Override
