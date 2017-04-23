@@ -22,7 +22,7 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class MainActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity {
 
     boolean loginState;
     String account_in, pass_in;
@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.login_layout);
         loginState = false;
         //internalWrite("");
 
@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
 
     //show an alert dialog
     void Alert(String mes){
-        new AlertDialog.Builder(MainActivity.this)
+        new AlertDialog.Builder(LoginActivity.this)
                 .setMessage(mes)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
@@ -117,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
     //===================Intent==========================
     void goMap(){
         Intent intent = new Intent();
-        intent.setClass(MainActivity.this,MapsActivity.class);
+        intent.setClass(LoginActivity.this,MapsActivity.class);
         startActivity(intent);
         finish();
     }

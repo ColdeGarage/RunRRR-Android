@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context="com.example.android.run.LogoutActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+
+    </android.support.design.widget.AppBarLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:text="確定"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="103dp"
+            android:layout_marginBottom="204dp"
+            android:id="@+id/logout_yes" />
+
+        <Button
+            android:text="取消"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/logout_no"
+            android:layout_alignBaseline="@+id/logout_yes"
+            android:layout_alignBottom="@+id/logout_yes"
+            android:layout_toEndOf="@+id/logout_yes" />
+
+        <TextView
+            android:text="確定登出?"
+            android:textSize="30dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView2"
+            android:layout_above="@+id/logout_yes"
+            android:layout_centerHorizontal="true" />
+
+    </RelativeLayout>
+
+</android.support.design.widget.CoordinatorLayout>
