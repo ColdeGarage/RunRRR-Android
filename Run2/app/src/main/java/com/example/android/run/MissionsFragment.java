@@ -124,7 +124,7 @@ public class MissionsFragment extends Fragment
             }
             //System.out.println(missionList);
 
-            // Set missions data
+            // Set missions data to string array
             for(int i=0;i<LENGTH;i++){
                 mName[i] = missionList.get(i).get("title");
                 mTime[i] = missionList.get(i).get("time_end");
@@ -143,6 +143,8 @@ public class MissionsFragment extends Fragment
             holder.name.setText(mName[position % mName.length]);
             holder.time.setText(mTime[position % mTime.length]);
             String type = mType[position % mType.length];
+
+            //missions type : MAIN,SUB,URG, set different icon
             if(type.equals("MAIN")){
                 holder.type.setImageResource(R.drawable.missions_main_2);
             }else if(type.equals("SUB")){
@@ -174,8 +176,8 @@ public class MissionsFragment extends Fragment
                     HashMap<String,String> mission = new HashMap<>();
                     mission.put("mid",subObject.getString("mid"));
                     mission.put("title",subObject.getString("title"));
-                    mission.put("time_end",subObject.getString("time_end").substring(11,16));
-                    mission.put("class",subObject.getString("class"));      //MAIN, URG, SUB
+                    mission.put("time_end",subObject.getString("time_end").substring(11,16));//need hour&min only
+                    mission.put("class",subObject.getString("class"));
                     missionList.add(mission);
                 }
             } catch (JSONException e) {

@@ -25,6 +25,8 @@ public class LogoutActivity extends AppCompatActivity {
         //Button Function
         Button btYes = (Button) findViewById(R.id.logout_yes);
         Button btNo = (Button) findViewById(R.id.logout_no);
+
+        //button to logout
         btYes.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -33,15 +35,20 @@ public class LogoutActivity extends AppCompatActivity {
                 SharedPreferences settings = getSharedPreferences("data",MODE_PRIVATE);
                 settings.edit().putBoolean(KEY,false)
                         .commit();
+
+                //intent to login
                 Context context = v.getContext();
                 Intent intent = new Intent(context, MainActivity.class);
                 context.startActivity(intent);
                 finish();
             }
         });
+
+        //button to cancel
         btNo.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //intent to Tab(Map)
                 Context context = v.getContext();
                 Intent intent = new Intent(context, TabActivity.class);
                 context.startActivity(intent);

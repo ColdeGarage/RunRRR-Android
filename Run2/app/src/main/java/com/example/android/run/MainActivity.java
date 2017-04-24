@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
         * he/she will be directly leaded to Map*/
         if(readPrefs()){
             goMap();
-            Alert("Skip Login");
+            //Alert("Skip Login");
         }
 
         Button bt = (Button) findViewById(R.id.button);
@@ -82,10 +82,10 @@ public class MainActivity extends AppCompatActivity {
         if(Parsejson(readDataFromHttp)==0){
             loginState = true;
             storePrefs();
-            Alert("Success");
+            //Alert("Success");
             goMap();
         }else{
-            Alert("Fail");
+            Alert("Login Fail");
         }
     }
 
