@@ -42,11 +42,11 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1">
                 <EditText
-                    android:hint = "@string/Account"
+                    android:hint = "@string/loginAccount"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:inputType="textPersonName"
-                    android:id="@+id/editText2"
+                    android:id="@+id/account"
                     android:background="@drawable/login_edittext"
                     android:layout_below="@+id/textView"
                     android:layout_alignParentLeft="true"
@@ -65,12 +65,12 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1">
                 <EditText
-                    android:hint = "@string/Password"
+                    android:hint = "@string/loginPassword"
                     android:background="@drawable/login_edittext"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:inputType="textPassword"
-                    android:id="@+id/editText3" />
+                    android:id="@+id/password" />
             </LinearLayout>
         </LinearLayout>
 

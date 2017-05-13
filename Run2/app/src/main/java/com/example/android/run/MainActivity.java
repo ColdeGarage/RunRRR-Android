@@ -1,5 +1,6 @@
 package com.example.android.run;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -43,8 +44,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         Button bt = (Button) findViewById(R.id.button);
-        final EditText acc = (EditText) findViewById(R.id.editText2);
-        final EditText pass = (EditText) findViewById(R.id.editText3);
+        final EditText acc = (EditText) findViewById(R.id.account);
+        final EditText pass = (EditText) findViewById(R.id.password);
 
         bt.setOnClickListener(new Button.OnClickListener() {
             @Override
@@ -222,7 +223,7 @@ public class MainActivity extends AppCompatActivity {
             StringBuilder stringBuilder;
 
             try {
-                url = new URL("http://coldegarage.tech:8081/api/v1/member/login");
+                url = new URL(getApplicationContext().getResources().getString(R.string.apiURL) + "/member/login");
                 urlConnection = (HttpURLConnection) url.openConnection();
 
                 //連線方式
