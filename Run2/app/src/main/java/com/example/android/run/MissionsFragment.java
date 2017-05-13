@@ -65,8 +65,7 @@ public class MissionsFragment extends Fragment
                              Bundle savedInstanceState) {
         //RecyclerView recyclerView = (RecyclerView) inflater.inflate(
         //        R.layout.recycler_view, container, false);
-
-        View v = inflater.inflate(R.layout.recycler_view, container, false);
+        View v = inflater.inflate(R.layout.swipe_recycler_view, container, false);
 
         /*
             * Sets up a SwipeRefreshLayout.OnRefreshListener that is invoked when the user
@@ -82,7 +81,6 @@ public class MissionsFragment extends Fragment
 
                         // Create new fragment and transaction
                         Fragment newFragment = new MissionsFragment();
-                        // consider using Java coding conventions (upper first char class names!!!)
                         FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
                         // Replace whatever is in the fragment_container view with this fragment,
@@ -96,18 +94,22 @@ public class MissionsFragment extends Fragment
                             public void run() {
                                 mSwipeLayout.setRefreshing(false);
                             }
-                        }, 3000);
+                        }, 2000);
                     }
                 }
         );
 
         RecyclerView recyclerView = (RecyclerView) v.findViewById(R.id.my_recycler_view);
+
+        //Actually, I don't know why I have to do this line, but it solves the error.
         if(recyclerView.getParent()!=null)
             ((ViewGroup)recyclerView.getParent()).removeView(recyclerView);
+
         MissionsFragment.ContentAdapter adapter = new MissionsFragment.ContentAdapter(v.getContext());
         recyclerView.setAdapter(adapter);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
         ((ViewGroup)v).addView(recyclerView);
 
         return v;
@@ -145,11 +147,6 @@ public class MissionsFragment extends Fragment
         }
     }
 
-    public void refresh(){
-
-    }
-
-
     /**
      * Adapter to display recycler view.
      */
@@ -158,7 +155,7 @@ public class MissionsFragment extends Fragment
         ArrayList<HashMap<String,String>> reportList;
         ArrayList<HashMap<String,String>> solvingMissionList;
         ArrayList<HashMap<String,String>> unsolvedMissionList;
-        ArrayList<HashMap<String,String>> completeMissionList;
+        ArrayList<HashMap<String,String>> completedMissionList;
         // Set numbers of List in RecyclerView.
         private int LENGTH;
         private int serverTimeHour;
@@ -188,7 +185,7 @@ public class MissionsFragment extends Fragment
             }
             System.out.println(missionList);
 
-            //get report(misson state)
+            //get report(to get the mission state)
             MyTaskGet httpGetReport = new MyTaskGet();
             httpGetReport.execute(resources.getString(R.string.apiURL)+"/report/read?operator_uid=288&uid=288");
             try {
@@ -265,20 +262,24 @@ public class MissionsFragment extends Fragment
                         JSONObject subObject;
                         subObject = objects.getJSONObject(i);
                         HashMap<String,String> mission = new HashMap<>();
+                        //put mid into hashmap
                         mission.put("mid",subObject.getString("mid"));
+                        //put title into hashmap
                         mission.put("title",subObject.getString("title"));
 
-                        //parse time, need hour&min only
+                        //parse time, take hour&min only
+                        //and put time_end into hashmap
                         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.s'Z'");
-                        Date date ;
                         Calendar cal = Calendar.getInstance();
                         try {
-                            date = dateFormat.parse(subObject.getString("time_end"));
+                            Date date = dateFormat.parse(subObject.getString("time_end"));
                             cal.setTime(date);
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }
                         mission.put("time_end",String.valueOf(cal.get(Calendar.HOUR_OF_DAY))+":"+String.valueOf(cal.get(Calendar.MINUTE)));
+
+                        //put class into hashmap
                         if(subObject.getString("class").equals("URG")){
                             mission.put("class","0");
                         }else if(subObject.getString("class").equals("MAIN")){
@@ -295,12 +296,12 @@ public class MissionsFragment extends Fragment
                 reportList = new ArrayList<>();
                 try {
                     JSONObject jObject = new JSONObject(info);
-                    //get server time
+
+                    //parse and get server time
                     DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.s'Z'");
-                    Date date ;
                     Calendar cal = Calendar.getInstance();
                     try {
-                        date = dateFormat.parse(jObject.getString("server_time"));
+                        Date date = dateFormat.parse(jObject.getString("server_time"));
                         cal.setTime(date);
                     } catch (ParseException e) {
                         e.printStackTrace();
@@ -331,6 +332,8 @@ public class MissionsFragment extends Fragment
         void missionState(){
             for(int i=0;i<reportList.size();i++){
                 for(int j=0;j<missionList.size();j++){
+                    //find the mid in each report
+                    //and add status to the corresponding mission in missionlist
                     if(reportList.get(i).get("mid").equals(missionList.get(j).get("mid"))){
                         String status = reportList.get(i).get("status");   //0:being judged 1:success 2:fail
                         missionList.get(j).put("status",status);
@@ -338,6 +341,7 @@ public class MissionsFragment extends Fragment
                     }
                 }
             }
+            //add ("status",-1) to the missions that doesn't appear in reportlist
             for(int i=0;i<missionList.size();i++){
                 if(!missionList.get(i).containsKey("status")) {
                     missionList.get(i).put("status","-1");
@@ -349,7 +353,7 @@ public class MissionsFragment extends Fragment
         void missionSort(){
             unsolvedMissionList = new ArrayList<>();
             solvingMissionList = new ArrayList<>();
-            completeMissionList = new ArrayList<>();
+            completedMissionList = new ArrayList<>();
 
             //filter out expired mission
             for(int i=0;i<missionList.size();i++){
@@ -370,11 +374,12 @@ public class MissionsFragment extends Fragment
                 }
             }
 
+            //classify the rest missions into three lists by status
             for(int i=0;i<missionList.size();i++){
                 if(!missionList.get(i).containsKey("expire")){
                     HashMap mission = missionList.get(i);
                     if(mission.get("status").equals("1")){
-                        completeMissionList.add(mission);
+                        completedMissionList.add(mission);
                     }else if(mission.get("status").equals("-1")){
                         unsolvedMissionList.add(mission);
                     }else{
@@ -383,18 +388,17 @@ public class MissionsFragment extends Fragment
                 }
             }
 
-            Collections.sort(completeMissionList,new Comparator<HashMap<String,String>>() {
+            //sorted by class
+            Collections.sort(completedMissionList,new Comparator<HashMap<String,String>>() {
                 public int compare(HashMap<String, String> mapping1, HashMap<String, String> mapping2) {
                     return mapping1.get("class").compareTo(mapping2.get("class"));
                 }
             });
-
             Collections.sort(unsolvedMissionList,new Comparator<HashMap<String,String>>() {
                 public int compare(HashMap<String, String> mapping1, HashMap<String, String> mapping2) {
                     return mapping1.get("class").compareTo(mapping2.get("class"));
                 }
             });
-
             Collections.sort(solvingMissionList,new Comparator<HashMap<String,String>>() {
                 public int compare(HashMap<String, String> mapping1, HashMap<String, String> mapping2) {
                     return mapping1.get("status").compareTo(mapping2.get("status"));
@@ -402,8 +406,9 @@ public class MissionsFragment extends Fragment
             });
             Collections.reverse(solvingMissionList);
 
+            //converge the three lists into one
             solvingMissionList.addAll(unsolvedMissionList);
-            solvingMissionList.addAll(completeMissionList);
+            solvingMissionList.addAll(completedMissionList);
             System.out.print(solvingMissionList);
         }
     }
