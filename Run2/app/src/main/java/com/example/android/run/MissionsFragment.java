@@ -16,6 +16,8 @@
 
 package com.example.android.run;
 
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -52,6 +54,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+
+import static android.content.Context.NOTIFICATION_SERVICE;
 
 /**
  * Provides UI for the view with Tile.
@@ -101,7 +105,7 @@ public class MissionsFragment extends Fragment
 
         RecyclerView recyclerView = (RecyclerView) v.findViewById(R.id.my_recycler_view);
 
-        //Actually, I don't know why I have to do this line, but it solves the error.
+        //Actually, I don't know why I have to add this line, but it solves the error.
         if(recyclerView.getParent()!=null)
             ((ViewGroup)recyclerView.getParent()).removeView(recyclerView);
 
@@ -152,6 +156,7 @@ public class MissionsFragment extends Fragment
      */
     public static class ContentAdapter extends RecyclerView.Adapter<ViewHolder> {
         ArrayList<HashMap<String,String>> missionList;
+        ArrayList<HashMap<String,String>> oldMissionList;
         ArrayList<HashMap<String,String>> reportList;
         ArrayList<HashMap<String,String>> solvingMissionList;
         ArrayList<HashMap<String,String>> unsolvedMissionList;
@@ -168,6 +173,12 @@ public class MissionsFragment extends Fragment
 
         public ContentAdapter(Context context) {
             Resources resources = context.getResources();
+
+            //store the original missionlist
+            if(!(missionList==null)){
+                oldMissionList = new ArrayList<>();
+                oldMissionList = missionList;
+            }
 
             String readDataFromHttp;
 
@@ -199,6 +210,9 @@ public class MissionsFragment extends Fragment
 
             missionState();
             missionSort();
+
+            //compare the new mission list with the old one
+            //newMissionNotify();
 
             // Set missions data to string array
             for(int i=0;i<solvingMissionList.size();i++){
@@ -253,8 +267,7 @@ public class MissionsFragment extends Fragment
             if(missionOrReport.equals("mission")){
                 missionList = new ArrayList<>();
                 try {
-                    JSONObject jObject = new JSONObject(info);
-                    JSONObject payload = new JSONObject(jObject.getString("payload"));
+                    JSONObject payload = new JSONObject(new JSONObject(info).getString("payload"));
                     JSONArray objects = payload.getJSONArray("objects");
                     //Get mission number
                     LENGTH = objects.length();
@@ -308,7 +321,7 @@ public class MissionsFragment extends Fragment
                     }
                     //serverTimeHour = cal.get(Calendar.HOUR_OF_DAY);
                     //serverTimeMin = cal.get(Calendar.MINUTE);
-                    serverTimeHour = 0;
+                    serverTimeHour = 7;
                     serverTimeMin = 0;
 
                     JSONObject payload = new JSONObject(jObject.getString("payload"));
@@ -332,7 +345,7 @@ public class MissionsFragment extends Fragment
         void missionState(){
             for(int i=0;i<reportList.size();i++){
                 for(int j=0;j<missionList.size();j++){
-                    //find the mid in each report
+                    //find mid in each report
                     //and add status to the corresponding mission in missionlist
                     if(reportList.get(i).get("mid").equals(missionList.get(j).get("mid"))){
                         String status = reportList.get(i).get("status");   //0:being judged 1:success 2:fail
@@ -411,6 +424,58 @@ public class MissionsFragment extends Fragment
             solvingMissionList.addAll(completedMissionList);
             System.out.print(solvingMissionList);
         }
+
+        /*void newMissionNotify(){
+            for(int i=0; i<missionList.size(); i++){
+                boolean newMission = true;
+                for(int j=0; j<oldMissionList.size(); j++){
+                    if(missionList.get(i).get("mid").equals(oldMissionList.get(j).get("mid"))){
+                        newMission = false;
+                        break;
+                    }
+                }
+                if(newMission){
+                    //Step1. 初始化NotificationManager，取得Notification服務
+                    NotificationManager mNotificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+
+                    //Step2. 設定當按下這個通知之後要執行的activity
+                    Intent notifyIntent = new Intent(MainActivity.this, MainActivity.class);
+                    notifyIntent.setFlags( Intent.FLAG_ACTIVITY_NEW_TASK);
+                    PendingIntent appIntent = PendingIntent.getActivity(MainActivity.this, 0, notifyIntent, 0);
+
+                    //Step3. 透過 Notification.Builder 來建構 notification，
+                    //並直接使用其.build() 的方法將設定好屬性的 Builder 轉換
+                    //成 notification，最後開始將顯示通知訊息發送至狀態列上。
+                    Notification notification
+                            = new Notification.Builder(MainActivity.this)
+                            .setContentIntent(appIntent)
+                            //.setSmallIcon(R.drawable.ic_launcher) // 設置狀態列裡面的圖示（小圖示）　　
+                            //.setLargeIcon(BitmapFactory.decodeResource(MainActivity.this.getResources(), R.drawable.ic_launcher)) // 下拉下拉清單裡面的圖示（大圖示）
+                            .setTicker("notification on status bar.") // 設置狀態列的顯示的資訊
+                            .setWhen(System.currentTimeMillis())// 設置時間發生時間
+                            .setAutoCancel(false) // 設置通知被使用者點擊後是否清除  //notification.flags = Notification.FLAG_AUTO_CANCEL;
+                            .setContentTitle("Notification Title") // 設置下拉清單裡的標題
+                            .setContentText("Notification Content")// 設置上下文內容
+                            .setOngoing(true)      //true使notification變為ongoing，用戶不能手動清除// notification.flags = Notification.FLAG_ONGOING_EVENT; notification.flags = Notification.FLAG_NO_CLEAR;
+                            .setDefaults(Notification.DEFAULT_ALL) //使用所有默認值，比如聲音，震動，閃屏等等
+                            //.setDefaults(Notification.DEFAULT_VIBRATE) //使用默認手機震動提示
+                            //.setDefaults(Notification.DEFAULT_SOUND) //使用默認聲音提示
+                            //.setDefaults(Notification.DEFAULT_LIGHTS) //使用默認閃光提示
+                            //.setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_SOUND) //使用默認閃光提示 與 默認聲音提示
+                            .build();
+
+                    // 將此通知放到通知欄的"Ongoing"即"正在運行"組中
+                    notification.flags = Notification.FLAG_ONGOING_EVENT;
+
+                    // 表明在點擊了通知欄中的"清除通知"後，此通知不清除，
+                    // 經常與FLAG_ONGOING_EVENT一起使用
+                    notification.flags = Notification.FLAG_NO_CLEAR;
+
+                    // 把指定ID的通知持久的發送到狀態條上.
+                    mNotificationManager.notify(0, notification);
+                }
+            }
+        }*/
     }
 
     //HTTPGet
