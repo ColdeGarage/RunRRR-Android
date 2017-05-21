@@ -30,10 +30,10 @@ public class LogoutActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //change login state
-                String KEY = "Login";
+                String KEY = "login";
                 SharedPreferences settings = getSharedPreferences("data",MODE_PRIVATE);
                 settings.edit().putBoolean(KEY,false)
-                        .commit();
+                        .apply();
 
                 //intent to login
                 Context context = v.getContext();

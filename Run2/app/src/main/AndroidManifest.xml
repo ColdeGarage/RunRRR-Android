@@ -49,22 +49,27 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <!--宣告其他Activity-->
+        <!-- 宣告其他Activity -->
         <activity
             android:name=".TabActivity"
-            android:label="MissionActivity"/>
+            android:label="MissionActivity" />
         <activity
             android:name=".AboutUsActivity"
             android:label="@string/title_activity_about_us"
-            android:theme="@style/AppTheme"/>
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".MissionPopActivity"
             android:label="@string/title_activity_about_us"
-            android:theme="@style/AppTheme"/>
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".LogoutActivity"
             android:label="@string/title_activity_about_us"
-            android:theme="@style/AppTheme"/>
+            android:theme="@style/AppTheme" />
+
+        <service
+            android:name=".MyService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>

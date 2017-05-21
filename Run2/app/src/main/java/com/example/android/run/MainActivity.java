@@ -1,6 +1,5 @@
 package com.example.android.run;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -33,7 +32,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_layout);
         loginState = false;
-        //internalWrite("");
 
         /*get Preference file
         * if user has logged in before
@@ -101,12 +99,15 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }).show();
     }
-
+    private int uid;
+    private String token;
     //Parse json received from server
     int Parsejson (String info){
         int correct=0;
         try {
             JSONObject jObject = new JSONObject(info);
+            uid = jObject.getInt("uid");
+            token = jObject.getString("token");
             JSONObject payload = new JSONObject(jObject.getString("payload"));
             correct = payload.getInt("correct");
         } catch (JSONException e) {
@@ -124,17 +125,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //===================內存=========================
-    private String KEY = "Login";
-    //store login state
+    //store login state and uid
     private void storePrefs(){
         SharedPreferences settings = getSharedPreferences("data",MODE_PRIVATE);
-        settings.edit().putBoolean(KEY,loginState)
-                .commit();
+        settings.edit().putBoolean("login",loginState)
+                        .putInt("uid",uid)
+                        .putString("token",token)
+                        .apply();
     }
     //read login state
     private boolean readPrefs(){
         SharedPreferences settings = getSharedPreferences("data",MODE_PRIVATE);
-        return settings.getBoolean(KEY,false);
+        return settings.getBoolean("login",false);
     }
 
     //===================HTTP==========================
