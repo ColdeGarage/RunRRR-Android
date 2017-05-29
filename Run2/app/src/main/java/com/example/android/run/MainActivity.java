@@ -103,6 +103,8 @@ public class MainActivity extends AppCompatActivity {
     private String token;
     //Parse json received from server
     int Parsejson (String info){
+        System.out.println("info is");
+        System.out.println(info);
         int correct=0;
         try {
             JSONObject jObject = new JSONObject(info);

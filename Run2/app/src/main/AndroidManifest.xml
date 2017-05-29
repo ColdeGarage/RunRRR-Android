@@ -61,11 +61,12 @@
             android:name=".MissionPopActivity"
             android:label="@string/title_activity_about_us"
             android:theme="@style/AppTheme" />
+        <activity android:name=".BagPopActivity"
+            android:theme="@style/AppTheme.ShowAbove"/>
         <activity
             android:name=".LogoutActivity"
             android:label="@string/title_activity_about_us"
             android:theme="@style/AppTheme" />
-
         <service
             android:name=".MyService"
             android:enabled="true"
