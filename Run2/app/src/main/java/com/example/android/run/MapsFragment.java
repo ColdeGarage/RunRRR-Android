@@ -17,6 +17,7 @@ import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -173,6 +174,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     private void initial(GoogleMap mMap){
         setBoundary(mMap);
         addMissionMarker(mMap);
+        setScore();
 
         if(lastLocation!=null){
             LatLng latLng = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
@@ -269,10 +271,23 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
             }
         }
     }
-
+    private int score;
+    void setScore (){
+        TextView scoreView = (TextView)getActivity().findViewById(R.id.score);
+        //get score
+        MyTaskGet httpGetScore = new MyTaskGet();
+        httpGetScore.execute(getResources().getString(R.string.apiURL)+"/member/read?operator_uid="+String.valueOf(uid)+"&token="+token+"&uid="+String.valueOf(uid));
+        try {
+            String readDataFromHttp = httpGetScore.get();
+            parseJson(readDataFromHttp,"score");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        scoreView.setText(String.valueOf(score));
+    }
     //Parse json received from server
-    void parseJson (String info, String missionOrReport){
-        if(missionOrReport.equals("mission")){
+    void parseJson (String info, String instru){
+        if(instru.equals("mission")){
             missionList = new ArrayList<>();
             try {
                 JSONObject payload = new JSONObject(new JSONObject(info).getString("payload"));
@@ -308,7 +323,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        }else{
+        }else if(instru.equals("report")){
             reportList = new ArrayList<>();
             try {
                 JSONObject jObject = new JSONObject(info);
@@ -337,6 +352,14 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                     report.put("status",subObject.getString("status"));
                     reportList.add(report);
                 }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }else if(instru.equals("score")){
+            try {
+                JSONObject payload = new JSONObject(new JSONObject(info).getString("payload"));
+                JSONArray objects = payload.getJSONArray("objects");
+                score = objects.getJSONObject(0).getInt("score");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
