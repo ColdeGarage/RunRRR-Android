@@ -105,6 +105,7 @@ public class BagFragment extends Fragment
         public ImageView tool3;
         public TextView name3;
         public TextView count3;
+
         public ViewHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.item_bag, parent, false));
             tool1 = (ImageView) itemView.findViewById(R.id.toolImage1);
@@ -116,27 +117,7 @@ public class BagFragment extends Fragment
             tool3 = (ImageView) itemView.findViewById(R.id.toolImage3);
             name3 = (TextView) itemView.findViewById(R.id.toolName3);
             count3 = (TextView) itemView.findViewById(R.id.toolNumber3);
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int id = v.getId();
-                    //TODO:Intent to other activity
-                    Context context = v.getContext();
 
-                    Intent intent = new Intent(context, BagPopActivity.class);
-//                    intent.putExtra(MissionPopActivity.EXTRA_POSITION, getAdapterPosition());
-                    startActivityForResult( intent, 2);
-                    long startMs = System.currentTimeMillis();
-                    Blurry.with(context)
-                            .radius(25)
-                            .sampling(2)
-                            .async()
-                            .animate(500)
-                            .onto((ViewGroup) forBlur.findViewById(R.id.fragmentTab));
-                    Log.d(getString(R.string.app_name),
-                            "TIME " + String.valueOf(System.currentTimeMillis() - startMs) + "ms");
-                }
-            });
         }
     }
     /*
@@ -150,6 +131,7 @@ public class BagFragment extends Fragment
         private String[] pName = new String[60];
         private String[] pUrl = new String[60];
         private String[] pCount = new String[60];
+        private String[] pContent = new String[60];
 
         // Set numbers of List in RecyclerView.
         private int LENGTH;
@@ -197,6 +179,7 @@ public class BagFragment extends Fragment
                 System.out.println("in put name = " + pName[i]);
                 pUrl[i] = packList.get(i).get(0).get("url");
                 pCount[i] = packList.get(i).get(0).get("count");
+                pContent[i] = packList.get(i).get(0).get("content");
             }
         }
         @Override
@@ -214,6 +197,7 @@ public class BagFragment extends Fragment
             holder.count2.setText(pCount[position*3+1]);
             holder.name3.setText(pName[position*3+2]);
             holder.count3.setText(pCount[position*3+2]);
+
 
             new Thread(new Runnable() {
                 @Override
@@ -246,15 +230,98 @@ public class BagFragment extends Fragment
                 }
             }).start();
 
-//            //missions type : MAIN,SUB,URG, set different icon
-//            if(type.equals("MAIN")){
-//                holder.type.setImageResource(R.drawable.missions_main_2);
-//            }else if(type.equals("SUB")){
-//                holder.type.setImageResource(R.drawable.missions_sub);
-//            }else{
-//                holder.type.setImageResource(R.drawable.missions_urg);
-//            }
-//            //holder.state.setImageDrawable(mState[position % mState.length]);
+            holder.tool1.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int id = v.getId();
+                    //TODO:Intent to other activity
+                    Context context = v.getContext();
+
+                    Intent intent = new Intent(context, BagPopActivity.class);
+
+                    Bundle bundle=new Bundle();
+                    bundle.putString("NAME",pName[position*3]);
+                    bundle.putString("IMAGEURL",pUrl[position*3]);
+                    bundle.putString("CONTENT",pContent[position*3]);
+                    bundle.putString("COUNT",pCount[position*3]);
+                    intent.putExtras(bundle);
+
+                    long startMs = System.currentTimeMillis();
+                    Blurry.with(context)
+                            .radius(25)
+                            .sampling(2)
+                            .async()
+                            .animate(500)
+                            .onto((ViewGroup) forBlur.findViewById(R.id.fragmentTab));
+                    Log.d(getString(R.string.app_name),"TIME " + String.valueOf(System.currentTimeMillis() - startMs) + "ms");
+
+                    startActivityForResult( intent, 2);
+                }
+            });
+            if(LENGTH > position*3+1){
+                holder.tool2.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int id = v.getId();
+                        //TODO:Intent to other activity
+                        Context context = v.getContext();
+
+                        Intent intent = new Intent(context, BagPopActivity.class);
+
+                        Bundle bundle=new Bundle();
+                        bundle.putString("NAME",pName[position*3+1]);
+                        bundle.putString("IMAGEURL",pUrl[position*3+1]);
+                        bundle.putString("CONTENT",pContent[position*3+1]);
+                        bundle.putString("COUNT",pCount[position*3+1]);
+
+                        intent.putExtras(bundle);
+
+                        long startMs = System.currentTimeMillis();
+                        Blurry.with(context)
+                                .radius(25)
+                                .sampling(2)
+                                .async()
+                                .animate(500)
+                                .onto((ViewGroup) forBlur.findViewById(R.id.fragmentTab));
+                        Log.d(getString(R.string.app_name),"TIME " + String.valueOf(System.currentTimeMillis() - startMs) + "ms");
+
+                        startActivityForResult( intent, 2);
+                    }
+                });
+            }
+
+            if(LENGTH > position*3+2){
+                holder.tool3.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int id = v.getId();
+                        //TODO:Intent to other activity
+                        Context context = v.getContext();
+
+                        Intent intent = new Intent(context, BagPopActivity.class);
+
+                        Bundle bundle=new Bundle();
+                        bundle.putString("NAME",pName[position*3+2]);
+                        bundle.putString("IMAGEURL",pUrl[position*3+2]);
+                        bundle.putString("CONTENT",pContent[position*3+2]);
+                        bundle.putString("COUNT",pCount[position*3+2]);
+
+                        intent.putExtras(bundle);
+
+                        long startMs = System.currentTimeMillis();
+                        Blurry.with(context)
+                                .radius(25)
+                                .sampling(2)
+                                .async()
+                                .animate(500)
+                                .onto((ViewGroup) forBlur.findViewById(R.id.fragmentTab));
+                        Log.d(getString(R.string.app_name),"TIME " + String.valueOf(System.currentTimeMillis() - startMs) + "ms");
+
+                        startActivityForResult( intent, 2);
+                    }
+                });
+            }
+
         }
 
         @Override
@@ -285,22 +352,22 @@ public class BagFragment extends Fragment
                         String id = c.getString("id");
                         String  type = c.getString("class");
                         // tmp hash map for single contact
-                        System.out.println("type=" + type);
+//                        System.out.println("type=" + type);
                         if(type.equals("TOOL")){
                             toolIds[tool_index] = id;
                             tool_index++;
-                            System.out.println("tool index++, index=" + tool_index);
+//                            System.out.println("tool index++, index=" + tool_index);
                         }
                         else{
                             clueIds[clue_index] = id;
                             clue_index++;
-                            System.out.println("clue index++, index=" + clue_index);
+//                            System.out.println("clue index++, index=" + clue_index);
                         }
                     }
-                    System.out.println("toolIds=");
-                    System.out.println(toolIds);
-                    System.out.println("clueIds=");
-                    System.out.println(clueIds);
+//                    System.out.println("toolIds=");
+//                    System.out.println(toolIds);
+//                    System.out.println("clueIds=");
+//                    System.out.println(clueIds);
                 } catch (final JSONException e) {
                     System.out.print("Json parsing error: " + e.getMessage());
                 }
@@ -325,8 +392,8 @@ public class BagFragment extends Fragment
                     // Getting JSON Array node
                     JSONArray objects = payload.getJSONArray("objects");
                     // looping through All Contacts
-                    System.out.println("tool");
-                    System.out.println(objects);
+//                    System.out.println("tool");
+//                    System.out.println(objects);
                     for (int i = 0; i < objects.length(); i++) {
                         JSONObject c = objects.getJSONObject(i);
 

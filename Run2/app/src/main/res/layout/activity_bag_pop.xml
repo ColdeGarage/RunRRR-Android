@@ -18,14 +18,14 @@ tools:context="com.example.android.run.BagPopActivity">
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         app:srcCompat="@android:drawable/ic_delete"
-        android:id="@+id/imageView"
+        android:id="@+id/popToolImage"
         android:layout_weight="2" />
 
     <TextView
         android:text="ToolName"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:id="@+id/textView"
+        android:id="@+id/popToolName"
         android:layout_weight="3"/>
 
     <Button
@@ -47,22 +47,29 @@ tools:context="com.example.android.run.BagPopActivity">
         android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_weight="1">
+        android:layout_weight="2"
+        android:weightSum="1">
 
+        <TextView
+            android:text="TextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/popCount"
+            android:layout_weight="0.1" />
     </LinearLayout>
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_weight="5">
+        android:layout_weight="8">
 
 
         <TextView
             android:text="TextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/textView2"
+            android:id="@+id/popContent"
             android:layout_weight="20"/>
 
         <Button
@@ -78,7 +85,7 @@ tools:context="com.example.android.run.BagPopActivity">
         android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1">
+        android:layout_weight="2">
 
 
     </LinearLayout>
