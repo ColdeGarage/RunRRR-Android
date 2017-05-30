@@ -62,7 +62,6 @@
             android:layout_width="@dimen/check_size"
             android:layout_height="@dimen/check_size"
             android:scaleType="centerCrop"
-            android:padding="5dp"
-            tools:src="@drawable/state_passed"/>
+            android:padding="5dp"/>
     </LinearLayout>
 </LinearLayout>

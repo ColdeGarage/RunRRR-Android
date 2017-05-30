@@ -36,9 +36,12 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_maps">Map</string>
-    <string name="title_activity_mission_pop">Details</string>
-    <string name="title_activity_die">Die</string>
+    <string name="title_activity_missions">Details</string>
     <string name="title_activity_about_us">About Us</string>
-    <string name="title_activity_sos">Sos</string>
     <string name="title_activity_logout">Logout</string>
+
+    <string name="loginAccount"> Account</string>
+    <string name="loginPassword"> Password</string>
+
+    <string name="apiURL">http://coldegarage.tech:8081/api/v1.1</string>
 </resources>

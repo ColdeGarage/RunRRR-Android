@@ -1,124 +1,297 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.example.android.run;
 
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
-import android.support.design.widget.TabLayout;
-import android.support.graphics.drawable.VectorDrawableCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentTabHost;
-import android.support.v4.content.res.ResourcesCompat;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.view.ViewPager;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.TabHost;
-import android.widget.TextView;
+import android.widget.Button;
+import android.widget.EditText;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-import static android.R.attr.label;
-import static android.R.attr.tag;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.DataOutputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
+public class MainActivity extends AppCompatActivity {
 
-/**
- * Provides UI for the main screen.
- */
-public class MainActivity extends FragmentActivity
-{
+    boolean loginState;
+    String account_in, pass_in;
+
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.login_layout);
+        loginState = false;
 
-        //獲取TabHost控制元件
-        FragmentTabHost mTabHost = (FragmentTabHost) findViewById(android.R.id.tabhost);
-        //設定Tab頁面的顯示區域，帶入Context、FragmentManager、Container ID
-        mTabHost.setup(this, getSupportFragmentManager(), R.id.container);
+        /*get Preference file
+        * if user has logged in before
+        * he/she will be directly leaded to Map*/
+        if(readPrefs()){
+            goMap();
+            //Alert("Skip Login");
+        }
 
-        /**
-         新增Tab結構說明 :
-         首先帶入Tab分頁標籤的Tag資訊並可設定Tab標籤上顯示的文字與圖片，
-         再來帶入Tab頁面要顯示連結的Fragment Class，最後可帶入Bundle資訊。
-         **/
+        Button bt = (Button) findViewById(R.id.button);
+        final EditText acc = (EditText) findViewById(R.id.account);
+        final EditText pass = (EditText) findViewById(R.id.password);
 
-        //小黑人建立一個Tab，這個Tab的Tag設定為one，
-        //並設定Tab上顯示的文字為第一堂課與icon圖片，Tab連結切換至
-        //LessonOneFragment class，無夾帶Bundle資訊。
-        mTabHost.addTab(mTabHost.newTabSpec("one")
-                        .setIndicator("",getResources().getDrawable(R.drawable.ic_maps_2))
-                ,MapsFragment.class,null);
-
-        //同上方Tab設定，不同處為帶入參數的差異
-        mTabHost.addTab(mTabHost.newTabSpec("two")
-                        .setIndicator("",getResources().getDrawable(R.drawable.ic_missions))
-                ,MissionsFragment.class,null);
-
-        //同上方Tab設定，不同處為帶入參數的差異
-        mTabHost.addTab(mTabHost.newTabSpec("three")
-                        .setIndicator("",getResources().getDrawable(R.drawable.ic_bag))
-                ,BagFragment.class, null);
-
-        //同上方Tab設定，不同處為帶入參數的差異
-        mTabHost.addTab(mTabHost.newTabSpec("four")
-                        .setIndicator("",getResources().getDrawable(R.drawable.ic_more))
-                ,MoreFragment.class,null);
+        bt.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                account_in = acc.getText().toString();
+                pass_in = pass.getText().toString();
+                if(account_in.isEmpty()){
+                    Alert("Account can't be empty.");
+                }else if(pass_in.isEmpty()) {
+                    Alert("Password can't be empty.");
+                }else {
+                    //if account&password aren't empty, check whether it's valid
+                    checkAccount();
+                }
+            }
+        });
     }
 
-    /**
-     方法權限設定為Public目的是可以讓Fragment取得內容 。
-     */
+    void checkAccount(){
+        String readDataFromHttp = null;
 
-    //Tab - Maps的文字內容
-    public String getMapsText()
-    {
-        return "Maps";
+        //POST email&password to server
+        MyTaskPost httpPost = new MyTaskPost();
+        httpPost.execute();
+
+        try {
+            //get result from function "onPostExecute" in class "myTaskPost"
+            readDataFromHttp = httpPost.get();
+            //System.out.println(readDataFromHttp);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        //If brea=0, login success
+        if(Parsejson(readDataFromHttp)==0){
+            loginState = true;
+            storePrefs();
+            //Alert("Success");
+            goMap();
+        }else{
+            Alert("Login Fail");
+        }
     }
 
-    //Tab - Missions的文字內容
-    public String getMissionsText()
-    {
-        return "Missions Name";
+    //show an alert dialog
+    void Alert(String mes){
+        new AlertDialog.Builder(MainActivity.this)
+                .setMessage(mes)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                }).show();
+    }
+    private int uid;
+    private String token;
+    //Parse json received from server
+    int Parsejson (String info){
+        System.out.println("info is");
+        System.out.println(info);
+        int correct=0;
+        try {
+            JSONObject jObject = new JSONObject(info);
+            uid = jObject.getInt("uid");
+            token = jObject.getString("token");
+            JSONObject payload = new JSONObject(jObject.getString("payload"));
+            correct = payload.getInt("correct");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return correct;
     }
 
-    //Tab - Bag的文字內容
-    public String getBagText()
-    {
-        return "Bag";
+    //===================Intent==========================
+    void goMap(){
+        Intent intent = new Intent();
+        intent.setClass(MainActivity.this,TabActivity.class);
+        startActivity(intent);
+        finish();
     }
 
-    //Tab - More的文字內容
-    public String getMoreText()
-    {
-        return "More";
+    //===================內存=========================
+    //store login state and uid
+    private void storePrefs(){
+        SharedPreferences settings = getSharedPreferences("data",MODE_PRIVATE);
+        settings.edit().putBoolean("login",loginState)
+                        .putInt("uid",uid)
+                        .putString("token",token)
+                        .apply();
+    }
+    //read login state
+    private boolean readPrefs(){
+        SharedPreferences settings = getSharedPreferences("data",MODE_PRIVATE);
+        return settings.getBoolean("login",false);
     }
 
+    //===================HTTP==========================
+    //HTTPGet, we will not use it in this Activity
+    class MyTaskGet extends AsyncTask<Void,Void,String>{
+        @Override
+        public void onPreExecute() {
+            super.onPreExecute();
+        }
+        @Override
+        public String doInBackground(Void...arg0) {
+            URL url;
+            BufferedReader reader = null;
+            StringBuilder stringBuilder;
+
+            try
+            {
+                // create the HttpURLConnection
+
+                url = new URL("https://www.google.com.tw"); //Just use this to try the function is able to work or not
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+                // 使用甚麼方法做連線
+                connection.setRequestMethod("GET");
+
+                // 是否添加參數(ex : json...等)
+                //connection.setDoOutput(true);
+
+                // 設定TimeOut時間
+                connection.setReadTimeout(15*1000);
+                connection.connect();
+
+                // 伺服器回來的參數
+                reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                stringBuilder = new StringBuilder();
+
+                String line;
+                while ((line = reader.readLine()) != null)
+                {
+                    stringBuilder.append(line + "\n");
+                }
+                return stringBuilder.toString();
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+            finally
+            {
+                // close the reader; this can throw an exception too, so
+                // wrap it in another try/catch block.
+                if (reader != null)
+                {
+                    try
+                    {
+                        reader.close();
+                    }
+                    catch (Exception e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            return null;
+        }
+        @Override
+        public void onPostExecute(String result) {
+            super.onPostExecute(result);
+        }
+
+    }
+
+    //HTTPPost
+    class MyTaskPost extends AsyncTask<Void,Void,String>{
+
+        @Override
+        public void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(Void... params) {
+            URL url;
+            HttpURLConnection urlConnection = null;
+            BufferedReader reader = null;
+            StringBuilder stringBuilder;
+
+            try {
+                url = new URL(getApplicationContext().getResources().getString(R.string.apiURL) + "/member/login");
+                urlConnection = (HttpURLConnection) url.openConnection();
+
+                //連線方式
+                urlConnection.setRequestMethod("POST");
+
+                //設置輸出入流串
+                urlConnection.setDoInput(true);
+                urlConnection.setDoOutput(true);
+
+                //POST方法不能緩存數據,需手動設置使用緩存的值為false
+                urlConnection.setUseCaches(false);
+
+                //Send request
+                DataOutputStream wr = new DataOutputStream(
+                        urlConnection.getOutputStream());
+
+                //encode data in UTF-8
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(wr, "UTF-8"));
+
+                writer.write("email=" + account_in + "&password=" + pass_in);
+
+                //flush the data in buffer to server and close the writer
+                writer.flush();
+                writer.close();
+
+                //read response
+                reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+                stringBuilder = new StringBuilder();
+                String line ;
+
+                while ((line = reader.readLine()) != null)
+                {
+                    stringBuilder.append(line + "\n");
+                }
+                return stringBuilder.toString();
+
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+        finally {
+            urlConnection.disconnect();
+                // close the reader; this can throw an exception too, so
+                // wrap it in another try/catch block.
+                if (reader != null)
+                {
+                    try
+                    {
+                        reader.close();
+                    }
+                    catch (Exception e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+        }
+
+            return null;
+        }
+
+        @Override
+        public void onPostExecute(String result) {
+            super.onPostExecute(result);
+        }
+
+    }
 }
+

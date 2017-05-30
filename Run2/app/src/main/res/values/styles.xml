@@ -25,7 +25,6 @@
         <!-- Blue -->
     </style>
 
-    <!-- Light application theme. -->
     <style name="AppTheme.Light" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">#FFFFFF</item>
@@ -38,9 +37,12 @@
 
     <style name="AppTheme" parent="AppTheme.Base"></style>
 
-    <style name="AppTheme.AppBarLight" parent="AppTheme.Light"></style>
-
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="AppTheme.ShowAbove" >
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowCloseOnTouchOutside">true</item>
+    </style>
 </resources>

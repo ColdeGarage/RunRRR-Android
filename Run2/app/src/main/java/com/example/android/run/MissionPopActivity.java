@@ -27,25 +27,56 @@ public class MissionPopActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        Bundle bundleReciever = getIntent().getExtras();
+        String mName = bundleReciever.getString("name");
+        String mTime = bundleReciever.getString("time");
+        String mContent = bundleReciever.getString("content");
+        String mType = bundleReciever.getString("type");
+        String mState = bundleReciever.getString("state");
 
-        // Get postion of RecyclerView
-        int postion = getIntent().getIntExtra(EXTRA_POSITION, 0);
-        Resources resources = getResources();
 
-        // Set title with mission name
-        TypedArray MissionTypes = resources.obtainTypedArray(R.array.mission_type);
+        //missions type : MAIN,SUB,URG, set different icon
         ImageView Type = (ImageView) findViewById(R.id.list_type);
-        Type.setImageDrawable(MissionTypes.getDrawable((postion % MissionTypes.length())));
+        switch (mType){
+            case "0":
+                Type.setImageResource(R.drawable.missions_urg);
+                break;
+            case "1":
+                Type.setImageResource(R.drawable.missions_main_2);
+                break;
+            case "2":
+                Type.setImageResource(R.drawable.missions_sub);
+                break;
+            default:
+                break;
+        }
+
+        //state type : -1:unsolved 0:being judged 1:success 2:fail
+        switch(mState){
+            case "-1":
+                break;
+            case "0": //waiting
+                break;
+            case "1": //passed
+                break;
+            case "2": //failed
+                break;
+            default:
+                break;
+        }
 
         // Set title with mission name
-        String[] MissionNames = resources.getStringArray(R.array.mission_name);
         TextView Name = (TextView) findViewById(R.id.list_name);
-        Name.setText(MissionNames[postion % MissionNames.length]);
+        Name.setText(mName);
 
-        // Set title with mission name
-        TypedArray MissionPictures = resources.obtainTypedArray(R.array.mission_picture);
+        // Set content of mission details
+        TextView Content = (TextView) findViewById(R.id.mission_content);
+        Content.setText(mContent);
+
+        // Set picture of mission details
         ImageView Picture = (ImageView) findViewById(R.id.mission_picture);
-        Picture.setImageDrawable(MissionPictures.getDrawable((postion % MissionPictures.length())));
+        Picture.setImageResource(R.drawable.yichun8787);
+
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
