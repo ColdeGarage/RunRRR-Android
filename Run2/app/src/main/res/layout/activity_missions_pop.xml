@@ -65,8 +65,8 @@
                 android:id="@+id/list_type"
                 android:layout_width="@dimen/avator_size"
                 android:layout_height="match_parent"
-                android:scaleType="centerCrop"
                 android:padding="10dp"
+                android:scaleType="centerCrop"
                 tools:src="@drawable/missions_main" />
 
             <TextView

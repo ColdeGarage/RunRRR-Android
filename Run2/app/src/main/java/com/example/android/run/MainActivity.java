@@ -129,6 +129,7 @@ public class MainActivity extends AppCompatActivity {
     private void storePrefs(){
         SharedPreferences settings = getSharedPreferences("data",MODE_PRIVATE);
         settings.edit().putBoolean("login",loginState)
+                        .putBoolean("liveordie",true)
                         .putInt("uid",uid)
                         .putString("token",token)
                         .apply();

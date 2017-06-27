@@ -142,17 +142,6 @@ public class MissionsFragment extends Fragment
             time = (TextView) itemView.findViewById(R.id.list_time);
             state = (ImageView) itemView.findViewById(R.id.list_state);
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //TODO:Intent to other activity
-                    Context context = v.getContext();
-                    Intent intent = new Intent(context, MissionPopActivity.class);
-                    intent.putExtra(MissionPopActivity.EXTRA_POSITION, getAdapterPosition());
-                    context.startActivity(intent);
-                }
-            });
-
         }
     }
 

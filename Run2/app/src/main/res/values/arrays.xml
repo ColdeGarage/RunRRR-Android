@@ -16,7 +16,7 @@
   -->
 <resources>
     <string-array name="more">
-        <item>輸入序號</item>
+        <item>抓到了</item>
         <item>關於我們</item>
         <item>我是條碼</item>
         <item>求救</item>
