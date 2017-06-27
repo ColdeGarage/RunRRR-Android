@@ -100,7 +100,7 @@ public class MoreFragment extends Fragment {
      */
     public static class ContentAdapter extends RecyclerView.Adapter<ViewHolder> {
         // Set numbers of List in RecyclerView.
-        private static final int LENGTH = 4;
+        private static final int LENGTH = 5;
 
         private final String[] mMoreList;
 
@@ -131,11 +131,15 @@ public class MoreFragment extends Fragment {
                             intent = new Intent(context, AboutUsActivity.class);
                             context.startActivity(intent);
                             break;
-                        case 2: //SOS
+                        case 2: //Barcode
+                            intent = new Intent(context, BarcodeActivity.class);
+                            context.startActivity(intent);
+                            break;
+                        case 3: //SOS
                             intent = new Intent(context, AboutUsActivity.class);
                             context.startActivity(intent);
                             break;
-                        case 3: //Logout
+                        case 4: //Logout
                             intent = new Intent(context, LogoutActivity.class);
                             context.startActivity(intent);
                             break;

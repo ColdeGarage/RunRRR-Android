@@ -59,15 +59,16 @@
             android:theme="@style/AppTheme" />
         <activity
             android:name=".MissionPopActivity"
-            android:label="@string/title_activity_about_us"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".LogoutActivity"
-            android:label="@string/title_activity_about_us"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".BarcodeActivity"
             android:theme="@style/AppTheme" />
 
         <service
-            android:name=".MyService"
+            android:name=".UpdateService"
             android:enabled="true"
             android:exported="true"></service>
     </application>

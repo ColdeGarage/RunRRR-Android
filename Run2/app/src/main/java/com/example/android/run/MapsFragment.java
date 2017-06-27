@@ -11,9 +11,11 @@ import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,7 +42,10 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.DataOutputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -68,6 +73,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     private String text = "";
     private static int uid;
     private static String token;
+    Handler updateHandler ;
+    Runnable updateRunnable ;
+    static int flag = 0;
 
     @Override
     public void onAttach(Activity activity)
@@ -109,8 +117,32 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         //read uid and token
         readPrefs();
 
+        //update location
+        if(flag == 0){
+            updateHandler = new Handler();
+            updateRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    if(lastLocation!=null){
+                        MyTaskPut updatePut = new MyTaskPut();
+                        updatePut.execute(getResources().getString(R.string.apiURL)+"/member/update");
+                        Log.i("update",String.valueOf(lastLocation.getLatitude())+"  "+lastLocation.getLongitude());
+                    }
+                    updateHandler.postDelayed(this, 5000);
+                }
+            };
+            updateHandler.postDelayed(updateRunnable, 0);
+            flag++;
+        }
+
         return rootView;
     }
+
+//    @Override
+//    public void onPause() {
+//        super.onPause();
+//        updateHandler.removeCallbacks(updateRunnable);
+//    }
 
     //=====================內存=====================
     private void readPrefs(){
@@ -457,13 +489,18 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
                 .build();
-        googleApiClient.connect();
+        if(!googleApiClient.isConnected()){
+            System.out.println("connect");
+            googleApiClient.connect();
+        }else{
+            System.out.println("isconnected");
+        }
     }
 
     @Override
     public void onConnected(Bundle bundle) {
         LocationRequest locationRequest = new LocationRequest();
-        locationRequest.setInterval(2000);
+        locationRequest.setInterval(3000);
         locationRequest.setFastestInterval(2000);
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         if (ContextCompat.checkSelfPermission(getActivity().getApplicationContext(),
@@ -563,4 +600,90 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         }
 
     }
+
+    //HTTPPUT
+    class MyTaskPut extends AsyncTask<String,Void,String>{
+
+        @Override
+        public void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(String... arg0) {
+            URL url;
+            HttpURLConnection urlConnection = null;
+            BufferedReader reader = null;
+            StringBuilder stringBuilder;
+            String urlStr = arg0[0];
+
+            try {
+                url = new URL(urlStr);
+                urlConnection = (HttpURLConnection) url.openConnection();
+
+                //連線方式
+                urlConnection.setRequestMethod("PUT");
+
+                //設置輸出入流串
+                urlConnection.setDoInput(true);
+                urlConnection.setDoOutput(true);
+
+                //POST方法不能緩存數據,需手動設置使用緩存的值為false
+                urlConnection.setUseCaches(false);
+
+                //Send request
+                DataOutputStream wr = new DataOutputStream(
+                        urlConnection.getOutputStream());
+
+                //encode data in UTF-8
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(wr, "UTF-8"));
+
+                writer.write("uid=" + String.valueOf(uid) + "&operator_uid=" + String.valueOf(uid) + "&token=" + token + "&position_n=" + String.valueOf(lastLocation.getLatitude())
+                        + "&position_e=" + String.valueOf(lastLocation.getLongitude()));
+
+                //flush the data in buffer to server and close the writer
+                writer.flush();
+                writer.close();
+
+                //read response
+                reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+                stringBuilder = new StringBuilder();
+                String line ;
+
+                while ((line = reader.readLine()) != null)
+                {
+                    stringBuilder.append(line + "\n");
+                }
+                return stringBuilder.toString();
+
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+            finally {
+                urlConnection.disconnect();
+                // close the reader; this can throw an exception too, so
+                // wrap it in another try/catch block.
+                if (reader != null)
+                {
+                    try
+                    {
+                        reader.close();
+                    }
+                    catch (Exception e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        @Override
+        public void onPostExecute(String result) {
+            super.onPostExecute(result);
+        }
+
+    }
 }
+

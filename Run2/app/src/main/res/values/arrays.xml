@@ -18,6 +18,7 @@
     <string-array name="more">
         <item>輸入序號</item>
         <item>關於我們</item>
+        <item>我是條碼</item>
         <item>求救</item>
         <item>登出</item>
     </string-array>
