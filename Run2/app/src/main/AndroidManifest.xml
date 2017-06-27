@@ -59,7 +59,10 @@
             android:theme="@style/AppTheme" />
         <activity
             android:name=".MissionPopActivity"
+            android:label="@string/title_activity_missions"
             android:theme="@style/AppTheme" />
+        <activity android:name=".BagPopActivity"
+            android:theme="@style/AppTheme.ShowAbove"/>
         <activity
             android:name=".LogoutActivity"
             android:theme="@style/AppTheme" />

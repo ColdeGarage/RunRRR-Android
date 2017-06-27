@@ -18,6 +18,7 @@ public class LogoutActivity extends AppCompatActivity {
         setContentView(R.layout.activity_logout);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Logout");
+
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 

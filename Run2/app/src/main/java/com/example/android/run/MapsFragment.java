@@ -11,6 +11,7 @@ import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+
 import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -20,6 +21,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -46,6 +48,7 @@ import java.io.BufferedWriter;
 import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+
 import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -73,6 +76,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     private String text = "";
     private static int uid;
     private static String token;
+
     Handler updateHandler ;
     Runnable updateRunnable ;
     static int flag = 0;
@@ -144,6 +148,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 //        updateHandler.removeCallbacks(updateRunnable);
 //    }
 
+
     //=====================內存=====================
     private void readPrefs(){
         SharedPreferences settings = getContext().getSharedPreferences("data",MODE_PRIVATE);
@@ -206,6 +211,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     private void initial(GoogleMap mMap){
         setBoundary(mMap);
         addMissionMarker(mMap);
+
         setScore();
 
         if(lastLocation!=null){
@@ -303,6 +309,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
             }
         }
     }
+
     private int score;
     void setScore (){
         TextView scoreView = (TextView)getActivity().findViewById(R.id.score);
@@ -355,6 +362,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+
         }else if(instru.equals("report")){
             reportList = new ArrayList<>();
             try {
@@ -387,6 +395,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+
         }else if(instru.equals("score")){
             try {
                 JSONObject payload = new JSONObject(new JSONObject(info).getString("payload"));
@@ -395,6 +404,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+
         }
     }
 
@@ -489,12 +499,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
                 .build();
-        if(!googleApiClient.isConnected()){
-            System.out.println("connect");
+
             googleApiClient.connect();
-        }else{
-            System.out.println("isconnected");
-        }
     }
 
     @Override

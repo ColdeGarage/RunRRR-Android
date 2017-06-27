@@ -122,4 +122,9 @@
         <item>@drawable/state_passed</item>
         <item>@drawable/state_passed</item>
     </array>
+
+    <array name="mission_picture">
+        <item>@drawable/yichun8787</item>
+    </array>
+
 </resources>
