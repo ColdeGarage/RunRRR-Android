@@ -152,7 +152,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                             num ++;
                             if(num >= 6){
                                 show = true;
-                                new android.support.v7.app.AlertDialog.Builder(getContext())
+                                new AlertDialog.Builder(getContext())
                                         .setCancelable(false)   //按到旁邊也不會消失
                                         .setMessage("你超過邊界囉")
                                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {

@@ -52,7 +52,8 @@
         <!-- 宣告其他Activity -->
         <activity
             android:name=".TabActivity"
-            android:label="MissionActivity" />
+            android:label="MissionActivity"
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".AboutUsActivity"
             android:label="@string/title_activity_about_us"
@@ -61,7 +62,8 @@
             android:name=".MissionPopActivity"
             android:label="@string/title_activity_missions"
             android:theme="@style/AppTheme" />
-        <activity android:name=".BagPopActivity"
+        <activity
+            android:name=".BagPopActivity"
             android:theme="@style/AppTheme.ShowAbove"/>
         <activity
             android:name=".LogoutActivity"

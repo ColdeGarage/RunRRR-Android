@@ -1,8 +1,10 @@
 package com.example.android.run;
 
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -46,7 +48,7 @@ public class DieActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String hunterUid = editTextUid.getText().toString();
                 String hunterPass = editTextPass.getText().toString();
-                Log.i("text",hunterUid + "  " + hunterPass);
+                //Log.i("text",hunterUid + "  " + hunterPass);
 
                 MyTaskPut diePut = new MyTaskPut();
                 diePut.execute(getResources().getString(R.string.apiURL)+"/member/liveordie"
@@ -59,8 +61,15 @@ public class DieActivity extends AppCompatActivity {
 
                     //If die
                     if(parseJson(readDataFromHttp) == 0){
-                        //change liveordie to false
-                        storePrefs();
+                        new AlertDialog.Builder(v.getContext())
+                                .setCancelable(false)   //按到旁邊也不會消失
+                                .setMessage("You are dead.")
+                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+
+                                    }
+                                }).show();
                     }
 
                 } catch (Exception e) {
@@ -84,11 +93,6 @@ public class DieActivity extends AppCompatActivity {
         SharedPreferences settings = getSharedPreferences("data",MODE_PRIVATE);
         uid = settings.getInt("uid",0);
         token = settings.getString("token","");
-    }
-    private void storePrefs(){
-        SharedPreferences settings = getSharedPreferences("data",MODE_PRIVATE);
-        settings.edit().putBoolean("liveordie",false)
-                .apply();
     }
 
     //Parse json received from server
