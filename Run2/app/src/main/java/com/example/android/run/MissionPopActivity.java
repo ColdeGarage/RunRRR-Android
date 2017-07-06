@@ -20,34 +20,71 @@ public class MissionPopActivity extends AppCompatActivity {
     public static final String EXTRA_POSITION = "position";
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_missions_pop);
-        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        // Set Collapsing Toolbar layout to the screen
-        CollapsingToolbarLayout collapsingToolbar =
-                (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-        // Set title of Detail page
-        // collapsingToolbar.setTitle(getString(R.string.item_title));
 
-        int postion = getIntent().getIntExtra(EXTRA_POSITION, 0);
-        Resources resources = getResources();
-        String[] places = resources.getStringArray(R.array.more);
-        collapsingToolbar.setTitle(places[postion % places.length]);
+        Bundle bundleReciever = getIntent().getExtras();
+        String mName = bundleReciever.getString("name");
+        String mTime = bundleReciever.getString("time");
+        String mContent = bundleReciever.getString("content");
+        String mType = bundleReciever.getString("type");
+        String mState = bundleReciever.getString("state");
 
-        String[] placeDetails = resources.getStringArray(R.array.place_details);
-        TextView placeDetail = (TextView) findViewById(R.id.place_detail);
-        placeDetail.setText(placeDetails[postion % placeDetails.length]);
 
-        String[] placeLocations = resources.getStringArray(R.array.place_locations);
-        TextView placeLocation =  (TextView) findViewById(R.id.place_location);
-        placeLocation.setText(placeLocations[postion % placeLocations.length]);
+        //missions type : MAIN,SUB,URG, set different icon
+        ImageView Type = (ImageView) findViewById(R.id.list_type);
+        switch (mType){
+            case "0":
+                Type.setImageResource(R.drawable.missions_urg);
+                break;
+            case "1":
+                Type.setImageResource(R.drawable.missions_main_2);
+                break;
+            case "2":
+                Type.setImageResource(R.drawable.missions_sub);
+                break;
+            default:
+                break;
+        }
 
-        TypedArray placePictures = resources.obtainTypedArray(R.array.mission_type);
-        ImageView placePicutre = (ImageView) findViewById(R.id.image);
-        placePicutre.setImageDrawable(placePictures.getDrawable(postion % placePictures.length()));
+        //state type : -1:unsolved 0:being judged 1:success 2:fail
+        switch(mState){
+            case "-1":
+                break;
+            case "0": //waiting
+                break;
+            case "1": //passed
+                break;
+            case "2": //failed
+                break;
+            default:
+                break;
+        }
 
-        placePictures.recycle();
+        // Set title with mission name
+        TextView Name = (TextView) findViewById(R.id.list_name);
+        Name.setText(mName);
+
+        // Set content of mission details
+        TextView Content = (TextView) findViewById(R.id.mission_content);
+        Content.setText(mContent);
+
+        // Set picture of mission details
+        ImageView Picture = (ImageView) findViewById(R.id.mission_picture);
+        Picture.setImageResource(R.drawable.yichun8787);
+
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            super.onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

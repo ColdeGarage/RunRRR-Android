@@ -21,13 +21,15 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,28 +61,57 @@ import static com.google.android.gms.internal.zzid.runOnUiThread;
 //Tab分頁class繼承Fragment
 public class BagFragment extends Fragment
 {
-    private SwipeRefreshLayout mSwipeLayout;
     private static int uid;
     private static String token;
-
-    View forBlur;
+    View v;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
+//        readPrefs();
+//        RecyclerView recyclerView = (RecyclerView) inflater.inflate(
+//                R.layout.recycler_view, container, false);
+//
+//
+//        ContentAdapter adapter = null;
+//        v = inflater.inflate(R.layout.swipe_recycler_view, container, false);
+//        forBlur = inflater.inflate(R.layout.fragment, container, false);
+//        try {
+//            adapter = new ContentAdapter(recyclerView.getContext());
+//        } catch (MalformedURLException e) {
+//            e.printStackTrace();
+//        }
+//
+//
+//
+//        recyclerView.setAdapter(adapter);
+//        recyclerView.setHasFixedSize(true);
+//        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+//        return recyclerView;
+
+        v = inflater.inflate(R.layout.swipe_recycler_view, container, false);
+
+        //read uid and token
         readPrefs();
-        RecyclerView recyclerView = (RecyclerView) inflater.inflate(
-                R.layout.recycler_view, container, false);
-        ContentAdapter adapter = null;
-        forBlur = inflater.inflate(R.layout.fragment, container, false);
+
+        RecyclerView recyclerView = (RecyclerView) v.findViewById(R.id.my_recycler_view);
+
+        //Actually, I don't know why I have to add this line, but it solves the error.
+        if(recyclerView.getParent()!=null)
+            ((ViewGroup)recyclerView.getParent()).removeView(recyclerView);
+
+        BagFragment.ContentAdapter adapter = null;
         try {
-            adapter = new ContentAdapter(recyclerView.getContext());
+            adapter = new BagFragment.ContentAdapter(v.getContext());
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
         recyclerView.setAdapter(adapter);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        return recyclerView;
+
+        ((ViewGroup)v).addView(recyclerView);
+
+        return v;
     }
 
     @Override
@@ -105,6 +136,7 @@ public class BagFragment extends Fragment
         public ImageView tool3;
         public TextView name3;
         public TextView count3;
+
         public ViewHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.item_bag, parent, false));
             tool1 = (ImageView) itemView.findViewById(R.id.toolImage1);
@@ -116,27 +148,7 @@ public class BagFragment extends Fragment
             tool3 = (ImageView) itemView.findViewById(R.id.toolImage3);
             name3 = (TextView) itemView.findViewById(R.id.toolName3);
             count3 = (TextView) itemView.findViewById(R.id.toolNumber3);
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int id = v.getId();
-                    //TODO:Intent to other activity
-                    Context context = v.getContext();
 
-                    Intent intent = new Intent(context, BagPopActivity.class);
-//                    intent.putExtra(MissionPopActivity.EXTRA_POSITION, getAdapterPosition());
-                    startActivityForResult( intent, 2);
-                    long startMs = System.currentTimeMillis();
-                    Blurry.with(context)
-                            .radius(25)
-                            .sampling(2)
-                            .async()
-                            .animate(500)
-                            .onto((ViewGroup) forBlur.findViewById(R.id.fragmentTab));
-                    Log.d(getString(R.string.app_name),
-                            "TIME " + String.valueOf(System.currentTimeMillis() - startMs) + "ms");
-                }
-            });
         }
     }
     /*
@@ -144,19 +156,23 @@ public class BagFragment extends Fragment
         */
     public class ContentAdapter extends RecyclerView.Adapter<BagFragment.ViewHolder> {
         private ArrayList<ArrayList<HashMap<String, String>>> packList = new ArrayList<>();
-        private String[] toolIds = new String[30];
-        private String[] clueIds = new String[30];
+        private String[] toolIds = new String[50];
+        private String[] toolPIds = new String[50];
 
-        private String[] pName = new String[60];
-        private String[] pUrl = new String[60];
-        private String[] pCount = new String[60];
+        private String[] clueIds = new String[50];
 
+        private String[] pName = new String[100];
+        private String[] pUrl = new String[100];
+        private String[] pCount = new String[100];
+        private String[] pContent = new String[100];
+        private ArrayList<String[]> pID = new ArrayList<>();
+        int toolNum=0;
         // Set numbers of List in RecyclerView.
         private int LENGTH;
 
         public ContentAdapter(Context context) throws MalformedURLException {
 
-            myTaskGet httpGet = new myTaskGet("http://coldegarage.tech:8081/api/v1.1/pack/read?operator_uid="+String.valueOf(uid)+"&token="+token);
+            myTaskGet httpGet = new myTaskGet("http://coldegarage.tech:8081/api/v1.1/pack/read?operator_uid="+String.valueOf(uid)+"&uid="+String.valueOf(uid)+"&token="+token);
 
             httpGet.execute();
             //get tools[] and clues[]
@@ -165,23 +181,24 @@ public class BagFragment extends Fragment
             } catch (Exception e){
                 e.printStackTrace();
             }
+            System.out.println(packList);
             for(int i =0 ; toolIds[i]!=null ; i++) {
-                httpGet = new myTaskGet("http://coldegarage.tech:8081/api/v1.1/tool/read?operator_uid="+String.valueOf(uid)+"&token="+token +"&tid="+toolIds[i]);
+                httpGet = new myTaskGet("http://coldegarage.tech:8081/api/v1.1/tool/read?operator_uid="+String.valueOf(uid)+"&uid="+String.valueOf(uid)+"&token="+token +"&tid="+toolIds[i]);
                 httpGet.execute();
-                System.out.println("call tool, tid="+toolIds[i]);
-                System.out.println("packList:"+ packList);
+//                System.out.println("call tool, tid="+toolIds[i]);
+//                System.out.println("packList:"+ packList);
                 try {
                     System.out.println("call parseJsonfromTools");
-                    ParseJsonFromTools(httpGet.get());
+                    ParseJsonFromTools(httpGet.get(),toolPIds[i]);
                 } catch (Exception e){
                     e.printStackTrace();
                 }
             }
             for(int i =0 ;  clueIds[i] != null; i++) {
-                httpGet = new myTaskGet("http://coldegarage.tech:8081/api/v1.1/clue/read?operator_uid="+String.valueOf(uid)+"&token="+token +"&tid="+clueIds[i]);
+                httpGet = new myTaskGet("http://coldegarage.tech:8081/api/v1.1/clue/read?operator_uid="+String.valueOf(uid)+"&uid="+String.valueOf(uid)+"&token="+token +"&cid="+clueIds[i]);
                 httpGet.execute();
-                System.out.println("call clue, cid="+clueIds[i]);
-                System.out.println("packList:"+ packList);
+//                System.out.println("call clue, cid="+clueIds[i]);
+//                System.out.println("packList:"+ packList);
                 try {
                     ParseJsonFromClues(httpGet.get());
                 } catch (Exception e){
@@ -191,12 +208,23 @@ public class BagFragment extends Fragment
             System.out.println("packList=");
             System.out.println(packList);
 
+            System.out.println("toolNum = " + toolNum);
+
             //TODO Auto-generated method stub
             for(int i=0; i <packList.size(); i++){
                 pName[i] = packList.get(i).get(0).get("title");
-                System.out.println("in put name = " + pName[i]);
                 pUrl[i] = packList.get(i).get(0).get("url");
                 pCount[i] = packList.get(i).get(0).get("count");
+                pContent[i] = packList.get(i).get(0).get("content");
+
+                if(i<toolNum){
+                    String[] pid = new String[10];
+                    pid[0] = packList.get(i).get(0).get("pid");
+                    for(int j=1; j < packList.get(i).size(); j++){
+                        pid[j] = packList.get(i).get(j).get("pid");
+                    }
+                    pID.add(pid);
+                }
             }
         }
         @Override
@@ -215,48 +243,152 @@ public class BagFragment extends Fragment
             holder.name3.setText(pName[position*3+2]);
             holder.count3.setText(pCount[position*3+2]);
 
+
             new Thread(new Runnable() {
                 @Override
                 public void run() {
                     //TODO Auto-generated method stub
-                    final Bitmap mBitmap =
-                            getBitmapFromURL("http://coldegarage.tech:8081/api/v1.1/download/img/" + pUrl[position*3]);
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            holder.tool1.setImageBitmap(mBitmap);
-                        }
-                    });                    //TODO Auto-generated method stub
-                    final Bitmap mBitmap2 =
-                            getBitmapFromURL("http://coldegarage.tech:8081/api/v1.1/download/img/" + pUrl[position*3+1]);
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            holder.tool2.setImageBitmap(mBitmap2);
-                        }
-                    });                    //TODO Auto-generated method stub
-                    final Bitmap mBitmap3 =
-                            getBitmapFromURL("http://coldegarage.tech:8081/api/v1.1/download/img/" + pUrl[position*3+2]);
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            holder.tool3.setImageBitmap(mBitmap3);
-                        }
-                    });
+                    if( pUrl[position*3]!="") {
+                        final Bitmap mBitmap =
+                                getBitmapFromURL("http://coldegarage.tech:8081/api/v1.1/download/img/" + pUrl[position * 3]);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                holder.tool1.setImageBitmap(mBitmap);
+                            }
+                        });
+                    }
+                    //TODO Auto-generated method stub
+                    if( pUrl[position*3+1]!="" && pUrl[position*3+1]!=null) {
+                        final Bitmap mBitmap2 =
+                                getBitmapFromURL("http://coldegarage.tech:8081/api/v1.1/download/img/" + pUrl[position * 3 + 1]);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                holder.tool2.setImageBitmap(mBitmap2);
+                            }
+                        });
+                    }//TODO Auto-generated method stub
+                    if( pUrl[position*3+2]!="" && pUrl[position*3+2]!=null) {
+                        final Bitmap mBitmap3 =
+                                getBitmapFromURL("http://coldegarage.tech:8081/api/v1.1/download/img/" + pUrl[position * 3 + 2]);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                holder.tool3.setImageBitmap(mBitmap3);
+                            }
+                        });
+                    }
                 }
             }).start();
 
-//            //missions type : MAIN,SUB,URG, set different icon
-//            if(type.equals("MAIN")){
-//                holder.type.setImageResource(R.drawable.missions_main_2);
-//            }else if(type.equals("SUB")){
-//                holder.type.setImageResource(R.drawable.missions_sub);
-//            }else{
-//                holder.type.setImageResource(R.drawable.missions_urg);
-//            }
-//            //holder.state.setImageDrawable(mState[position % mState.length]);
-        }
+            holder.tool1.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View vv) {
+                    int id = vv.getId();
+                    //TODO:Intent to other activity
+                    Context context = vv.getContext();
 
+                    Intent intent = new Intent(context, BagPopActivity.class);
+
+                    Bundle bundle=new Bundle();
+
+                    bundle.putString("uid",String.valueOf(uid));
+                    bundle.putString("token",token);
+                    bundle.putString("NAME",pName[position*3]);
+                    bundle.putString("IMAGEURL",pUrl[position*3]);
+                    bundle.putString("CONTENT",pContent[position*3]);
+                    bundle.putString("COUNT",pCount[position*3]);
+                    if(position*3<toolNum){
+                        bundle.putStringArray("IDs",pID.get(position*3));
+                    }
+                    intent.putExtras(bundle);
+
+//                    long startMs = System.currentTimeMillis();
+//                    Blurry.with(context)
+//                            .radius(25)
+//                            .sampling(2)
+//                            .async()
+//                            .animate(500)
+//                            .onto((ViewGroup) forBlur.findViewById(R.id.fragmentTab));
+//                    Log.d(getString(R.string.app_name),"TIME " + String.valueOf(System.currentTimeMillis() - startMs) + "ms");
+//                    setActivityBackgroundColor(R.color.dark_grey);
+                    startActivityForResult( intent, 2);
+                }
+            });
+            if(LENGTH > position*3+1){
+                holder.tool2.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View vv) {
+                        int id = vv.getId();
+                        //TODO:Intent to other activity
+                        Context context = vv.getContext();
+
+                        Intent intent = new Intent(context, BagPopActivity.class);
+
+                        Bundle bundle=new Bundle();
+                        bundle.putString("uid",String.valueOf(uid));
+                        bundle.putString("token",token);
+                        bundle.putString("NAME",pName[position*3+1]);
+                        bundle.putString("IMAGEURL",pUrl[position*3+1]);
+                        bundle.putString("CONTENT",pContent[position*3+1]);
+                        bundle.putString("COUNT",pCount[position*3+1]);
+                        if(position*3+1<toolNum){
+                            bundle.putStringArray("IDs",pID.get(position*3+1));
+                        }
+                        intent.putExtras(bundle);
+
+//                        long startMs = System.currentTimeMillis();
+//                        Blurry.with(context)
+//                                .radius(25)
+//                                .sampling(2)
+//                                .async()
+//                                .animate(500)
+//                                .onto((ViewGroup) forBlur.findViewById(R.id.fragmentTab));
+//                        Log.d(getString(R.string.app_name),"TIME " + String.valueOf(System.currentTimeMillis() - startMs) + "ms");
+//                        setActivityBackgroundColor(R.color.dark_grey);
+                        startActivityForResult( intent, 2);
+                    }
+                });
+            }
+
+            if(LENGTH > position*3+2){
+                holder.tool3.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View vv) {
+                        int id = vv.getId();
+                        //TODO:Intent to other activity
+                        Context context = vv.getContext();
+
+                        Intent intent = new Intent(context, BagPopActivity.class);
+
+                        Bundle bundle=new Bundle();
+                        bundle.putString("uid",String.valueOf(uid));
+                        bundle.putString("token",token);
+                        bundle.putString("NAME",pName[position*3+2]);
+                        bundle.putString("IMAGEURL",pUrl[position*3+2]);
+                        bundle.putString("CONTENT",pContent[position*3+2]);
+                        bundle.putString("COUNT",pCount[position*3+2]);
+                        if(position*3+2<toolNum){
+                            bundle.putStringArray("IDs",pID.get(position*3+2));
+                        }
+                        intent.putExtras(bundle);
+
+//                        long startMs = System.currentTimeMillis();
+//                        Blurry.with(BagFragment.super.getContext())
+//                                .radius(25)
+//                                .sampling(2)
+//                                .async()
+//                                .animate(500)
+//                                .onto((ViewGroup) v);
+//                        Log.d(getString(R.string.app_name),"TIME " + String.valueOf(System.currentTimeMillis() - startMs) + "ms");
+//                        setActivityBackgroundColor(R.color.dark_grey);
+                        startActivityForResult( intent, 2);
+                    }
+                });
+            }
+
+        }
         @Override
         public int getItemCount() {
             LENGTH = packList.size();
@@ -265,7 +397,6 @@ public class BagFragment extends Fragment
             }
             else return (LENGTH/3);
         }
-
         void ParseJsonFromPack(String info){
             String jsonStr = info;
             int tool_index = 0;
@@ -283,24 +414,26 @@ public class BagFragment extends Fragment
                         JSONObject c = objects.getJSONObject(i);
 
                         String id = c.getString("id");
+                        String pid = c.getString("pid");
                         String  type = c.getString("class");
                         // tmp hash map for single contact
-                        System.out.println("type=" + type);
+//                        System.out.println("type=" + type);
                         if(type.equals("TOOL")){
                             toolIds[tool_index] = id;
+                            toolPIds[tool_index] = pid;
                             tool_index++;
-                            System.out.println("tool index++, index=" + tool_index);
+//                            System.out.println("tool index++, index=" + tool_index);
                         }
                         else{
                             clueIds[clue_index] = id;
                             clue_index++;
-                            System.out.println("clue index++, index=" + clue_index);
+//                            System.out.println("clue index++, index=" + clue_index);
                         }
                     }
-                    System.out.println("toolIds=");
-                    System.out.println(toolIds);
-                    System.out.println("clueIds=");
-                    System.out.println(clueIds);
+//                    System.out.println("toolIds=");
+//                    System.out.println(toolIds);
+//                    System.out.println("clueIds=");
+//                    System.out.println(clueIds);
                 } catch (final JSONException e) {
                     System.out.print("Json parsing error: " + e.getMessage());
                 }
@@ -314,8 +447,7 @@ public class BagFragment extends Fragment
                 e.printStackTrace();
             }
         }
-
-        void ParseJsonFromTools(String info){
+        void ParseJsonFromTools(String info, String pid){
             String jsonStr = info;
             System.out.println("parse from tool"+jsonStr);
             if (jsonStr != null) {
@@ -325,11 +457,11 @@ public class BagFragment extends Fragment
                     // Getting JSON Array node
                     JSONArray objects = payload.getJSONArray("objects");
                     // looping through All Contacts
-                    System.out.println("tool");
-                    System.out.println(objects);
+//                    System.out.println("tool");
+//                    System.out.println(objects);
                     for (int i = 0; i < objects.length(); i++) {
                         JSONObject c = objects.getJSONObject(i);
-
+//                        String pid = c.getString("pid");
                         String tid = c.getString("tid");
                         String title = c.getString("title");
                         String content = c.getString("content");
@@ -342,6 +474,7 @@ public class BagFragment extends Fragment
                         HashMap<String, String> tool = new HashMap<>();
 
                         // adding each child node to HashMap key => value
+                        tool.put("pid",pid);
                         tool.put("id", tid);
                         tool.put("title", title);
                         tool.put("content", content);
@@ -350,9 +483,9 @@ public class BagFragment extends Fragment
                         tool.put("price", price);
 
                         // adding contact to contact list
-                        System.out.println("in parse tool");
-                        System.out.println(tool);
-                        System.out.println(findIndex(tool.get("title")));
+//                        System.out.println("in parse tool");
+//                        System.out.println(tool);
+//                        System.out.println(findIndex(tool.get("title")));
 
                         if(findIndex(tool.get("title"))>=0){
                             packList.get(findIndex(tool.get("title"))).add(tool);
@@ -366,6 +499,7 @@ public class BagFragment extends Fragment
                             toolKind.add(tool);
                             packList.add(toolKind);
                         }
+                        toolNum = packList.size();
                     }
                 } catch (final JSONException e) {
                     System.out.print("Json parsing error: " + e.getMessage());
@@ -382,11 +516,11 @@ public class BagFragment extends Fragment
         }
         int findIndex(String target){
             int i;
-            System.out.println("finding index");
-            System.out.println("target = " + target);
+//            System.out.println("finding index");
+//            System.out.println("target = " + target);
 
             for (i=0; i<packList.size(); i++){
-                System.out.println("checking at title = " + packList.get(i).get(0).get("title"));
+//                System.out.println("checking at title = " + packList.get(i).get(0).get("title"));
                 if(target.equals(packList.get(i).get(0).get("title"))){
                     return i;
                 }
@@ -401,8 +535,8 @@ public class BagFragment extends Fragment
                     JSONObject payload = jsonObj.getJSONObject("payload");
                     // Getting JSON Array node
                     JSONArray objects = payload.getJSONArray("objects");
-                    System.out.println("clue");
-                    System.out.println(objects);
+//                    System.out.println("clue");
+//                    System.out.println(objects);
                     // looping through All Contacts
                     for (int i = 0; i < objects.length(); i++) {
                         JSONObject c = objects.getJSONObject(i);
@@ -420,7 +554,7 @@ public class BagFragment extends Fragment
                         clue.put("url", "");
                         clue.put("count","1");
                         // adding contact to contact list
-                        System.out.println(clue);
+//                        System.out.println(clue);
                         clueS.add(clue);
                         packList.add(clueS);
                     }
@@ -437,7 +571,6 @@ public class BagFragment extends Fragment
                 e.printStackTrace();
             }
         }
-
         class myTaskGet extends AsyncTask<Void,Void,String> {
             myTaskGet(String toGet) throws MalformedURLException {
                 url = new URL(toGet);
@@ -479,8 +612,8 @@ public class BagFragment extends Fragment
                     while ((line = reader.readLine()) != null) {
                         stringBuilder.append(line + "\n");
                     }
-                    System.out.println("happy~");
-                    System.out.print(stringBuilder.toString());
+//                    System.out.println("happy~");
+//                    System.out.print(stringBuilder.toString());
                     return stringBuilder.toString();
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -503,6 +636,48 @@ public class BagFragment extends Fragment
             }
         }
     }
+    // Call Back method  to get the Message form other Activity
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+        // check if the request code is same as what is passed  here it is 2
+        if(resultCode==2)
+        {
+            System.out.println("back with code 2");
+//            final SwipeRefreshLayout mSwipeLayout;
+//
+//            mSwipeLayout = (SwipeRefreshLayout) v.findViewById(R.id.swiperefresh);
+//            mSwipeLayout.setColorSchemeColors(Color.RED);
+//            mSwipeLayout.setRefreshing(true);
+//
+//            Fragment newFragment = new BagFragment();
+//            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+//
+//            // Replace whatever is in the fragment_container view with this fragment,
+//            // and add the transaction to the back stack
+//            transaction.replace(R.id.swiperefresh, newFragment)
+//                    .addToBackStack(null)
+//                    .commit();
+//
+//            new Handler().postDelayed(new Runnable() {
+//                @Override
+//                public void run() {
+//                    mSwipeLayout.setRefreshing(false);
+//                }
+//            }, 2000);
+        }
+        else if(resultCode==3){
+            System.out.println("back with code 3");
+
+        }
+//        setActivityBackgroundColor(R.color.white);
+//        Blurry.delete((ViewGroup) v);
+
+    }
+    //    public void setActivityBackgroundColor(int color) {
+//        forBlur.setBackgroundColor(color);
+//    }
     private static Bitmap getBitmapFromURL(String imageUrl) {
         try {
             URL url = new URL(imageUrl);

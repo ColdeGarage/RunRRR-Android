@@ -52,23 +52,29 @@
         <!-- 宣告其他Activity -->
         <activity
             android:name=".TabActivity"
-            android:label="MissionActivity" />
+            android:label="MissionActivity"
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".AboutUsActivity"
             android:label="@string/title_activity_about_us"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".MissionPopActivity"
-            android:label="@string/title_activity_about_us"
+            android:label="@string/title_activity_missions"
             android:theme="@style/AppTheme" />
         <activity android:name=".BagPopActivity"
-            android:theme="@style/AppTheme.ShowAbove"/>
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity
             android:name=".LogoutActivity"
-            android:label="@string/title_activity_about_us"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".DieActivity"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".BarcodeActivity"
             android:theme="@style/AppTheme" />
         <service
-            android:name=".MyService"
+            android:name=".UpdateService"
             android:enabled="true"
             android:exported="true"></service>
     </application>

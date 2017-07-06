@@ -11,12 +11,17 @@ import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+
+import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -39,7 +44,11 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.DataOutputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+
 import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -67,6 +76,13 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     private String text = "";
     private static int uid;
     private static String token;
+    private static boolean valid;
+
+    Handler updateHandler ;
+    Runnable updateRunnable ;
+    static int flag = 0;
+    static int num = 0;
+    static boolean show = false;
 
     @Override
     public void onAttach(Activity activity)
@@ -108,10 +124,65 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         //read uid and token
         readPrefs();
 
+        //update location
+        if(flag == 0){
+            updateHandler = new Handler();
+            updateRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    if(lastLocation!=null){
+                        MyTaskPut updatePut = new MyTaskPut();
+                        updatePut.execute(getResources().getString(R.string.apiURL)+"/member/update"
+                                ,"uid=" + String.valueOf(uid) + "&operator_uid=" + String.valueOf(uid) + "&token=" + token + "&position_n=" + String.valueOf(lastLocation.getLatitude())
+                                        + "&position_e=" + String.valueOf(lastLocation.getLongitude()));
+
+                        //get result from function "onPostExecute" in class "myTaskPut"
+                        try {
+                            String readDataFromHttp = updatePut.get();
+                            //Parse JSON info
+                            parseJson(readDataFromHttp,"location");
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                        Log.i("update",valid + String.valueOf(lastLocation.getLatitude())+"  "+lastLocation.getLongitude());
+
+                        //if invalid, show alert
+                        if(!valid && !show){
+                            num ++;
+                            if(num >= 6){
+                                show = true;
+                                new AlertDialog.Builder(getContext())
+                                        .setCancelable(false)   //按到旁邊也不會消失
+                                        .setMessage("你超過邊界囉")
+                                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                show = false;
+                                            }
+                                        }).show();
+                                num = 0;
+                            }
+                        }
+                    }
+                    updateHandler.postDelayed(this, 5000);
+                }
+            };
+            updateHandler.postDelayed(updateRunnable, 0);
+            flag++;
+        }
+
         return rootView;
     }
 
-    //=====================內存=====================
+//    @Override
+//    public void onPause() {
+//        super.onPause();
+//        updateHandler.removeCallbacks(updateRunnable);
+//    }
+
+
+    //========================內存=========================
     private void readPrefs(){
         SharedPreferences settings = getContext().getSharedPreferences("data",MODE_PRIVATE);
         uid = settings.getInt("uid",0);
@@ -173,6 +244,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     private void initial(GoogleMap mMap){
         setBoundary(mMap);
         addMissionMarker(mMap);
+
+        setScore();
 
         if(lastLocation!=null){
             LatLng latLng = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
@@ -270,9 +343,23 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         }
     }
 
+    private int score;
+    void setScore (){
+        TextView scoreView = (TextView)getActivity().findViewById(R.id.score);
+        //get score
+        MyTaskGet httpGetScore = new MyTaskGet();
+        httpGetScore.execute(getResources().getString(R.string.apiURL)+"/member/read?operator_uid="+String.valueOf(uid)+"&token="+token+"&uid="+String.valueOf(uid));
+        try {
+            String readDataFromHttp = httpGetScore.get();
+            parseJson(readDataFromHttp,"score");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        scoreView.setText(String.valueOf(score));
+    }
     //Parse json received from server
-    void parseJson (String info, String missionOrReport){
-        if(missionOrReport.equals("mission")){
+    void parseJson (String info, String instru){
+        if(instru.equals("mission")){
             missionList = new ArrayList<>();
             try {
                 JSONObject payload = new JSONObject(new JSONObject(info).getString("payload"));
@@ -308,7 +395,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        }else{
+
+        }else if(instru.equals("report")){
             reportList = new ArrayList<>();
             try {
                 JSONObject jObject = new JSONObject(info);
@@ -337,6 +425,22 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                     report.put("status",subObject.getString("status"));
                     reportList.add(report);
                 }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        }else if(instru.equals("score")){
+            try {
+                JSONObject payload = new JSONObject(new JSONObject(info).getString("payload"));
+                JSONArray objects = payload.getJSONArray("objects");
+                score = objects.getJSONObject(0).getInt("score");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }else{
+            try {
+                JSONObject payload = new JSONObject(new JSONObject(info).getString("payload"));
+                valid = payload.getBoolean("valid_area");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -434,13 +538,14 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
                 .build();
-        googleApiClient.connect();
+
+            googleApiClient.connect();
     }
 
     @Override
     public void onConnected(Bundle bundle) {
         LocationRequest locationRequest = new LocationRequest();
-        locationRequest.setInterval(2000);
+        locationRequest.setInterval(3000);
         locationRequest.setFastestInterval(2000);
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         if (ContextCompat.checkSelfPermission(getActivity().getApplicationContext(),
@@ -540,4 +645,91 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         }
 
     }
+
+    //HTTPPUT
+    //Parameter in string array : [0] : api, [1] : parameter sended to db
+    class MyTaskPut extends AsyncTask<String,Void,String>{
+
+        @Override
+        public void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(String... arg0) {
+            URL url;
+            HttpURLConnection urlConnection = null;
+            BufferedReader reader = null;
+            StringBuilder stringBuilder;
+            String urlStr = arg0[0];
+            String para = arg0[1];
+
+            try {
+                url = new URL(urlStr);
+                urlConnection = (HttpURLConnection) url.openConnection();
+
+                //連線方式
+                urlConnection.setRequestMethod("PUT");
+
+                //設置輸出入流串
+                urlConnection.setDoInput(true);
+                urlConnection.setDoOutput(true);
+
+                //POST方法不能緩存數據,需手動設置使用緩存的值為false
+                urlConnection.setUseCaches(false);
+
+                //Send request
+                DataOutputStream wr = new DataOutputStream(
+                        urlConnection.getOutputStream());
+
+                //encode data in UTF-8
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(wr, "UTF-8"));
+
+                writer.write(para);
+
+                //flush the data in buffer to server and close the writer
+                writer.flush();
+                writer.close();
+
+                //read response
+                reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+                stringBuilder = new StringBuilder();
+                String line ;
+
+                while ((line = reader.readLine()) != null)
+                {
+                    stringBuilder.append(line + "\n");
+                }
+                return stringBuilder.toString();
+
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+            finally {
+                urlConnection.disconnect();
+                // close the reader; this can throw an exception too, so
+                // wrap it in another try/catch block.
+                if (reader != null)
+                {
+                    try
+                    {
+                        reader.close();
+                    }
+                    catch (Exception e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        @Override
+        public void onPostExecute(String result) {
+            super.onPostExecute(result);
+        }
+
+    }
 }
+

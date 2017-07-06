@@ -63,6 +63,7 @@ public class MissionsFragment extends Fragment
     private SwipeRefreshLayout mSwipeLayout;
     private static int uid;
     private static String token;
+    private static int liveOrDie;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -141,16 +142,7 @@ public class MissionsFragment extends Fragment
             name = (TextView) itemView.findViewById(R.id.list_name);
             time = (TextView) itemView.findViewById(R.id.list_time);
             state = (ImageView) itemView.findViewById(R.id.list_state);
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //TODO:Intent to other activity
-                    Context context = v.getContext();
-                    Intent intent = new Intent(context, MissionPopActivity.class);
-                    intent.putExtra(MissionPopActivity.EXTRA_POSITION, getAdapterPosition());
-                    context.startActivity(intent);
-                }
-            });
+
         }
     }
 
@@ -162,7 +154,7 @@ public class MissionsFragment extends Fragment
     }
 
     //======================建立RecyclerView===========================
-    public static class ContentAdapter extends RecyclerView.Adapter<ViewHolder> {
+    public class ContentAdapter extends RecyclerView.Adapter<ViewHolder> {
         ArrayList<HashMap<String,String>> missionList;
         ArrayList<HashMap<String,String>> reportList;
         ArrayList<HashMap<String,String>> solvingMissionList;
@@ -177,11 +169,26 @@ public class MissionsFragment extends Fragment
         private String[] mTime = new String[20];
         private String[] mType = new String[20];
         private String[] mState = new String[20];
+        private String[] mContent = new String[20];
 
         public ContentAdapter(Context context) {
             Resources resources = context.getResources();
 
             String readDataFromHttp;
+
+            //get liveOrdie
+            MyTaskGet httpGetMember = new MyTaskGet();
+            httpGetMember.execute(resources.getString(R.string.apiURL)+"/member/read?operator_uid="+String.valueOf(uid)+"&token="+token);
+
+            //get result from function "onPostExecute" in class "myTaskGet"
+            try {
+                readDataFromHttp = httpGetMember.get();
+                //Parse JSON info
+                parseJson(readDataFromHttp,"member");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            System.out.println("liveOrDie"+liveOrDie);
 
             //get mission list from server
             MyTaskGet httpGetMission = new MyTaskGet();
@@ -221,6 +228,7 @@ public class MissionsFragment extends Fragment
                 mTime[i] = solvingMissionList.get(i).get("time_end");
                 mType[i] = solvingMissionList.get(i).get("class");
                 mState[i] = solvingMissionList.get(i).get("status");
+                mContent[i] = solvingMissionList.get(i).get("content");
             }
         }
 
@@ -230,11 +238,12 @@ public class MissionsFragment extends Fragment
         }
 
         @Override
-        public void onBindViewHolder(ViewHolder holder, int position) {
-
+        public void onBindViewHolder(ViewHolder holder, final int position) {
             // Use holder to get data from arrays in ContentAdapter
             holder.name.setText(mName[position % mName.length]);
             holder.time.setText(mTime[position % mTime.length]);
+
+            String content = mContent[position % mContent.length];
             String type = mType[position % mType.length];
             String state = mState[position % mState.length];
 
@@ -269,6 +278,29 @@ public class MissionsFragment extends Fragment
                 default:
                     break;
             }
+
+            //holder ItemView
+            holder.name.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(liveOrDie != 0) {
+                        //TODO:Intent to other activity
+                        Context context = v.getContext();
+                        Intent intent = new Intent(context, MissionPopActivity.class);
+
+                        //New Bundle object fot passing data
+                        Bundle bundle = new Bundle();
+                        bundle.putString("name", mName[position % mName.length]);
+                        bundle.putString("time", mTime[position % mTime.length]);
+                        bundle.putString("content", mContent[position % mContent.length]);
+                        bundle.putString("type", mType[position % mType.length]);
+                        bundle.putString("state", mState[position % mState.length]);
+
+                        intent.putExtras(bundle);
+                        context.startActivity(intent);
+                    }
+                }
+            });
         }
 
         @Override
@@ -295,6 +327,9 @@ public class MissionsFragment extends Fragment
                         //put title into hashmap
                         mission.put("title",subObject.getString("title"));
 
+                        //put content into hashmap
+                        mission.put("content",subObject.getString("content"));
+
                         //parse time, take hour&min only
                         //and put time_end into hashmap
                         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.s'Z'");
@@ -320,7 +355,7 @@ public class MissionsFragment extends Fragment
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-            }else{
+            }else if(missionOrReport.equals("report")){
                 reportList = new ArrayList<>();
                 try {
                     JSONObject jObject = new JSONObject(info);
@@ -349,6 +384,16 @@ public class MissionsFragment extends Fragment
                         report.put("status",subObject.getString("status"));
                         reportList.add(report);
                     }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }else{
+                try {
+                    JSONObject payload = new JSONObject(new JSONObject(info).getString("payload"));
+                    JSONArray objects = payload.getJSONArray("objects");
+                    JSONObject subObject = objects.getJSONObject(0);
+                    liveOrDie = subObject.getInt("status");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
