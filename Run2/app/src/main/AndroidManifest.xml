@@ -62,7 +62,8 @@
             android:name=".MissionPopActivity"
             android:label="@string/title_activity_missions"
             android:theme="@style/AppTheme" />
-        <activity android:name=".BagPopActivity"
+        <activity
+            android:name=".BagPopActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity
             android:name=".LogoutActivity"
@@ -73,10 +74,14 @@
         <activity
             android:name=".BarcodeActivity"
             android:theme="@style/AppTheme" />
+        <activity android:name=".ToolUsedActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <service
             android:name=".UpdateService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
+
+
     </application>
 
 </manifest>
