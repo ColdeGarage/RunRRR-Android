@@ -54,8 +54,8 @@ public class BagPopActivity extends Activity {
         Button backButton = (Button) findViewById(R.id.popCancelButton) ;
         Button useButton = (Button) findViewById(R.id.useButton);
 
-        int width;
-        int height;
+//        int width;
+//        int height;
 
 //        DisplayMetrics dm = new DisplayMetrics();
 //        getWindowManager().getDefaultDisplay().getMetrics(dm);

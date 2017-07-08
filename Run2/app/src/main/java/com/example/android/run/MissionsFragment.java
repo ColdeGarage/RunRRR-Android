@@ -63,7 +63,6 @@ public class MissionsFragment extends Fragment
     private SwipeRefreshLayout mSwipeLayout;
     private static int uid;
     private static String token;
-    private static int liveOrDie;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -176,19 +175,18 @@ public class MissionsFragment extends Fragment
 
             String readDataFromHttp;
 
-            //get liveOrdie
-            MyTaskGet httpGetMember = new MyTaskGet();
-            httpGetMember.execute(resources.getString(R.string.apiURL)+"/member/read?operator_uid="+String.valueOf(uid)+"&token="+token);
-
-            //get result from function "onPostExecute" in class "myTaskGet"
-            try {
-                readDataFromHttp = httpGetMember.get();
-                //Parse JSON info
-                parseJson(readDataFromHttp,"member");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            System.out.println("liveOrDie"+liveOrDie);
+//            //get liveOrdie
+//            MyTaskGet httpGetMember = new MyTaskGet();
+//            httpGetMember.execute(resources.getString(R.string.apiURL)+"/member/read?operator_uid="+String.valueOf(uid)+"&token="+token+"&uid="+String.valueOf(uid));
+//
+//            //get result from function "onPostExecute" in class "myTaskGet"
+//            try {
+//                readDataFromHttp = httpGetMember.get();
+//                //Parse JSON info
+//                parseJson(readDataFromHttp,"member");
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
 
             //get mission list from server
             MyTaskGet httpGetMission = new MyTaskGet();
@@ -283,22 +281,22 @@ public class MissionsFragment extends Fragment
             holder.name.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(liveOrDie != 0) {
-                        //TODO:Intent to other activity
-                        Context context = v.getContext();
-                        Intent intent = new Intent(context, MissionPopActivity.class);
+                //TODO:Intent to other activity
+                Context context = v.getContext();
+                Intent intent = new Intent(context, MissionPopActivity.class);
 
-                        //New Bundle object fot passing data
-                        Bundle bundle = new Bundle();
-                        bundle.putString("name", mName[position % mName.length]);
-                        bundle.putString("time", mTime[position % mTime.length]);
-                        bundle.putString("content", mContent[position % mContent.length]);
-                        bundle.putString("type", mType[position % mType.length]);
-                        bundle.putString("state", mState[position % mState.length]);
+                //New Bundle object fot passing data
+                Bundle bundle = new Bundle();
+                bundle.putString("name", mName[position % mName.length]);
+                bundle.putString("time", mTime[position % mTime.length]);
+                bundle.putString("content", mContent[position % mContent.length]);
+                bundle.putString("type", mType[position % mType.length]);
+                bundle.putString("state", mState[position % mState.length]);
+                bundle.putString("uid",String.valueOf(uid));
+                bundle.putString("token",token);
 
-                        intent.putExtras(bundle);
-                        context.startActivity(intent);
-                    }
+                intent.putExtras(bundle);
+                context.startActivity(intent);
                 }
             });
         }
@@ -388,16 +386,18 @@ public class MissionsFragment extends Fragment
                     e.printStackTrace();
                 }
 
-            }else{
-                try {
-                    JSONObject payload = new JSONObject(new JSONObject(info).getString("payload"));
-                    JSONArray objects = payload.getJSONArray("objects");
-                    JSONObject subObject = objects.getJSONObject(0);
-                    liveOrDie = subObject.getInt("status");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
             }
+//            else{
+//                try {
+////                    System.out.println(info);
+//                    JSONObject payload = new JSONObject(new JSONObject(info).getString("payload"));
+//                    JSONArray objects = payload.getJSONArray("objects");
+//                    JSONObject subObject = objects.getJSONObject(0);
+//                    liveOrDie = subObject.getInt("status");
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//            }
         }
         //Add mission state
         void missionState(){
