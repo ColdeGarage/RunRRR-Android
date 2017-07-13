@@ -8,8 +8,9 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -41,15 +42,24 @@ public class MainActivity extends AppCompatActivity {
             //Alert("Skip Login");
         }
 
-        Button bt = (Button) findViewById(R.id.button);
+        ImageView icon = (ImageView) findViewById(R.id.ic_login);
+        TextView login = (TextView) findViewById(R.id.login);
+        TextView about = (TextView) findViewById(R.id.about_us);
         final EditText acc = (EditText) findViewById(R.id.account);
         final EditText pass = (EditText) findViewById(R.id.password);
 
-        bt.setOnClickListener(new Button.OnClickListener() {
+        icon.setImageResource(R.drawable.ic_login);
+
+        //add space at the beginning
+        acc.setPadding(10, 0, 0, 0);
+        pass.setPadding(10, 0, 0, 0);
+
+        login.setOnClickListener(new TextView.OnClickListener() {
             @Override
             public void onClick(View v) {
                 account_in = acc.getText().toString();
                 pass_in = pass.getText().toString();
+
                 if(account_in.isEmpty()){
                     Alert("Account can't be empty.");
                 }else if(pass_in.isEmpty()) {
@@ -58,6 +68,13 @@ public class MainActivity extends AppCompatActivity {
                     //if account&password aren't empty, check whether it's valid
                     checkAccount();
                 }
+            }
+        });
+
+        about.setOnClickListener(new TextView.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            goAboutUs();
             }
         });
     }
@@ -103,6 +120,8 @@ public class MainActivity extends AppCompatActivity {
     private String token;
     //Parse json received from server
     int Parsejson (String info){
+        System.out.println("info is");
+        System.out.println(info);
         int correct=0;
         try {
             JSONObject jObject = new JSONObject(info);
@@ -120,6 +139,13 @@ public class MainActivity extends AppCompatActivity {
     void goMap(){
         Intent intent = new Intent();
         intent.setClass(MainActivity.this,TabActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    void goAboutUs(){
+        Intent intent = new Intent();
+        intent.setClass(MainActivity.this,AboutUsActivity.class);
         startActivity(intent);
         finish();
     }

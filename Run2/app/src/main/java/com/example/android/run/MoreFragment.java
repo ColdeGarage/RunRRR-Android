@@ -124,7 +124,7 @@ public class MoreFragment extends Fragment {
                     Context context = v.getContext();
                     switch(position){
                         case 0: //Die
-                            Intent intent = new Intent(context, AboutUsActivity.class);
+                            Intent intent = new Intent(context, DieActivity.class);
                             context.startActivity(intent);
                             break;
                         case 1: //About us
