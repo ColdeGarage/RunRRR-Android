@@ -85,9 +85,7 @@ public class BagFragment extends Fragment
         RecyclerView recyclerView = (RecyclerView) inflater.inflate(
                 R.layout.recycler_view, container, false);
 
-
         v = inflater.inflate(R.layout.swipe_recycler_view, container, false);
-//        forBlur = inflater.inflate(R.layout.fragment, container, false);
         try {
             adapter = new ContentAdapter(recyclerView.getContext());
         } catch (MalformedURLException e) {
@@ -98,38 +96,12 @@ public class BagFragment extends Fragment
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         return recyclerView;
-//
-//        v = inflater.inflate(R.layout.swipe_recycler_view, container, false);
-//
-//        //read uid and token
-//        readPrefs();
-//
-//        RecyclerView recyclerView = (RecyclerView) v.findViewById(R.id.my_recycler_view);
-//
-//        //Actually, I don't know why I have to add this line, but it solves the error.
-//        if(recyclerView.getParent()!=null)
-//            ((ViewGroup)recyclerView.getParent()).removeView(recyclerView);
-//
-//
-//        try {
-//            adapter = new BagFragment.ContentAdapter(v.getContext());
-//        } catch (MalformedURLException e) {
-//            e.printStackTrace();
-//        }
-//        recyclerView.setAdapter(adapter);
-//        recyclerView.setHasFixedSize(true);
-//        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-//
-//        ((ViewGroup)v).addView(recyclerView);
-//
-//        return v;
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
-
     }
     //=====================內存=====================
     private void readPrefs(){
@@ -182,9 +154,16 @@ public class BagFragment extends Fragment
             pContent = new String[100];
             pID.clear();
             toolNum=0;
+            int money=0;
+            myTaskGet httpGet= new myTaskGet("http://coldegarage.tech:8081/api/v1.1/member/read?operator_uid="+String.valueOf(uid)+"&uid="+String.valueOf(uid)+"&token="+token);
+            httpGet.execute();
+            try {
+                money = ParseJsonFromMemberForMoney(httpGet.get());
+            } catch (Exception e){
+                e.printStackTrace();
+            }
 
-            myTaskGet httpGet = new myTaskGet("http://coldegarage.tech:8081/api/v1.1/pack/read?operator_uid="+String.valueOf(uid)+"&uid="+String.valueOf(uid)+"&token="+token);
-
+            httpGet = new myTaskGet("http://coldegarage.tech:8081/api/v1.1/pack/read?operator_uid="+String.valueOf(uid)+"&uid="+String.valueOf(uid)+"&token="+token);
             httpGet.execute();
             //get tools[] and clues[]
             try {
@@ -192,14 +171,13 @@ public class BagFragment extends Fragment
             } catch (Exception e){
                 e.printStackTrace();
             }
-            System.out.println(packList);
+
             for(int i =0 ; toolIds[i]!=null ; i++) {
                 httpGet = new myTaskGet("http://coldegarage.tech:8081/api/v1.1/tool/read?operator_uid="+String.valueOf(uid)+"&uid="+String.valueOf(uid)+"&token="+token +"&tid="+toolIds[i]);
                 httpGet.execute();
 //                System.out.println("call tool, tid="+toolIds[i]);
 //                System.out.println("packList:"+ packList);
                 try {
-                    System.out.println("call parseJsonfromTools");
                     ParseJsonFromTools(httpGet.get(),toolPIds[i]);
                 } catch (Exception e){
                     e.printStackTrace();
@@ -218,11 +196,14 @@ public class BagFragment extends Fragment
             }
             System.out.println("packList=");
             System.out.println(packList);
-
             System.out.println("toolNum = " + toolNum);
 
             //TODO Auto-generated method stub
-            for(int i=0; i <packList.size(); i++){
+            pName[0] = "金錢";
+            pUrl[0] = "";
+            pCount[0] = String.valueOf(money);
+            pContent[0] = "刀，Dollar";
+            for(int i=1; i <packList.size(); i++){
                 pName[i] = packList.get(i).get(0).get("title");
                 pUrl[i] = packList.get(i).get(0).get("url");
                 pCount[i] = packList.get(i).get(0).get("count");
@@ -253,7 +234,6 @@ public class BagFragment extends Fragment
             holder.count2.setText(pCount[position*3+1]);
             holder.name3.setText(pName[position*3+2]);
             holder.count3.setText(pCount[position*3+2]);
-
 
             new Thread(new Runnable() {
                 @Override
@@ -310,20 +290,10 @@ public class BagFragment extends Fragment
                     bundle.putString("IMAGEURL",pUrl[position*3]);
                     bundle.putString("CONTENT",pContent[position*3]);
                     bundle.putString("COUNT",pCount[position*3]);
-                    if(position*3<toolNum){
-                        bundle.putStringArray("IDs",pID.get(position*3));
+                    if(position*3<toolNum && position!=0){
+                        bundle.putStringArray("IDs",pID.get(position*3-1));
                     }
                     intent.putExtras(bundle);
-
-//                    long startMs = System.currentTimeMillis();
-//                    Blurry.with(context)
-//                            .radius(25)
-//                            .sampling(2)
-//                            .async()
-//                            .animate(500)
-//                            .onto((ViewGroup) forBlur.findViewById(R.id.fragmentTab));
-//                    Log.d(getString(R.string.app_name),"TIME " + String.valueOf(System.currentTimeMillis() - startMs) + "ms");
-//                    setActivityBackgroundColor(R.color.dark_grey);
                     startActivityForResult( intent, 2);
                 }
             });
@@ -345,24 +315,13 @@ public class BagFragment extends Fragment
                         bundle.putString("CONTENT",pContent[position*3+1]);
                         bundle.putString("COUNT",pCount[position*3+1]);
                         if(position*3+1<toolNum){
-                            bundle.putStringArray("IDs",pID.get(position*3+1));
+                            bundle.putStringArray("IDs",pID.get(position*3));
                         }
                         intent.putExtras(bundle);
-
-//                        long startMs = System.currentTimeMillis();
-//                        Blurry.with(context)
-//                                .radius(25)
-//                                .sampling(2)
-//                                .async()
-//                                .animate(500)
-//                                .onto((ViewGroup) forBlur.findViewById(R.id.fragmentTab));
-//                        Log.d(getString(R.string.app_name),"TIME " + String.valueOf(System.currentTimeMillis() - startMs) + "ms");
-//                        setActivityBackgroundColor(R.color.dark_grey);
                         startActivityForResult( intent, 2);
                     }
                 });
             }
-
             if(LENGTH > position*3+2){
                 holder.tool3.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -381,19 +340,9 @@ public class BagFragment extends Fragment
                         bundle.putString("CONTENT",pContent[position*3+2]);
                         bundle.putString("COUNT",pCount[position*3+2]);
                         if(position*3+2<toolNum){
-                            bundle.putStringArray("IDs",pID.get(position*3+2));
+                            bundle.putStringArray("IDs",pID.get(position*3+1));
                         }
                         intent.putExtras(bundle);
-
-//                        long startMs = System.currentTimeMillis();
-//                        Blurry.with(BagFragment.super.getContext())
-//                                .radius(25)
-//                                .sampling(2)
-//                                .async()
-//                                .animate(500)
-//                                .onto((ViewGroup) v);
-//                        Log.d(getString(R.string.app_name),"TIME " + String.valueOf(System.currentTimeMillis() - startMs) + "ms");
-//                        setActivityBackgroundColor(R.color.dark_grey);
                         startActivityForResult( intent, 2);
                     }
                 });
@@ -530,9 +479,7 @@ public class BagFragment extends Fragment
 //        Blurry.delete((ViewGroup) v);
 
     }
-    //    public void setActivityBackgroundColor(int color) {
-//        forBlur.setBackgroundColor(color);
-//    }
+
     private static Bitmap getBitmapFromURL(String imageUrl) {
         try {
             URL url = new URL(imageUrl);
@@ -664,6 +611,34 @@ public class BagFragment extends Fragment
             e.printStackTrace();
         }
     }
+    int ParseJsonFromMemberForMoney(String info){
+        String jsonStr = info;
+        int money=0;
+        if (jsonStr != null) {
+            try {
+                System.out.println("member info = "+info);
+                JSONObject jsonObj = new JSONObject(jsonStr);
+                JSONObject payload = jsonObj.getJSONObject("payload");
+                // Getting JSON Array node
+                JSONArray objects = payload.getJSONArray("objects");
+                // looping through All Contacts
+                JSONObject c = objects.getJSONObject(0);
+                money = c.getInt("money");
+
+            } catch (final JSONException e) {
+                System.out.print("Json parsing error: " + e.getMessage());
+            }
+        } else {
+            System.out.print("Couldn't get json from server.");
+        }
+        try {
+            JSONObject jObject = new JSONObject(info);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return  money;
+    }
     int findIndex(String target){
         int i;
 //            System.out.println("finding index");
@@ -694,7 +669,7 @@ public class BagFragment extends Fragment
                     String cid = c.getString("cid");
                     String content = c.getString("content");
                     // tmp hash map for single contact
-                    ArrayList<HashMap<String, String>> clueS = new ArrayList<>();
+                    ArrayList<HashMap<String, String>> clues = new ArrayList<>();
                     HashMap<String, String> clue = new HashMap<>();
 
                     // adding each child node to HashMap key => value
@@ -705,8 +680,8 @@ public class BagFragment extends Fragment
                     clue.put("count","1");
                     // adding contact to contact list
 //                        System.out.println(clue);
-                    clueS.add(clue);
-                    packList.add(clueS);
+                    clues.add(clue);
+                    packList.add(clues);
                 }
             } catch (final JSONException e) {
                 System.out.print("Json parsing error: " + e.getMessage());

@@ -122,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
     int Parsejson (String info){
         System.out.println("info is");
         System.out.println(info);
-        int correct=0;
+        int correct=1;
         try {
             JSONObject jObject = new JSONObject(info);
             uid = jObject.getInt("uid");

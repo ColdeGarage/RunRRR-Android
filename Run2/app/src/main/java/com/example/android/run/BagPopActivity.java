@@ -1,23 +1,13 @@
 package com.example.android.run;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.AsyncTask;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,16 +16,12 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.ExecutionException;
-
-import static java.security.AccessController.getContext;
 
 public class BagPopActivity extends Activity {
     private static String uid;
@@ -48,7 +34,7 @@ public class BagPopActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bag_pop);
-        final ImageView toolPicture = (ImageView) findViewById(R.id.popToolImage);
+//        final ImageView toolPicture = (ImageView) findViewById(R.id.popToolImage);
         TextView toolName = (TextView) findViewById(R.id.popToolName);
         TextView toolContent = (TextView) findViewById(R.id.popContent);
         final TextView toolCount = (TextView) findViewById(R.id.popCount);
@@ -66,7 +52,6 @@ public class BagPopActivity extends Activity {
 
         //get data from bagFragment
         final Bundle bundleReciever =this.getIntent().getExtras();
-        final String imageUrl = bundleReciever.getString("IMAGEURL");
         final String name = bundleReciever.getString("NAME");
         String content = bundleReciever.getString("CONTENT");
         String count = " 擁有:" + bundleReciever.getString("COUNT");
@@ -100,22 +85,22 @@ public class BagPopActivity extends Activity {
         toolContent.setTextColor(Color.BLACK);
         toolCount.setTextSize(16);
         toolCount.setTextColor(Color.BLACK);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                //TODO Auto-generated method stub
-                final Bitmap mBitmap =
-                        getBitmapFromURL("http://coldegarage.tech:8081/api/v1.1/download/img/" + imageUrl);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        toolPicture.setImageBitmap(mBitmap);
-                    }
-                });                    //TODO Auto-generated method stub
-            }
-        }).start();
-        backButton.setText("X");
-        useButton.setText("大力給他用下去！");
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                //TODO Auto-generated method stub
+//                final Bitmap mBitmap =
+//                        getBitmapFromURL("http://coldegarage.tech:8081/api/v1.1/download/img/" + imageUrl);
+//                runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        toolPicture.setImageBitmap(mBitmap);
+//                    }
+//                });                    //TODO Auto-generated method stub
+//            }
+//        }).start();
+        backButton.setText("cancel");
+        useButton.setText("use");
         backButton.setOnClickListener(new Button.OnClickListener(){
             @Override
             public void onClick(View view) {
@@ -131,9 +116,14 @@ public class BagPopActivity extends Activity {
                     bundle.putString("content","你已經屎惹啊！不能用道具囉～");
                     intent.putExtras(bundle);
                     startActivity(intent);
-
 //                    Toast.makeText(BagPopActivity.this, "你已經屎惹啊！不能用道具囉～", Toast.LENGTH_SHORT).show();
-
+                }
+                else if(name.equals("金錢")){
+                    Intent intent = new Intent(BagPopActivity.this, ToolUsedActivity.class);
+                    Bundle bundle=new Bundle();
+                    bundle.putString("content","會有機會用到的，嘿嘿嘿");
+                    intent.putExtras(bundle);
+                    startActivity(intent);
                 }
                 else if(IDs != null && Integer.valueOf(bundleReciever.getString("COUNT"))-currentToolIndex>0) {
                     String readDataFromHttp = null;
@@ -173,9 +163,7 @@ public class BagPopActivity extends Activity {
                 }
             }
         });
-
     }
-
     public void onBackPressed() {
         Intent intent=new Intent();
         if(needToReload){
@@ -185,20 +173,6 @@ public class BagPopActivity extends Activity {
             setResult(3,intent);
         }
         finish();
-    }
-
-    private static Bitmap getBitmapFromURL(String imageUrl) {
-        try {
-            URL url = new URL(imageUrl);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setDoInput(true);
-            connection.connect();
-            InputStream input = connection.getInputStream();
-            return  BitmapFactory.decodeStream(input);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
     }
     //HTTPPost
     class MyTaskDelete extends AsyncTask<Void,Void,String>{
