@@ -1,12 +1,12 @@
 package com.example.android.run;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
 import org.json.JSONArray;
@@ -37,9 +37,9 @@ public class BagPopActivity extends Activity {
 //        final ImageView toolPicture = (ImageView) findViewById(R.id.popToolImage);
         TextView toolName = (TextView) findViewById(R.id.popToolName);
         TextView toolContent = (TextView) findViewById(R.id.popContent);
+        TextView useButton = (TextView) findViewById(R.id.useButton);
+        TextView backButton = (TextView) findViewById(R.id.popCancelButton) ;
         final TextView toolCount = (TextView) findViewById(R.id.popCount);
-        Button backButton = (Button) findViewById(R.id.popCancelButton) ;
-        Button useButton = (Button) findViewById(R.id.useButton);
 
 //        int width;
 //        int height;
@@ -79,12 +79,12 @@ public class BagPopActivity extends Activity {
         toolContent.setText(content);
         toolCount.setText(count);
 
-        toolName.setTextSize(30);
-        toolName.setTextColor(Color.BLACK);
-        toolContent.setTextSize(26);
-        toolContent.setTextColor(Color.BLACK);
-        toolCount.setTextSize(16);
-        toolCount.setTextColor(Color.BLACK);
+//        toolName.setTextSize(30);
+//        toolName.setTextColor(Color.BLACK);
+//        toolContent.setTextSize(26);
+//        toolContent.setTextColor(Color.BLACK);
+//        toolCount.setTextSize(16);
+//        toolCount.setTextColor(Color.BLACK);
 //        new Thread(new Runnable() {
 //            @Override
 //            public void run() {
@@ -99,15 +99,15 @@ public class BagPopActivity extends Activity {
 //                });                    //TODO Auto-generated method stub
 //            }
 //        }).start();
-        backButton.setText("cancel");
-        useButton.setText("use");
-        backButton.setOnClickListener(new Button.OnClickListener(){
+        useButton.setText("USE");
+        backButton.setText("CANCEL");
+        backButton.setOnClickListener(new TextView.OnClickListener(){
             @Override
             public void onClick(View view) {
                 onBackPressed();
             }
         });
-        useButton.setOnClickListener(new Button.OnClickListener(){
+        useButton.setOnClickListener(new TextView.OnClickListener(){
             @Override
             public void onClick(View view) {
                 if(liveStatus==0){
@@ -119,11 +119,20 @@ public class BagPopActivity extends Activity {
 //                    Toast.makeText(BagPopActivity.this, "你已經屎惹啊！不能用道具囉～", Toast.LENGTH_SHORT).show();
                 }
                 else if(name.equals("金錢")){
-                    Intent intent = new Intent(BagPopActivity.this, ToolUsedActivity.class);
-                    Bundle bundle=new Bundle();
-                    bundle.putString("content","會有機會用到的，嘿嘿嘿");
-                    intent.putExtras(bundle);
-                    startActivity(intent);
+//                    Intent intent = new Intent(BagPopActivity.this, ToolUsedActivity.class);
+//                    Bundle bundle=new Bundle();
+//                    bundle.putString("content","會有機會用到的，嘿嘿嘿");
+//                    intent.putExtras(bundle);
+//                    startActivity(intent);
+
+                    new AlertDialog.Builder(BagPopActivity.this)
+                            .setCancelable(false)   //按到旁邊也不會消失
+                            .setMessage("會有機會用到的，嘿嘿嘿")
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                }
+                            }).show();
                 }
                 else if(IDs != null && Integer.valueOf(bundleReciever.getString("COUNT"))-currentToolIndex>0) {
                     String readDataFromHttp = null;
@@ -142,24 +151,42 @@ public class BagPopActivity extends Activity {
                     needToReload = true;
                     currentToolIndex++;
                     int currentToolNumber = Integer.valueOf(bundleReciever.getString("COUNT"))-currentToolIndex;
-                    String count = " 擁有:" + currentToolNumber;
+                    String count = " 擁有: " + currentToolNumber;
                     toolCount.setText(count);
 //                    Toast.makeText(BagPopActivity.this, "你使用了一個 " + name + "!", Toast.LENGTH_SHORT).show();
+//
+//                    Intent intent = new Intent(BagPopActivity.this, ToolUsedActivity.class);
+//                    Bundle bundle=new Bundle();
+//                    bundle.putString("content","你使用了一個 " + name + "!");
+//                    intent.putExtras(bundle);
+//                    startActivity(intent);
 
-                    Intent intent = new Intent(BagPopActivity.this, ToolUsedActivity.class);
-                    Bundle bundle=new Bundle();
-                    bundle.putString("content","你使用了一個 " + name + "!");
-                    intent.putExtras(bundle);
-                    startActivity(intent);
+                    new AlertDialog.Builder(BagPopActivity.this)
+                            .setCancelable(false)   //按到旁邊也不會消失
+                            .setMessage("你使用了一個 " + name + "!")
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                }
+                            }).show();
                 }
                 else{
 //                    Toast.makeText(BagPopActivity.this, "此物品已用盡或無法使用", Toast.LENGTH_SHORT).show();
 
-                    Intent intent = new Intent(BagPopActivity.this, ToolUsedActivity.class);
-                    Bundle bundle=new Bundle();
-                    bundle.putString("content","此物品已用盡或無法使用");
-                    intent.putExtras(bundle);
-                    startActivity(intent);
+//                    Intent intent = new Intent(BagPopActivity.this, ToolUsedActivity.class);
+//                    Bundle bundle=new Bundle();
+//                    bundle.putString("content","此物品已用盡或無法使用");
+//                    intent.putExtras(bundle);
+//                    startActivity(intent);
+
+                    new AlertDialog.Builder(BagPopActivity.this)
+                            .setCancelable(false)   //按到旁邊也不會消失
+                            .setMessage("此物品已用盡或無法使用")
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                }
+                            }).show();
                 }
             }
         });
