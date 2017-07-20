@@ -79,6 +79,17 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+
+    @Override
+    public boolean moveTaskToBack(boolean nonRoot) {
+        return super.moveTaskToBack(nonRoot);
+    }
+
+    @Override
+    public void onBackPressed() {
+        moveTaskToBack(true);
+    }
+
     void checkAccount(){
         String readDataFromHttp = null;
 
