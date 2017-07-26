@@ -16,7 +16,6 @@
 
 package com.example.android.run;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -35,15 +34,27 @@ import android.widget.TextView;
 public class MoreFragment extends Fragment {
     //顯示文字內容
     private String text = "";
+    static MoreFragment instance = null;
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-
-        //取得MainActivity的方法，將文字放入text字串
-        TabActivity mTabActivity = (TabActivity) activity;
-        text = mTabActivity.getMissionsText();
+    public static MoreFragment getInstance() {
+        if( instance == null ) {
+            synchronized (MoreFragment.class) {
+                if (instance == null) {
+                    instance = new MoreFragment();
+                }
+            }
+        }
+        return instance;
     }
+
+//    @Override
+//    public void onAttach(Activity activity) {
+//        super.onAttach(activity);
+//
+//        //取得MainActivity的方法，將文字放入text字串
+//        TabActivity mTabActivity = (TabActivity) activity;
+//        text = mTabActivity.getMissionsText();
+//    }
 
     /*@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)

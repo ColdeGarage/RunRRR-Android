@@ -38,4 +38,6 @@
     <dimen name="pop_margin">30dp</dimen>
     <dimen name="text_title">26dp</dimen>
     <dimen name="text_content">20dp</dimen>
+    <dimen name="tab_margin">5dp</dimen>
+    <dimen name="layout_margin">20dp</dimen>
 </resources>

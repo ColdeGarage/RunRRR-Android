@@ -23,4 +23,13 @@
     <color name="button_grey">#757575</color>
     <color name="background_grey">#E6E6E6</color>
     <color name="red">#FF2929</color>
+
+    <color name="tab_background">#B7B7B7</color>
+    <color name="tab_map">#E8411A</color>
+    <color name="tab_mission">#58F88C</color>
+    <color name="tab_bag">#3D8AFF</color>
+    <color name="tab_more">#F7D63B</color>
+
+    <color name="text_medium_grey">#939393</color>
+    <color name="text_dark_grey">#757575</color>
 </resources>

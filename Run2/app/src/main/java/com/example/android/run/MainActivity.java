@@ -79,7 +79,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-
     @Override
     public boolean moveTaskToBack(boolean nonRoot) {
         return super.moveTaskToBack(nonRoot);
@@ -149,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
     //===================Intent==========================
     void goMap(){
         Intent intent = new Intent();
-        intent.setClass(MainActivity.this,TabActivity.class);
+        intent.setClass(MainActivity.this,ViewPagerActivity.class);
         startActivity(intent);
         finish();
     }

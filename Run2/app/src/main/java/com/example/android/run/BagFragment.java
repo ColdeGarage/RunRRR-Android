@@ -21,13 +21,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -51,8 +47,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 
-import jp.wasabeef.blurry.Blurry;
-
 import static android.content.Context.MODE_PRIVATE;
 import static com.google.android.gms.internal.zzid.runOnUiThread;
 
@@ -64,6 +58,7 @@ public class BagFragment extends Fragment
 {
     private static int uid;
     private static String token;
+    static BagFragment instance = null;
     private BagFragment.ContentAdapter adapter = null;
     View v;
 
@@ -77,6 +72,17 @@ public class BagFragment extends Fragment
     private String[] pContent = new String[100];
     private ArrayList<String[]> pID = new ArrayList<>();
     int toolNum=0;
+
+    public static BagFragment getInstance() {
+        if( instance == null ) {
+            synchronized (BagFragment.class) {
+                if (instance == null) {
+                    instance = new BagFragment();
+                }
+            }
+        }
+        return instance;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)

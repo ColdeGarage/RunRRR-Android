@@ -60,9 +60,22 @@ import static android.content.Context.MODE_PRIVATE;
  */
 public class MissionsFragment extends Fragment
 {
+
+    static MissionsFragment instance = null;
     private SwipeRefreshLayout mSwipeLayout;
     private static int uid;
     private static String token;
+
+    public static MissionsFragment getInstance() {
+        if( instance == null ) {
+            synchronized (MissionsFragment.class) {
+                if (instance == null) {
+                    instance = new MissionsFragment();
+                }
+            }
+        }
+        return instance;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
