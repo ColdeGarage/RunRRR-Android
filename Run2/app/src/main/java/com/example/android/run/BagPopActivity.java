@@ -6,7 +6,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.json.JSONArray;
@@ -24,6 +26,7 @@ import java.net.URL;
 import java.util.concurrent.ExecutionException;
 
 public class BagPopActivity extends Activity {
+
     private static String uid;
     private static String token;
     private String[] IDs;
@@ -34,6 +37,22 @@ public class BagPopActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bag_pop);
+
+        // setting the tab size depending on device size
+        int height;
+        boolean tabletSize = getResources().getBoolean(R.bool.isTablet);
+        LinearLayout margin = (LinearLayout) findViewById(R.id.bag_pop_margin);
+
+        if (tabletSize) {
+            // convert dip to pixels
+            height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 135, getResources().getDisplayMetrics());
+            margin.getLayoutParams().height = height;
+        } else {
+            // convert dip to pixels
+            height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 95, getResources().getDisplayMetrics());
+            margin.getLayoutParams().height = height;
+        }
+
 //        final ImageView toolPicture = (ImageView) findViewById(R.id.popToolImage);
         TextView toolName = (TextView) findViewById(R.id.popToolName);
         TextView toolContent = (TextView) findViewById(R.id.popContent);
@@ -192,7 +211,7 @@ public class BagPopActivity extends Activity {
         });
     }
     public void onBackPressed() {
-        Intent intent=new Intent();
+        Intent intent = new Intent();
         if(needToReload){
             setResult(2,intent);
         }

@@ -157,7 +157,6 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent();
         intent.setClass(MainActivity.this,AboutUsActivity.class);
         startActivity(intent);
-        finish();
     }
 
     //===================內存=========================

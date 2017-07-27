@@ -21,8 +21,8 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -90,14 +90,24 @@ public class MoreFragment extends Fragment {
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
-        public TextView more_name;
-        public LinearLayout more_background;
-        public LinearLayout more_list;
+
+        public TextView moreItem_name;
+        public LinearLayout moreItem_background;
+        public ConstraintLayout moreItem_die;
+        public ConstraintLayout moreItem_about_us;
+        public ConstraintLayout moreItem_barcode;
+        public ConstraintLayout moreItem_sos;
+        public ConstraintLayout moreItem_logout;
+
         public ViewHolder(final LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.item_more_list, parent, false));
-            more_name = (TextView) itemView.findViewById(R.id.list_title);
-            more_background = (LinearLayout) itemView.findViewById(R.id.more_list_background);
-            more_list = (LinearLayout) itemView.findViewById(R.id.more_list_item);
+            moreItem_name = (TextView) itemView.findViewById(R.id.list_title);
+            moreItem_background = (LinearLayout) itemView.findViewById(R.id.more_list_background);
+            moreItem_die = (ConstraintLayout) itemView.findViewById(R.id.more_die);
+            moreItem_about_us = (ConstraintLayout) itemView.findViewById(R.id.more_about_us);
+            moreItem_barcode = (ConstraintLayout) itemView.findViewById(R.id.more_barcode);
+            moreItem_sos = (ConstraintLayout) itemView.findViewById(R.id.more_sos);
+            moreItem_logout = (ConstraintLayout) itemView.findViewById(R.id.more_logout);
             /*
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -122,6 +132,13 @@ public class MoreFragment extends Fragment {
 
         private final String[] mMoreList;
 
+        //Check if the layout is folded
+        public boolean isDieFolded = true;
+        public boolean isAboutUSFolded = true;
+        public boolean isBarcodeFolded = true;
+        public boolean isSOSFolded = true;
+        public boolean isLogoutFolded = true;
+
         public ContentAdapter(Context context) {
             Resources resources = context.getResources();
             mMoreList = resources.getStringArray(R.array.more);
@@ -132,85 +149,152 @@ public class MoreFragment extends Fragment {
         }
 
         @Override
-        public void onBindViewHolder(ViewHolder holder, final int position) {
+        public void onBindViewHolder(final ViewHolder holder, final int position) {
             final String moreItem = mMoreList[position % mMoreList.length];
             GradientDrawable itemShape;
             int itemColor;
-            holder.more_name.setText(moreItem);
+
+            holder.moreItem_name.setText(moreItem);
+            //Set layout content
+            holder.moreItem_die.setVisibility(View.GONE);
+            holder.moreItem_about_us.setVisibility(View.GONE);
+            holder.moreItem_barcode.setVisibility(View.GONE);
+            holder.moreItem_sos.setVisibility(View.GONE);
+            holder.moreItem_logout.setVisibility(View.GONE);
             //Set background color
             switch(position){
                 case 0: //Die
-                    //Setting corner padding
-                    holder.more_background.setBackgroundResource(R.color.background_grey);
-                    holder.more_list.setBackgroundResource(R.drawable.background_round);
-                    itemShape = (GradientDrawable)holder.more_list.getBackground().getCurrent();
-                    itemColor = ContextCompat.getColor(holder.itemView.getContext(), R.color.die);
-                    itemShape.setColor(itemColor);
+//                    //Setting corner padding
+//                    holder.more_background.setBackgroundResource(R.color.background_grey);
+//                    //Setting item background color
+//                    holder.more_list.setBackgroundResource(R.drawable.background_round);
+//                    itemShape = (GradientDrawable)holder.more_list.getBackground().getCurrent();
+//                    itemColor = ContextCompat.getColor(holder.itemView.getContext(), R.color.die);
+//                    itemShape.setColor(itemColor);
+                    holder.moreItem_background.setBackgroundResource(R.color.die);
                     break;
                 case 1: //About us
-                    //Setting corner padding
-                    holder.more_background.setBackgroundResource(R.color.die);
-                    //Setting item background color
-                    holder.more_list.setBackgroundResource(R.drawable.background_round);
-                    itemShape = (GradientDrawable)holder.more_list.getBackground().getCurrent();
-                    itemColor = ContextCompat.getColor(holder.itemView.getContext(), R.color.about_us);
-                    itemShape.setColor(itemColor);
+//                    //Setting corner padding
+//                    if(isDieFolded) {
+//                        holder.moreItem_background.setBackgroundResource(R.color.die);
+//                    } else {
+//                        holder.moreItem_background.setBackgroundResource(R.color.background_grey);
+//                    }
+//                    //Setting item background color
+//                    holder.more_list.setBackgroundResource(R.drawable.background_round);
+//                    itemShape = (GradientDrawable)holder.more_list.getBackground().getCurrent();
+//                    itemColor = ContextCompat.getColor(holder.itemView.getContext(), R.color.about_us);
+//                    itemShape.setColor(itemColor);
+                    holder.moreItem_background.setBackgroundResource(R.color.about_us);
                     break;
                 case 2: //Barcode
-                    //Setting corner padding
-                    holder.more_background.setBackgroundResource(R.color.about_us);
-                    //Setting item background color
-                    holder.more_list.setBackgroundResource(R.drawable.background_round);
-                    itemShape = (GradientDrawable)holder.more_list.getBackground().getCurrent();
-                    itemColor = ContextCompat.getColor(holder.itemView.getContext(), R.color.barcode);
-                    itemShape.setColor(itemColor);
+//                    //Setting corner padding
+//                    if(isAboutUSFolded) {
+//                        holder.moreItem_background.setBackgroundResource(R.color.about_us);
+//                    } else {
+//                        holder.moreItem_background.setBackgroundResource(R.color.background_grey);
+//                    }
+//                    //Setting item background color
+//                    holder.more_list.setBackgroundResource(R.drawable.background_round);
+//                    itemShape = (GradientDrawable)holder.more_list.getBackground().getCurrent();
+//                    itemColor = ContextCompat.getColor(holder.itemView.getContext(), R.color.barcode);
+//                    itemShape.setColor(itemColor);
+                    holder.moreItem_background.setBackgroundResource(R.color.barcode);
                     break;
                 case 3: //SOS
-                    //Setting corner padding
-                    holder.more_background.setBackgroundResource(R.color.barcode);
-                    //Setting item background color
-                    holder.more_list.setBackgroundResource(R.drawable.background_round);
-                    itemShape = (GradientDrawable)holder.more_list.getBackground().getCurrent();
-                    itemColor = ContextCompat.getColor(holder.itemView.getContext(), R.color.sos);
-                    itemShape.setColor(itemColor);
+//                    //Setting corner padding
+//                    if(isBarcodeFolded) {
+//                        holder.moreItem_background.setBackgroundResource(R.color.barcode);
+//                    } else {
+//                        holder.moreItem_background.setBackgroundResource(R.color.background_grey);
+//                    }
+//                    //Setting item background color
+//                    holder.more_list.setBackgroundResource(R.drawable.background_round);
+//                    itemShape = (GradientDrawable)holder.more_list.getBackground().getCurrent();
+//                    itemColor = ContextCompat.getColor(holder.itemView.getContext(), R.color.sos);
+//                    itemShape.setColor(itemColor);
+                    holder.moreItem_background.setBackgroundResource(R.color.sos);
                     break;
                 case 4: //Logout
-                    //Setting corner padding
-                    holder.more_background.setBackgroundResource(R.color.sos);
-                    //Setting item background color
-                    holder.more_list.setBackgroundResource(R.drawable.background_round);
-                    itemShape = (GradientDrawable)holder.more_list.getBackground().getCurrent();
-                    itemColor = ContextCompat.getColor(holder.itemView.getContext(), R.color.logout);
-                    itemShape.setColor(itemColor);
+//                    //Setting corner padding
+//                    if(isSosFolded) {
+//                        holder.moreItem_background.setBackgroundResource(R.color.sos);
+//                    } else {
+//                        holder.moreItem_background.setBackgroundResource(R.color.background_grey);
+//                    }
+//                    //Setting item background color
+//                    holder.more_list.setBackgroundResource(R.drawable.background_round);
+//                    itemShape = (GradientDrawable)holder.more_list.getBackground().getCurrent();
+//                    itemColor = ContextCompat.getColor(holder.itemView.getContext(), R.color.logout);
+//                    itemShape.setColor(itemColor);
+                    holder.moreItem_background.setBackgroundResource(R.color.logout);
+                    holder.moreItem_logout.setVisibility(View.VISIBLE);
                     break;
                 default:
                     break;
             }
+
             //Set onclickListener
-            holder.more_name.setOnClickListener(new View.OnClickListener(){
+            holder.moreItem_name.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v) {
                     Context context = v.getContext();
+
                     switch(position){
                         case 0: //Die
-                            Intent intent = new Intent(context, DieActivity.class);
-                            context.startActivity(intent);
+//                            Intent intent = new Intent(context, DieActivity.class);
+//                            context.startActivity(intent);
+                            if(isDieFolded) {
+                                isDieFolded = false;
+                                holder.moreItem_die.setVisibility(View.VISIBLE);
+                            } else {
+                                isDieFolded = true;
+                                holder.moreItem_die.setVisibility(View.GONE);
+                            }
                             break;
                         case 1: //About us
-                            intent = new Intent(context, AboutUsActivity.class);
-                            context.startActivity(intent);
+//                            intent = new Intent(context, AboutUsActivity.class);
+//                            context.startActivity(intent);
+                            if(isAboutUSFolded) {
+                                isAboutUSFolded = false;
+                                holder.moreItem_about_us.setVisibility(View.VISIBLE);
+                            } else {
+                                isAboutUSFolded = true;
+                                holder.moreItem_about_us.setVisibility(View.GONE);
+                            }
                             break;
                         case 2: //Barcode
-                            intent = new Intent(context, BarcodeActivity.class);
-                            context.startActivity(intent);
+//                            intent = new Intent(context, BarcodeActivity.class);
+//                            context.startActivity(intent);
+                            if(isBarcodeFolded) {
+                                isBarcodeFolded = false;
+                                holder.moreItem_barcode.setVisibility(View.VISIBLE);
+                            } else {
+                                isBarcodeFolded = true;
+                                holder.moreItem_barcode.setVisibility(View.GONE);
+                            }
                             break;
                         case 3: //SOS
-                            intent = new Intent(context, AboutUsActivity.class);
-                            context.startActivity(intent);
+//                            intent = new Intent(context, AboutUsActivity.class);
+//                            context.startActivity(intent);
+                            if(isSOSFolded) {
+                                isSOSFolded = false;
+                                holder.moreItem_sos.setVisibility(View.VISIBLE);
+                            } else {
+                                isSOSFolded = true;
+                                holder.moreItem_sos.setVisibility(View.GONE);
+                            }
                             break;
                         case 4: //Logout
-                            intent = new Intent(context, LogoutActivity.class);
+                            Intent intent = new Intent(context, LogoutActivity.class);
                             context.startActivity(intent);
+//                            if(isLogoutFolded) {
+//                                isLogoutFolded = false;
+//                                holder.moreItem_logout.setVisibility(View.VISIBLE);
+//                            } else {
+//                                isLogoutFolded = true;
+//                                holder.moreItem_logout.setVisibility(View.GONE);
+//                            }
                             break;
                         default:
                             break;

@@ -205,21 +205,21 @@ public class BagFragment extends Fragment
             System.out.println("toolNum = " + toolNum);
 
             //TODO Auto-generated method stub
-            pName[0] = "金錢";
+            pName[0] = "金錢"+money+"元";
             pUrl[0] = "";
-            pCount[0] = String.valueOf(money);
+            pCount[0] = "";
             pContent[0] = "刀，Dollar";
-            for(int i=1; i <packList.size(); i++){
-                pName[i] = packList.get(i).get(0).get("title");
-                pUrl[i] = packList.get(i).get(0).get("url");
-                pCount[i] = packList.get(i).get(0).get("count");
-                pContent[i] = packList.get(i).get(0).get("content");
+            for(int i=1; i <=packList.size(); i++){
+                pName[i] = packList.get(i-1).get(0).get("title");
+                pUrl[i] = packList.get(i-1).get(0).get("url");
+                pCount[i] = packList.get(i-1).get(0).get("count");
+                pContent[i] = packList.get(i-1).get(0).get("content");
 
-                if(i<toolNum){
+                if(i<=toolNum){
                     String[] pid = new String[10];
-                    pid[0] = packList.get(i).get(0).get("pid");
-                    for(int j=1; j < packList.get(i).size(); j++){
-                        pid[j] = packList.get(i).get(j).get("pid");
+                    pid[0] = packList.get(i-1).get(0).get("pid");
+                    for(int j=1; j < packList.get(i-1).size(); j++){
+                        pid[j] = packList.get(i-1).get(j).get("pid");
                     }
                     pID.add(pid);
                 }

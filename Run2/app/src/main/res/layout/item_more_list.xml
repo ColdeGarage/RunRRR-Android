@@ -18,16 +18,15 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/more_list_background"
-    android:background="@color/black"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@drawable/background_stroke">
 
     <LinearLayout
-        android:id="@+id/more_list_item"
+        android:id="@+id/more_list_background"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
-        android:background="@drawable/background_round">
+        android:background="@color/die">
         <ImageView
             android:layout_width="50dp"
             android:layout_height="match_parent"
@@ -53,5 +52,9 @@
     <!--</android.support.constraint.ConstraintLayout>-->
 
     <include layout="@layout/activity_die" android:id="@+id/more_die" />
+    <include layout="@layout/activity_about_us" android:id="@+id/more_about_us" />
+    <include layout="@layout/activity_barcode" android:id="@+id/more_barcode" />
+    <include layout="@layout/activity_sos" android:id="@+id/more_sos" />
+    <include layout="@layout/activity_logout" android:id="@+id/more_logout" />
 
 </LinearLayout>

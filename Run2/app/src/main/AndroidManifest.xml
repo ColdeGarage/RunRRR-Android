@@ -24,12 +24,12 @@
     <uses-permission android:name="com.google.anroid.providers.gsf.permission.READ_GSERVICES" />
 
     <!-- CAMERA -->
-    <uses-permission android:name="android.permission.CAMERA"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <!-- BITMAP -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -44,7 +44,7 @@
              Note that the API key is linked to the encryption key used to sign the APK.
              You need a different API key for each encryption key, including the release key that is used to
              sign the APK for publishing.
-             You can define the keys for the debug and release targets in src/debug/ and src/release/. 
+             You can define the keys for the debug and release targets in src/debug/ and src/release/.
         -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -71,6 +71,10 @@
             android:label="@string/title_activity_about_us"
             android:theme="@style/AppTheme" />
         <activity
+            android:name=".SOSActivity"
+            android:label="@string/title_activity_about_us"
+            android:theme="@style/AppTheme" />
+        <activity
             android:name=".MissionPopActivity"
             android:label="@string/title_activity_missions"
             android:theme="@style/AppTheme" />
@@ -86,14 +90,14 @@
         <activity
             android:name=".BarcodeActivity"
             android:theme="@style/AppTheme" />
-        <activity android:name=".ToolUsedActivity"
+        <activity
+            android:name=".ToolUsedActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
         <service
             android:name=".UpdateService"
             android:enabled="true"
             android:exported="true" />
-
-
     </application>
 
 </manifest>

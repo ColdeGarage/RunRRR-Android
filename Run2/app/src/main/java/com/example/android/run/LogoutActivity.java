@@ -42,7 +42,7 @@ public class LogoutActivity extends AppCompatActivity {
         btNo.setOnClickListener(new TextView.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+            finish();
             }
         });
     }

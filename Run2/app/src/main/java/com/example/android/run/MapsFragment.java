@@ -204,6 +204,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     @Override
     public void onMapReady(GoogleMap mgoogleMap) {
         googleMap = mgoogleMap;
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(24.794574, 120.992936), 17));
         googleMap.getUiSettings().setZoomControlsEnabled(true);
 
         //Initialize Google Play Services
