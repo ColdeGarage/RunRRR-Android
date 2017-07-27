@@ -28,5 +28,5 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile files('libs/OnBarcode.AndroidBarcode.jar')
     compile 'jp.wasabeef:blurry:2.0.3'
-
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
 }

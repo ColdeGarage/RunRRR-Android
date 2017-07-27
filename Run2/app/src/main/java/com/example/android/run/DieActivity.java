@@ -6,12 +6,10 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,18 +30,20 @@ public class DieActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_die);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         //read uid and token
         readPrefs();
 
-        Button bt = (Button) findViewById(R.id.button_send);
+        TextView bt_enter = (TextView) findViewById(R.id.button_enter);
+        TextView bt_cancel = (TextView) findViewById(R.id.button_enter);
         final EditText editTextUid = (EditText) findViewById(R.id.edit_uid);
         final EditText editTextPass = (EditText) findViewById(R.id.edit_pass);
 
-        bt.setOnClickListener(new Button.OnClickListener(){
+        //add space at the beginning
+        editTextUid.setPadding(10, 0, 0, 0);
+        editTextPass.setPadding(10, 0, 0, 0);
+
+        bt_enter.setOnClickListener(new TextView.OnClickListener(){
             @Override
             public void onClick(View v) {
                 String hunterUid = editTextUid.getText().toString();
@@ -75,6 +75,13 @@ public class DieActivity extends AppCompatActivity {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+            }
+        });
+
+        bt_cancel.setOnClickListener(new TextView.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
             }
         });
     }

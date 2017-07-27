@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:foreground="?attr/selectableItemBackground"
+    android:background="@color/background_grey"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentTop="true"
+    android:layout_alignParentStart="true"
+    android:id="@+id/card_view">
+
+    <com.example.android.run.BagItem
+        android:orientation="vertical"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:weightSum="6"
+        android:id="@+id/Item">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="5">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentStart="true"
+                android:id="@+id/toolImage1"/>
+
+            <TextView
+                android:text="0"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginStart="82dp"
+                android:id="@+id/toolNumber1"
+                android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                android:elevation="1dp"/>
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_width="match_parent">
+
+            <TextView
+                android:text="Important Clue"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/toolName1"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+    </com.example.android.run.BagItem>
+
+    <com.example.android.run.BagItem
+        android:orientation="vertical"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:weightSum="6">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="5">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentStart="true"
+                android:id="@+id/toolImage2"
+                android:elevation="1dp"/>
+
+            <TextView
+                android:text="0"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginStart="82dp"
+                android:id="@+id/toolNumber2"
+                android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                android:elevation="1dp"/>
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_width="match_parent">
+
+            <TextView
+                android:text="Important Clue"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/toolName2"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+    </com.example.android.run.BagItem>
+
+    <com.example.android.run.BagItem
+        android:orientation="vertical"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:weightSum="6">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="5">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentStart="true"
+                android:id="@+id/toolImage3"
+                android:elevation="1dp"/>
+
+            <TextView
+                android:text="0"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginStart="82dp"
+                android:id="@+id/toolNumber3"
+                android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                android:elevation="1dp"/>
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_width="match_parent">
+
+            <TextView
+                android:text="Important Clue"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/toolName3"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+    </com.example.android.run.BagItem>
+
+
+</LinearLayout>

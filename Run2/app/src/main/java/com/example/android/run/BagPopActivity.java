@@ -38,7 +38,7 @@ public class BagPopActivity extends Activity {
         TextView toolName = (TextView) findViewById(R.id.popToolName);
         TextView toolContent = (TextView) findViewById(R.id.popContent);
         TextView useButton = (TextView) findViewById(R.id.useButton);
-        TextView backButton = (TextView) findViewById(R.id.popCancelButton) ;
+        TextView backButton = (TextView) findViewById(R.id.popCancelButton);
         final TextView toolCount = (TextView) findViewById(R.id.popCount);
 
 //        int width;

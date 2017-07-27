@@ -38,10 +38,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:src="@drawable/tab_map_focused"
-                android:layout_marginTop="@dimen/tab_margin"
-                android:layout_marginBottom="@dimen/tab_margin"
-                android:layout_marginLeft="@dimen/tab_margin"
-                android:layout_marginRight="@dimen/tab_margin"/>
+                android:layout_margin="@dimen/tab_margin"/>
 
             <ImageView
                 android:id="@+id/tab_mission"
@@ -49,10 +46,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:src="@drawable/tab_mission_idle"
-                android:layout_marginTop="@dimen/tab_margin"
-                android:layout_marginBottom="@dimen/tab_margin"
-                android:layout_marginLeft="@dimen/tab_margin"
-                android:layout_marginRight="@dimen/tab_margin"/>
+                android:layout_margin="@dimen/tab_margin"/>
 
             <ImageView
                 android:id="@+id/tab_bag"
@@ -60,10 +54,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:src="@drawable/tab_bag_idle"
-                android:layout_marginTop="@dimen/tab_margin"
-                android:layout_marginBottom="@dimen/tab_margin"
-                android:layout_marginLeft="@dimen/tab_margin"
-                android:layout_marginRight="@dimen/tab_margin"/>
+                android:layout_margin="@dimen/tab_margin"/>
 
             <ImageView
                 android:id="@+id/tab_more"
@@ -71,10 +62,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:src="@drawable/tab_more_idle"
-                android:layout_marginTop="@dimen/tab_margin"
-                android:layout_marginBottom="@dimen/tab_margin"
-                android:layout_marginLeft="@dimen/tab_margin"
-                android:layout_marginRight="@dimen/tab_margin"/>
+                android:layout_margin="@dimen/tab_margin"/>
 
         </LinearLayout>
     </LinearLayout>

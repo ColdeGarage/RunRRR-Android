@@ -148,7 +148,7 @@ public class MissionsFragment extends Fragment
         public ImageView state;
 
         public ViewHolder(LayoutInflater inflater, ViewGroup parent) {
-            super(inflater.inflate(R.layout.item_missions, parent, false));
+            super(inflater.inflate(R.layout.fragment_missions, parent, false));
 
             type = (ImageView) itemView.findViewById(R.id.list_type);
             name = (TextView) itemView.findViewById(R.id.list_name);

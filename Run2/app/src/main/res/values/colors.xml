@@ -32,4 +32,10 @@
 
     <color name="text_medium_grey">#939393</color>
     <color name="text_dark_grey">#757575</color>
+
+    <color name="die">#48DABA</color>
+    <color name="about_us">#FFB861</color>
+    <color name="barcode">#F49F36</color>
+    <color name="sos">#FA6959</color>
+    <color name="logout">#F9331E</color>
 </resources>

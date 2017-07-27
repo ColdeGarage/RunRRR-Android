@@ -127,7 +127,7 @@ public class BagFragment extends Fragment
         TextView count3;
 
         ViewHolder(LayoutInflater inflater, ViewGroup parent) {
-            super(inflater.inflate(R.layout.item_bag, parent, false));
+            super(inflater.inflate(R.layout.fragment_bag, parent, false));
             tool1 = (ImageView) itemView.findViewById(R.id.toolImage1);
             name1 = (TextView) itemView.findViewById(R.id.toolName1);
             count1 = (TextView) itemView.findViewById(R.id.toolNumber1);
