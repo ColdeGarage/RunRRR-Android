@@ -30,6 +30,7 @@
 
     <string name="loginAccount">Account</string>
     <string name="loginPassword">Password</string>
+    <string name="logout">Are you sure you want to logout?</string>
 
     <string name="apiURL">http://coldegarage.tech:8081/api/v1.1</string>
 </resources>
