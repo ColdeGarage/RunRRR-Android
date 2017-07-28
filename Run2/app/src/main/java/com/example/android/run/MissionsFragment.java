@@ -30,6 +30,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -60,9 +61,25 @@ import static android.content.Context.MODE_PRIVATE;
  */
 public class MissionsFragment extends Fragment
 {
+
+    static MissionsFragment instance = null;
     private SwipeRefreshLayout mSwipeLayout;
     private static int uid;
     private static String token;
+
+    public static MissionsFragment getInstance() {
+//        if( instance == null ) {
+//            synchronized (MissionsFragment.class) {
+//                if (instance == null) {
+//                    instance = new MissionsFragment();
+//                }
+//            }
+//        }
+        synchronized (MissionsFragment.class) {
+                instance = new MissionsFragment();
+        }
+        return instance;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -101,7 +118,7 @@ public class MissionsFragment extends Fragment
                             public void run() {
                                 mSwipeLayout.setRefreshing(false);
                             }
-                        }, 2000);
+                        }, 1000);
                     }
                 }
         );
@@ -135,23 +152,12 @@ public class MissionsFragment extends Fragment
         public ImageView state;
 
         public ViewHolder(LayoutInflater inflater, ViewGroup parent) {
-            super(inflater.inflate(R.layout.item_missions, parent, false));
+            super(inflater.inflate(R.layout.fragment_missions, parent, false));
 
             type = (ImageView) itemView.findViewById(R.id.list_type);
             name = (TextView) itemView.findViewById(R.id.list_name);
             time = (TextView) itemView.findViewById(R.id.list_time);
             state = (ImageView) itemView.findViewById(R.id.list_state);
-
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //TODO:Intent to other activity
-                    Context context = v.getContext();
-                    Intent intent = new Intent(context, MissionPopActivity.class);
-                    intent.putExtra(MissionPopActivity.EXTRA_POSITION, getAdapterPosition());
-                    context.startActivity(intent);
-                }
-            });
 
         }
     }
@@ -279,20 +285,22 @@ public class MissionsFragment extends Fragment
             holder.name.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //TODO:Intent to other activity
-                    Context context = v.getContext();
-                    Intent intent = new Intent(context, MissionPopActivity.class);
+                //TODO:Intent to other activity
+                Context context = v.getContext();
+                Intent intent = new Intent(context, MissionPopActivity.class);
 
-                    //New Bundle object fot passing data
-                    Bundle bundle = new Bundle();
-                    bundle.putString("name", mName[position % mName.length]);
-                    bundle.putString("time", mTime[position % mTime.length]);
-                    bundle.putString("content", mContent[position % mContent.length]);
-                    bundle.putString("type", mType[position % mType.length]);
-                    bundle.putString("state", mState[position % mState.length]);
+                //New Bundle object fot passing data
+                Bundle bundle = new Bundle();
+                bundle.putString("name", mName[position % mName.length]);
+                bundle.putString("time", mTime[position % mTime.length]);
+                bundle.putString("content", mContent[position % mContent.length]);
+                bundle.putString("type", mType[position % mType.length]);
+                bundle.putString("state", mState[position % mState.length]);
+                bundle.putString("uid",String.valueOf(uid));
+                bundle.putString("token",token);
 
-                    intent.putExtras(bundle);
-                    context.startActivity(intent);
+                intent.putExtras(bundle);
+                context.startActivity(intent);
                 }
             });
         }
@@ -349,7 +357,7 @@ public class MissionsFragment extends Fragment
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-            }else{
+            }else if(missionOrReport.equals("report")){
                 reportList = new ArrayList<>();
                 try {
                     JSONObject jObject = new JSONObject(info);
@@ -381,7 +389,19 @@ public class MissionsFragment extends Fragment
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+
             }
+//            else{
+//                try {
+////                    System.out.println(info);
+//                    JSONObject payload = new JSONObject(new JSONObject(info).getString("payload"));
+//                    JSONArray objects = payload.getJSONArray("objects");
+//                    JSONObject subObject = objects.getJSONObject(0);
+//                    liveOrDie = subObject.getInt("status");
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//            }
         }
         //Add mission state
         void missionState(){
@@ -467,6 +487,26 @@ public class MissionsFragment extends Fragment
         }
     }
 
+    public void Refresh(){
+        mSwipeLayout.setRefreshing(true);
+
+        // Create new fragment and transaction
+        Fragment newFragment = new MissionsFragment();
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+
+        // Replace whatever is in the fragment_container view with this fragment,
+        // and add the transaction to the back stack
+        transaction.replace(R.id.swiperefresh, newFragment)
+                .addToBackStack(null)
+                .commit();
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mSwipeLayout.setRefreshing(false);
+            }
+        }, 1000);
+    }
     //===================HTTP==========================
     //HTTPGet
     static class MyTaskGet extends AsyncTask<String,Void,String> {

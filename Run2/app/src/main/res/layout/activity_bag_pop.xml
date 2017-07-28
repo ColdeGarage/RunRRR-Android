@@ -3,93 +3,137 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_bag_pop"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#ffffff"
     tools:context="com.example.android.run.BagPopActivity">
 
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="103dp"
+        android:layout_height="0dp"
         android:layout_weight="1">
 
-        <ImageView
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            app:srcCompat="@android:drawable/ic_delete"
-            android:id="@+id/popToolImage"
-            android:layout_weight="2" />
+            android:layout_weight="28"
+            android:background="@drawable/background_shadow">
 
-        <TextView
-            android:text="ToolName"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:id="@+id/popToolName"
-            android:layout_weight="3"/>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/layout_margin"
+                android:background="@color/background_grey">
 
-        <Button
-            android:text="Button"
-            android:layout_width="64dp"
-            android:layout_height="68dp"
-            android:id="@+id/popCancelButton"
-            android:layout_weight="0.09" />
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="103dp"
+                        android:layout_weight="1">
+
+                        <TextView
+                            android:id="@+id/popToolName"
+                            android:text="ToolName"
+                            android:textSize="@dimen/text_title"
+                            android:textColor="@color/black"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"/>
+
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2">
+
+                        <LinearLayout
+                            android:orientation="vertical"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="2">
+
+                            <TextView
+                                android:id="@+id/popCount"
+                                android:text="TextView"
+                                android:textSize="@dimen/text_content"
+                                android:textColor="@color/black"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="0.1" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:orientation="vertical"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="8">
+
+
+                            <TextView
+                                android:id="@+id/popContent"
+                                android:text="TextView"
+                                android:textSize="@dimen/text_content"
+                                android:textColor="@color/black"
+                                android:layout_width="match_parent"
+                                android:layout_height="0dp"
+                                android:layout_weight="6"/>
+
+                            <RelativeLayout
+                                android:orientation="horizontal"
+                                android:layout_width="match_parent"
+                                android:layout_height="0dp"
+                                android:layout_weight="1">
+
+                                <TextView
+                                    android:id="@+id/useButton"
+                                    android:text="USE"
+                                    android:textSize="20dp"
+                                    android:textColor="@color/red"
+                                    android:gravity="center"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="match_parent"
+                                    android:layout_alignParentRight="true"/>
+
+                                <TextView
+                                    android:id="@+id/popCancelButton"
+                                    android:text="CANCEL"
+                                    android:textSize="20dp"
+                                    android:textColor="@color/black"
+                                    android:gravity="center"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="match_parent"
+                                    android:layout_alignParentLeft="true"/>
+
+                            </RelativeLayout>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:orientation="vertical"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="2">
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+            </RelativeLayout>
+
+        </RelativeLayout>
+
     </LinearLayout>
-
     <LinearLayout
-        android:orientation="horizontal"
+        android:id="@+id/bag_pop_margin"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="4">
-
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:weightSum="1">
-
-            <TextView
-                android:text="TextView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/popCount"
-                android:layout_weight="0.1" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="8">
-
-
-            <TextView
-                android:text="TextView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/popContent"
-                android:layout_weight="20"/>
-
-            <Button
-                android:text="Button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/useButton"
-                android:layout_weight="1"
-                android:layout_gravity="center"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="2">
-
-
-        </LinearLayout>
+        android:layout_height="95dp"
+        android:orientation="vertical">
     </LinearLayout>
-
-
 </LinearLayout>

@@ -1,6 +1,5 @@
 package com.example.android.run;
 
-import com.onbarcode.barcode.android.*;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
@@ -8,10 +7,14 @@ import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
+
+import com.onbarcode.barcode.android.AndroidColor;
+import com.onbarcode.barcode.android.AndroidFont;
+import com.onbarcode.barcode.android.Code39;
+import com.onbarcode.barcode.android.IBarcode;
 
 public class BarcodeActivity extends AppCompatActivity {
 
@@ -20,10 +23,6 @@ public class BarcodeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         //setContentView(new MyView(this));
         setContentView(R.layout.activity_barcode);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("Barcode");
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         RelativeLayout r = (RelativeLayout)findViewById(R.id.relative);
         r.addView(new MyView(this));
         //toolbar.addView(new MyView(this));

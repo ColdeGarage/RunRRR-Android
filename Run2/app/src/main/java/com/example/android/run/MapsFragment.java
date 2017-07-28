@@ -1,7 +1,6 @@
 package com.example.android.run;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -11,23 +10,22 @@ import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-
 import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -48,7 +46,6 @@ import java.io.BufferedWriter;
 import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-
 import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -72,24 +69,37 @@ import static android.content.Context.MODE_PRIVATE;
  */
 
 public class MapsFragment extends Fragment implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
+
+    static MapsFragment instance = null;
+
     //show text content
     private String text = "";
     private static int uid;
     private static String token;
+    private static boolean valid;
 
     Handler updateHandler ;
     Runnable updateRunnable ;
     static int flag = 0;
+    static int num = 0;
+    static boolean show = false;
 
-    @Override
-    public void onAttach(Activity activity)
-    {
-        super.onAttach(activity);
-
-        //access TabActivity and put text content into text
-        TabActivity mTabActivity = (TabActivity) activity;
-        text = mTabActivity.getMapsText();
+    public static MapsFragment getInstance() {
+        synchronized (MapsFragment.class) {
+                instance = new MapsFragment();
+        }
+        return instance;
     }
+
+//    @Override
+//    public void onAttach(Activity activity)
+//    {
+//        super.onAttach(activity);
+//
+//        //access TabActivity and put text content into text
+//        TabActivity mTabActivity = (TabActivity) activity;
+//        text = mTabActivity.getMapsText();
+//    }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState)
@@ -104,7 +114,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.item_maps, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_maps, container, false);
+
 
         mMapView = (MapView) rootView.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
@@ -129,8 +140,38 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                 public void run() {
                     if(lastLocation!=null){
                         MyTaskPut updatePut = new MyTaskPut();
-                        updatePut.execute(getResources().getString(R.string.apiURL)+"/member/update");
-                        Log.i("update",String.valueOf(lastLocation.getLatitude())+"  "+lastLocation.getLongitude());
+                        updatePut.execute(getResources().getString(R.string.apiURL)+"/member/update"
+                                ,"uid=" + String.valueOf(uid) + "&operator_uid=" + String.valueOf(uid) + "&token=" + token + "&position_n=" + String.valueOf(lastLocation.getLatitude())
+                                        + "&position_e=" + String.valueOf(lastLocation.getLongitude()));
+
+                        //get result from function "onPostExecute" in class "myTaskPut"
+                        try {
+                            String readDataFromHttp = updatePut.get();
+                            //Parse JSON info
+                            parseJson(readDataFromHttp,"location");
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                        Log.i("update",valid + String.valueOf(lastLocation.getLatitude())+"  "+lastLocation.getLongitude());
+
+                        //if invalid, show alert
+                        if(!valid && !show){
+                            num ++;
+                            if(num >= 6){
+                                show = true;
+                                new AlertDialog.Builder(getContext())
+                                        .setCancelable(false)   //按到旁邊也不會消失
+                                        .setMessage("你超過邊界囉!")
+                                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                show = false;
+                                            }
+                                        }).show();
+                                num = 0;
+                            }
+                        }
                     }
                     updateHandler.postDelayed(this, 5000);
                 }
@@ -149,7 +190,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 //    }
 
 
-    //=====================內存=====================
+    //========================內存=========================
     private void readPrefs(){
         SharedPreferences settings = getContext().getSharedPreferences("data",MODE_PRIVATE);
         uid = settings.getInt("uid",0);
@@ -160,6 +201,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     @Override
     public void onMapReady(GoogleMap mgoogleMap) {
         googleMap = mgoogleMap;
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(24.794574, 120.992936), 17));
         googleMap.getUiSettings().setZoomControlsEnabled(true);
 
         //Initialize Google Play Services
@@ -312,6 +354,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
     private int score;
     void setScore (){
+        TextView pointView = (TextView)getActivity().findViewById(R.id.text_point);
         TextView scoreView = (TextView)getActivity().findViewById(R.id.score);
         //get score
         MyTaskGet httpGetScore = new MyTaskGet();
@@ -404,7 +447,13 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
+        }else{
+            try {
+                JSONObject payload = new JSONObject(new JSONObject(info).getString("payload"));
+                valid = payload.getBoolean("valid_area");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -608,6 +657,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     }
 
     //HTTPPUT
+    //Parameter in string array : [0] : api, [1] : parameter sended to db
     class MyTaskPut extends AsyncTask<String,Void,String>{
 
         @Override
@@ -622,6 +672,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
             BufferedReader reader = null;
             StringBuilder stringBuilder;
             String urlStr = arg0[0];
+            String para = arg0[1];
 
             try {
                 url = new URL(urlStr);
@@ -644,8 +695,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                 //encode data in UTF-8
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(wr, "UTF-8"));
 
-                writer.write("uid=" + String.valueOf(uid) + "&operator_uid=" + String.valueOf(uid) + "&token=" + token + "&position_n=" + String.valueOf(lastLocation.getLatitude())
-                        + "&position_e=" + String.valueOf(lastLocation.getLongitude()));
+                writer.write(para);
 
                 //flush the data in buffer to server and close the writer
                 writer.flush();
@@ -691,5 +741,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         }
 
     }
+
 }
 
