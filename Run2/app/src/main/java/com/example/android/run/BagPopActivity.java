@@ -45,11 +45,11 @@ public class BagPopActivity extends Activity {
 
         if (tabletSize) {
             // convert dip to pixels
-            height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 135, getResources().getDisplayMetrics());
+            height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 147, getResources().getDisplayMetrics());
             margin.getLayoutParams().height = height;
         } else {
             // convert dip to pixels
-            height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 95, getResources().getDisplayMetrics());
+            height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 103, getResources().getDisplayMetrics());
             margin.getLayoutParams().height = height;
         }
 

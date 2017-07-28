@@ -29,20 +29,24 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="10">
+        android:layout_weight="15">
 
-        <FrameLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/layout_margin"
-            android:layout_marginRight="@dimen/layout_margin">
+            android:layout_weight="28"
+            android:background="@drawable/background_shadow">
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/more_recycler_view"
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/layout_margin">
 
-        </FrameLayout>
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/more_recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+            </FrameLayout>
+        </RelativeLayout>
     </ScrollView>
-
 </LinearLayout>

@@ -15,49 +15,10 @@
         android:layout_weight="1">
 
         <RelativeLayout
-            android:orientation="vertical"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="28">
-
-            <View
-                android:layout_width="120dp"
-                android:layout_height="120dp"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentLeft="true"
-                android:background="@drawable/background_shadow_top"></View>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:layout_marginLeft="@dimen/layout_margin"
-                android:layout_marginRight="@dimen/layout_margin"
-                android:layout_alignParentTop="true"
-                android:background="@drawable/background_shadow_top"></View>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:layout_marginLeft="@dimen/layout_margin"
-                android:layout_marginRight="@dimen/layout_margin"
-                android:layout_alignParentBottom="true"
-                android:background="@drawable/background_shadow_bottom"></View>
-
-            <View
-                android:layout_width="200dp"
-                android:layout_height="match_parent"
-                android:layout_marginTop="@dimen/layout_margin"
-                android:layout_marginBottom="@dimen/layout_margin"
-                android:layout_alignParentLeft="true"
-                android:background="@drawable/background_shadow_left"></View>
-
-            <View
-                android:layout_width="200dp"
-                android:layout_height="match_parent"
-                android:layout_marginTop="@dimen/layout_margin"
-                android:layout_marginBottom="@dimen/layout_margin"
-                android:layout_alignParentRight="true"
-                android:background="@drawable/background_shadow_right"></View>
+            android:layout_weight="28"
+            android:background="@drawable/background_shadow">
 
             <RelativeLayout
                 android:layout_width="match_parent"
