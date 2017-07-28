@@ -100,7 +100,7 @@ public class MoreFragment extends Fragment {
         public ConstraintLayout moreItem_logout;
 
         public ViewHolder(final LayoutInflater inflater, ViewGroup parent) {
-            super(inflater.inflate(R.layout.item_more_list, parent, false));
+            super(inflater.inflate(R.layout.item_list_more, parent, false));
             moreItem_name = (TextView) itemView.findViewById(R.id.list_title);
             moreItem_background = (LinearLayout) itemView.findViewById(R.id.more_list_background);
             moreItem_die = (ConstraintLayout) itemView.findViewById(R.id.more_die);

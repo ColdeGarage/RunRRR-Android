@@ -67,12 +67,15 @@ public class MissionsFragment extends Fragment
     private static String token;
 
     public static MissionsFragment getInstance() {
-        if( instance == null ) {
-            synchronized (MissionsFragment.class) {
-                if (instance == null) {
-                    instance = new MissionsFragment();
-                }
-            }
+//        if( instance == null ) {
+//            synchronized (MissionsFragment.class) {
+//                if (instance == null) {
+//                    instance = new MissionsFragment();
+//                }
+//            }
+//        }
+        synchronized (MissionsFragment.class) {
+                instance = new MissionsFragment();
         }
         return instance;
     }
