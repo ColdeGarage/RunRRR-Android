@@ -119,55 +119,68 @@ public class ViewPagerActivity extends FragmentActivity
         switchPage(0);
     }
 
-    static public void switchPage(int index){
+
+    public void switchPage(int index){
 
         iCurrPage = index;
-        switch( index ) {
-            case 0: {
-                System.out.println("gogogogMAPAPAP~");
-                MapsFragment.instance.Refresh();
-                mViewPager.setCurrentItem(0, false);
-                pager_bar.setBackgroundResource(R.color.tab_map);
-                tab_map.setImageResource(R.drawable.tab_map_focused);
-                tab_mission.setImageResource(R.drawable.tab_mission_idle);
-                tab_bag.setImageResource(R.drawable.tab_bag_idle);
-                tab_more.setImageResource(R.drawable.tab_more_idle);
-            }
-            break;
-            case 1: {
-                System.out.println("GOGOGOGOGOGmission~~");
-                MissionsFragment.instance.Refresh();
-                mViewPager.setCurrentItem(1, false);
-                pager_bar.setBackgroundResource(R.color.tab_mission);
-                tab_map.setImageResource(R.drawable.tab_map_idle);
-                tab_mission.setImageResource(R.drawable.tab_mission_focused);
-                tab_bag.setImageResource(R.drawable.tab_bag_idle);
-                tab_more.setImageResource(R.drawable.tab_more_idle);
-            }
-            break;
-            case 2: {
-                System.out.println("gogogogoBAG~");
-                BagFragment.instance.Refresh();
-                mViewPager.setCurrentItem(2, false);
-                pager_bar.setBackgroundResource(R.color.tab_bag);
-                tab_map.setImageResource(R.drawable.tab_map_idle);
-                tab_mission.setImageResource(R.drawable.tab_mission_idle);
-                tab_bag.setImageResource(R.drawable.tab_bag_focused);
-                tab_more.setImageResource(R.drawable.tab_more_idle);
-            }
-            break;
-            case 3: {
-                System.out.println("gogogogMOOORE~");
-                MoreFragment.instance.Refresh();
-                mViewPager.setCurrentItem(3, false);
-                pager_bar.setBackgroundResource(R.color.tab_more);
-                tab_map.setImageResource(R.drawable.tab_map_idle);
-                tab_mission.setImageResource(R.drawable.tab_mission_idle);
-                tab_bag.setImageResource(R.drawable.tab_bag_idle);
-                tab_more.setImageResource(R.drawable.tab_more_focused);
-            }
-            break;
+        final LocationManager manager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
+
+        if ( !manager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
+            Alert("Please check your GPS.");
         }
+
+        if(!isNetworkAvailable()){
+            Alert("Please check your internet connection, then try again.");
+        }
+        else {
+            switch( index ) {
+                case 0: {
+                    System.out.println("gogogogMAPAPAP~");
+                    MapsFragment.instance.Refresh();
+                    mViewPager.setCurrentItem(0, false);
+                    pager_bar.setBackgroundResource(R.color.tab_map);
+                    tab_map.setImageResource(R.drawable.tab_map_focused);
+                    tab_mission.setImageResource(R.drawable.tab_mission_idle);
+                    tab_bag.setImageResource(R.drawable.tab_bag_idle);
+                    tab_more.setImageResource(R.drawable.tab_more_idle);
+                }
+                break;
+                case 1: {
+                    System.out.println("GOGOGOGOGOGmission~~");
+                    MissionsFragment.instance.Refresh();
+                    mViewPager.setCurrentItem(1, false);
+                    pager_bar.setBackgroundResource(R.color.tab_mission);
+                    tab_map.setImageResource(R.drawable.tab_map_idle);
+                    tab_mission.setImageResource(R.drawable.tab_mission_focused);
+                    tab_bag.setImageResource(R.drawable.tab_bag_idle);
+                    tab_more.setImageResource(R.drawable.tab_more_idle);
+                }
+                break;
+                case 2: {
+                    System.out.println("gogogogoBAG~");
+                    BagFragment.instance.Refresh();
+                    mViewPager.setCurrentItem(2, false);
+                    pager_bar.setBackgroundResource(R.color.tab_bag);
+                    tab_map.setImageResource(R.drawable.tab_map_idle);
+                    tab_mission.setImageResource(R.drawable.tab_mission_idle);
+                    tab_bag.setImageResource(R.drawable.tab_bag_focused);
+                    tab_more.setImageResource(R.drawable.tab_more_idle);
+                }
+                break;
+                case 3: {
+                    System.out.println("gogogogMOOORE~");
+                    MoreFragment.instance.Refresh();
+                    mViewPager.setCurrentItem(3, false);
+                    pager_bar.setBackgroundResource(R.color.tab_more);
+                    tab_map.setImageResource(R.drawable.tab_map_idle);
+                    tab_mission.setImageResource(R.drawable.tab_mission_idle);
+                    tab_bag.setImageResource(R.drawable.tab_bag_idle);
+                    tab_more.setImageResource(R.drawable.tab_more_focused);
+                }
+                break;
+            }
+        }
+
     }
 
     static class FragPagerAdapter extends FragmentPagerAdapter {
