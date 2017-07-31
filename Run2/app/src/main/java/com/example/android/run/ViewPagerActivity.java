@@ -24,7 +24,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.util.TypedValue;
 import android.view.KeyEvent;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -126,6 +125,7 @@ public class ViewPagerActivity extends FragmentActivity
         switch( index ) {
             case 0: {
                 System.out.println("gogogogMAPAPAP~");
+                MapsFragment.instance.Refresh();
                 mViewPager.setCurrentItem(0, false);
                 pager_bar.setBackgroundResource(R.color.tab_map);
                 tab_map.setImageResource(R.drawable.tab_map_focused);
@@ -158,6 +158,7 @@ public class ViewPagerActivity extends FragmentActivity
             break;
             case 3: {
                 System.out.println("gogogogMOOORE~");
+                MoreFragment.instance.Refresh();
                 mViewPager.setCurrentItem(3, false);
                 pager_bar.setBackgroundResource(R.color.tab_more);
                 tab_map.setImageResource(R.drawable.tab_map_idle);

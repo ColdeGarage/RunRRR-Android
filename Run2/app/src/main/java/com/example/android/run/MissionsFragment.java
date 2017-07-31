@@ -144,6 +144,18 @@ public class MissionsFragment extends Fragment
         super.onActivityCreated(savedInstanceState);
     }
 
+    public void Refresh(){
+        // Create new fragment and transaction
+        Fragment newFragment = new MissionsFragment();
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+
+        // Replace whatever is in the fragment_container view with this fragment,
+        // and add the transaction to the back stack
+        transaction.replace(R.id.swiperefresh, newFragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public ImageView type;
         public TextView name;
@@ -486,26 +498,7 @@ public class MissionsFragment extends Fragment
         }
     }
 
-    public void Refresh(){
-        mSwipeLayout.setRefreshing(true);
 
-        // Create new fragment and transaction
-        Fragment newFragment = new MissionsFragment();
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-
-        // Replace whatever is in the fragment_container view with this fragment,
-        // and add the transaction to the back stack
-        transaction.replace(R.id.swiperefresh, newFragment)
-                .addToBackStack(null)
-                .commit();
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mSwipeLayout.setRefreshing(false);
-            }
-        }, 1000);
-    }
     //===================HTTP==========================
     //HTTPGet
     static class MyTaskGet extends AsyncTask<String,Void,String> {

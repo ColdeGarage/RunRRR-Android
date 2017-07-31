@@ -23,10 +23,10 @@ import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -41,6 +41,13 @@ public class MoreFragment extends Fragment {
     static MoreFragment instance = null;
 
     public static MoreFragment getInstance() {
+//        if( instance == null ) {
+//            synchronized (MoreFragment.class) {
+//                if (instance == null) {
+//                    instance = new MoreFragment();
+//                }
+//            }
+//        }
         synchronized (MoreFragment.class) {
                 instance = new MoreFragment();
         }
@@ -84,6 +91,18 @@ public class MoreFragment extends Fragment {
         //TextView mText = (TextView) getView().findViewById(R.id.list_title);
         //mText.setText("輸入序號");
 
+    }
+
+    public void Refresh(){
+        // Create new fragment and transaction
+        Fragment newFragment = new MoreFragment();
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+
+        // Replace whatever is in the fragment_container view with this fragment,
+        // and add the transaction to the back stack
+        transaction.replace(R.id.more_list, newFragment)
+                .addToBackStack(null)
+                .commit();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder{

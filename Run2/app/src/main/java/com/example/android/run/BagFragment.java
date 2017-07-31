@@ -24,11 +24,10 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -47,7 +46,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.concurrent.ExecutionException;
 
 import static android.content.Context.MODE_PRIVATE;
 import static com.google.android.gms.internal.zzid.runOnUiThread;
@@ -76,6 +74,13 @@ public class BagFragment extends Fragment
     int toolNum=0;
 
     public static BagFragment getInstance() {
+//        if( instance == null ) {
+//            synchronized (BagFragment.class) {
+//                if (instance == null) {
+//                    instance = new BagFragment();
+//                }
+//            }
+//        }
         synchronized (BagFragment.class) {
             instance = new BagFragment();
         }
@@ -107,6 +112,19 @@ public class BagFragment extends Fragment
     {
         super.onActivityCreated(savedInstanceState);
     }
+
+    public void Refresh(){
+        // Create new fragment and transaction
+        Fragment newFragment = new BagFragment();
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+
+        // Replace whatever is in the fragment_container view with this fragment,
+        // and add the transaction to the back stack
+        transaction.replace(R.id.swiperefresh, newFragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
     //=====================內存=====================
     private void readPrefs(){
         SharedPreferences settings = getContext().getSharedPreferences("data",MODE_PRIVATE);
@@ -377,97 +395,6 @@ public class BagFragment extends Fragment
 //        setActivityBackgroundColor(R.color.white);
 //        Blurry.delete((ViewGroup) v);
 
-    }
-    public void Refresh(){
-        packList.clear();
-        toolIds = new String[50];
-        toolPIds = new String[50];
-        clueIds = new String[50];
-        pName = new String[100];
-        pUrl = new String[100];
-        pCount = new String[100];
-        pContent = new String[100];
-        pID.clear();
-        toolNum=0;
-        int money=0;
-        myTaskGet httpGet= null;
-        try {
-            httpGet = new myTaskGet("http://coldegarage.tech:8081/api/v1.1/member/read?operator_uid="+String.valueOf(uid)+"&uid="+String.valueOf(uid)+"&token="+token);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-        httpGet.execute();
-        try {
-            money = ParseJsonFromMemberForMoney(httpGet.get());
-        } catch (Exception e){
-            e.printStackTrace();
-        }
-
-        try {
-            httpGet = new myTaskGet("http://coldegarage.tech:8081/api/v1.1/pack/read?operator_uid="+String.valueOf(uid)+"&uid="+String.valueOf(uid)+"&token="+token);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-        httpGet.execute();
-        //get tools[] and clues[]
-        try {
-            ParseJsonFromPack(httpGet.get());
-        } catch (Exception e){
-            e.printStackTrace();
-        }
-
-        for(int i =0 ; toolIds[i]!=null ; i++) {
-            try {
-                httpGet = new myTaskGet("http://coldegarage.tech:8081/api/v1.1/tool/read?operator_uid="+String.valueOf(uid)+"&uid="+String.valueOf(uid)+"&token="+token +"&tid="+toolIds[i]);
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            }
-            httpGet.execute();
-            try {
-                ParseJsonFromTools(httpGet.get(),toolPIds[i]);
-            } catch (Exception e){
-                e.printStackTrace();
-            }
-        }
-        for(int i =0 ;  clueIds[i] != null; i++) {
-            try {
-                httpGet = new myTaskGet("http://coldegarage.tech:8081/api/v1.1/clue/read?operator_uid="+String.valueOf(uid)+"&uid="+String.valueOf(uid)+"&token="+token +"&cid="+clueIds[i]);
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            }
-            httpGet.execute();
-            try {
-                ParseJsonFromClues(httpGet.get());
-            } catch (Exception e){
-                e.printStackTrace();
-            }
-        }
-        System.out.println("packList=");
-        System.out.println(packList);
-        System.out.println("toolNum = " + toolNum);
-
-        //TODO Auto-generated method stub
-        pName[0] = "金錢"+money+"元";
-        pUrl[0] = "";
-        pCount[0] = "";
-        pContent[0] = "刀，Dollar";
-        for(int i=1; i <=packList.size(); i++){
-            pName[i] = packList.get(i-1).get(0).get("title");
-            pUrl[i] = packList.get(i-1).get(0).get("url");
-            pCount[i] = packList.get(i-1).get(0).get("count");
-            pContent[i] = packList.get(i-1).get(0).get("content");
-
-            if(i<=toolNum){
-                String[] pid = new String[10];
-                pid[0] = packList.get(i-1).get(0).get("pid");
-                for(int j=1; j < packList.get(i-1).size(); j++){
-                    pid[j] = packList.get(i-1).get(j).get("pid");
-                }
-                pID.add(pid);
-            }
-        }
-        System.out.println("calling notify~~~");
-        adapter.notifyDataSetChanged();
     }
 
     private static Bitmap getBitmapFromURL(String imageUrl) {
