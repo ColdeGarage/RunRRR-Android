@@ -53,7 +53,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="left"
-                android:text="87"
+                android:text=""
                 android:textSize="50dp"
                 android:textColor="@color/black"/>
         </LinearLayout>

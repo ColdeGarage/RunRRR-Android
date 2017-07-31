@@ -16,12 +16,18 @@
 
 package com.example.android.run;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v7.app.AlertDialog;
 import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.View;
@@ -118,7 +124,6 @@ public class ViewPagerActivity extends FragmentActivity
         super.onNewIntent(intent);
         switchPage(0);
     }
-
 
     public void switchPage(int index){
 
@@ -229,5 +234,23 @@ public class ViewPagerActivity extends FragmentActivity
         }
 
         return super.onKeyDown(keyCode, event);
+    }
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+    //show an alert dialog
+    void Alert(String mes){
+        new AlertDialog.Builder(ViewPagerActivity.this)
+                .setMessage(mes)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                }).show();
     }
 }

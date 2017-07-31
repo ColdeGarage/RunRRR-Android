@@ -1,8 +1,11 @@
 package com.example.android.run;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -49,34 +52,38 @@ public class MainActivity extends AppCompatActivity {
         final EditText pass = (EditText) findViewById(R.id.password);
 
         icon.setImageResource(R.drawable.ic_login);
+        if(!isNetworkAvailable()){
+            Alert("Please check your internet connection, then restart the app again.");
+        }
+        else{
+            //add space at the beginning
+            acc.setPadding(10, 0, 0, 0);
+            pass.setPadding(10, 0, 0, 0);
 
-        //add space at the beginning
-        acc.setPadding(10, 0, 0, 0);
-        pass.setPadding(10, 0, 0, 0);
+            login.setOnClickListener(new TextView.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    account_in = acc.getText().toString();
+                    pass_in = pass.getText().toString();
 
-        login.setOnClickListener(new TextView.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                account_in = acc.getText().toString();
-                pass_in = pass.getText().toString();
-
-                if(account_in.isEmpty()){
-                    Alert("Account can't be empty.");
-                }else if(pass_in.isEmpty()) {
-                    Alert("Password can't be empty.");
-                }else {
-                    //if account&password aren't empty, check whether it's valid
-                    checkAccount();
+                    if(account_in.isEmpty()){
+                        Alert("Account can't be empty.");
+                    }else if(pass_in.isEmpty()) {
+                        Alert("Password can't be empty.");
+                    }else {
+                        //if account&password aren't empty, check whether it's valid
+                        checkAccount();
+                    }
                 }
-            }
-        });
+            });
 
-        about.setOnClickListener(new TextView.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-            goAboutUs();
-            }
-        });
+            about.setOnClickListener(new TextView.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    goAboutUs();
+                }
+            });
+        }
     }
 
     @Override
@@ -164,16 +171,22 @@ public class MainActivity extends AppCompatActivity {
     private void storePrefs(){
         SharedPreferences settings = getSharedPreferences("data",MODE_PRIVATE);
         settings.edit().putBoolean("login",loginState)
-                        .putInt("uid",uid)
-                        .putString("token",token)
-                        .apply();
+                .putInt("uid",uid)
+                .putString("token",token)
+                .apply();
     }
     //read login state
     private boolean readPrefs(){
         SharedPreferences settings = getSharedPreferences("data",MODE_PRIVATE);
         return settings.getBoolean("login",false);
     }
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
 
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
     //===================HTTP==========================
     //HTTPGet, we will not use it in this Activity
     class MyTaskGet extends AsyncTask<Void,Void,String>{
@@ -300,8 +313,8 @@ public class MainActivity extends AppCompatActivity {
             }catch(Exception e){
                 e.printStackTrace();
             }
-        finally {
-            urlConnection.disconnect();
+            finally {
+                urlConnection.disconnect();
                 // close the reader; this can throw an exception too, so
                 // wrap it in another try/catch block.
                 if (reader != null)
@@ -315,7 +328,7 @@ public class MainActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 }
-        }
+            }
 
             return null;
         }

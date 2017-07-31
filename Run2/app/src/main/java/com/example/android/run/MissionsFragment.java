@@ -87,7 +87,7 @@ public class MissionsFragment extends Fragment
                              Bundle savedInstanceState) {
         //RecyclerView recyclerView = (RecyclerView) inflater.inflate(
         //        R.layout.recycler_view, container, false);
-        View v = inflater.inflate(R.layout.swipe_recycler_view, container, false);
+        View v = inflater.inflate(R.layout.fragment_missions, container, false);
 
         //read uid and token
         readPrefs();
@@ -96,7 +96,7 @@ public class MissionsFragment extends Fragment
             * Sets up a SwipeRefreshLayout.OnRefreshListener that is invoked when the user
             * performs a swipe-to-refresh gesture.
         */
-        mSwipeLayout = (SwipeRefreshLayout) v.findViewById(R.id.swiperefresh);
+        mSwipeLayout = (SwipeRefreshLayout) v.findViewById(R.id.missions_recycler_view);
         mSwipeLayout.setColorSchemeColors(Color.RED);
         mSwipeLayout.setOnRefreshListener(
                 new SwipeRefreshLayout.OnRefreshListener() {
@@ -110,7 +110,7 @@ public class MissionsFragment extends Fragment
 
                         // Replace whatever is in the fragment_container view with this fragment,
                         // and add the transaction to the back stack
-                        transaction.replace(R.id.swiperefresh, newFragment)
+                        transaction.replace(R.id.missions_recycler_view, newFragment)
                                     .addToBackStack(null)
                                     .commit();
 
@@ -153,7 +153,7 @@ public class MissionsFragment extends Fragment
 
         // Replace whatever is in the fragment_container view with this fragment,
         // and add the transaction to the back stack
-        transaction.replace(R.id.swiperefresh, newFragment)
+        transaction.replace(R.id.missions_recycler_view, newFragment)
                 .addToBackStack(null)
                 .commit();
     }
@@ -165,7 +165,7 @@ public class MissionsFragment extends Fragment
         public ImageView state;
 
         public ViewHolder(LayoutInflater inflater, ViewGroup parent) {
-            super(inflater.inflate(R.layout.fragment_missions, parent, false));
+            super(inflater.inflate(R.layout.item_list_missions, parent, false));
 
             type = (TextView) itemView.findViewById(R.id.list_type);
             name = (TextView) itemView.findViewById(R.id.list_name);

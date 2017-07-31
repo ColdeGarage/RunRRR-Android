@@ -16,56 +16,33 @@
   -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/missions_height"
+    android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="?android:attr/selectableItemBackground"
-    android:orientation="horizontal">
-    <!--android:padding="@dimen/md_keylines">-->
+    android:id="@+id/more_list"
+    android:background="@color/background_grey"
+    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/list_type"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_margin="10dp"
-        android:layout_gravity="center"
-        android:text="主"
-        android:textColor="@color/white"
-        android:textSize="@dimen/text_type"
-        android:textStyle="bold"
-        android:gravity="center"
-        android:background="@drawable/background_circle"/>
-
-    <TextView
-        android:id="@+id/list_name"
-        android:layout_width="0dp"
+    <ScrollView
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:gravity="center"
-        tools:text="@string/item_title"
-        android:textAppearance="?attr/textAppearanceListItem"
-        android:textSize="@dimen/text_title" />
+        android:layout_marginTop="@dimen/layout_margin">
 
-    <LinearLayout
-        android:layout_width="@dimen/check_size"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="28"
+            android:background="@drawable/background_shadow">
 
-        <TextView
-            android:id="@+id/list_time"
-            android:layout_width="@dimen/check_size"
-            android:layout_height="26dp"
-            android:ellipsize="end"
-            android:gravity="center"
-            tools:text="@string/item_time"
-            android:textSize="@dimen/list_body"
-            android:textColor="@color/medium_grey"
-            android:textAppearance="?attr/textAppearanceListItem" />
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/layout_margin">
 
-        <ImageView
-            android:id="@+id/list_state"
-            android:layout_width="@dimen/check_size"
-            android:layout_height="@dimen/check_size"
-            android:scaleType="centerCrop"
-            android:padding="5dp"/>
-    </LinearLayout>
+                <android.support.v4.widget.SwipeRefreshLayout
+                    android:id="@+id/missions_recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+            </FrameLayout>
+        </RelativeLayout>
+    </ScrollView>
 </LinearLayout>
