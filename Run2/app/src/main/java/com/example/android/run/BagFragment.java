@@ -135,24 +135,30 @@ public class BagFragment extends Fragment
         ImageView tool1;
         TextView name1;
         TextView count1;
+        TextView count1_shadow;
         ImageView tool2;
         TextView name2;
         TextView count2;
+        TextView count2_shadow;
         ImageView tool3;
         TextView name3;
         TextView count3;
+        TextView count3_shadow;
 
         ViewHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.fragment_bag, parent, false));
             tool1 = (ImageView) itemView.findViewById(R.id.toolImage1);
             name1 = (TextView) itemView.findViewById(R.id.toolName1);
             count1 = (TextView) itemView.findViewById(R.id.toolNumber1);
+            count1_shadow = (TextView) itemView.findViewById(R.id.toolNumber1_shadow);
             tool2 = (ImageView) itemView.findViewById(R.id.toolImage2);
             name2 = (TextView) itemView.findViewById(R.id.toolName2);
             count2 = (TextView) itemView.findViewById(R.id.toolNumber2);
+            count2_shadow = (TextView) itemView.findViewById(R.id.toolNumber2_shadow);
             tool3 = (ImageView) itemView.findViewById(R.id.toolImage3);
             name3 = (TextView) itemView.findViewById(R.id.toolName3);
             count3 = (TextView) itemView.findViewById(R.id.toolNumber3);
+            count3_shadow = (TextView) itemView.findViewById(R.id.toolNumber3_shadow);
 
         }
     }
@@ -247,11 +253,32 @@ public class BagFragment extends Fragment
             //tool name count
             System.out.println("position=" + position);
             holder.name1.setText(pName[position*3]);
-            holder.count1.setText(pCount[position*3]);
+            if(pCount[position*3] == "") {
+                holder.count1.setVisibility(View.INVISIBLE);
+                holder.count1_shadow.setVisibility(View.INVISIBLE);
+            } else {
+                holder.count1.setVisibility(View.VISIBLE);
+                holder.count1.setText(pCount[position*3]);
+                holder.count1_shadow.setVisibility(View.VISIBLE);
+            }
             holder.name2.setText(pName[position*3+1]);
-            holder.count2.setText(pCount[position*3+1]);
+            if(pCount[position*3+1] == "") {
+                holder.count2.setVisibility(View.INVISIBLE);
+                holder.count2_shadow.setVisibility(View.INVISIBLE);
+            } else {
+                holder.count2.setVisibility(View.VISIBLE);
+                holder.count2.setText(pCount[position*3+1]);
+                holder.count2_shadow.setVisibility(View.VISIBLE);
+            }
             holder.name3.setText(pName[position*3+2]);
-            holder.count3.setText(pCount[position*3+2]);
+            if(pCount[position*3+2] == "") {
+                holder.count3.setVisibility(View.INVISIBLE);
+                holder.count3_shadow.setVisibility(View.INVISIBLE);
+            } else {
+                holder.count3.setVisibility(View.VISIBLE);
+                holder.count3.setText(pCount[position*3+2]);
+                holder.count3_shadow.setVisibility(View.VISIBLE);
+            }
 
             new Thread(new Runnable() {
                 @Override
@@ -260,10 +287,11 @@ public class BagFragment extends Fragment
                     if( !pUrl[position*3].equals("")) {
                         final Bitmap mBitmap =
                                 getBitmapFromURL("http://coldegarage.tech:8081/api/v1.1/download/img/" + pUrl[position * 3]);
+                        final Bitmap circularBitmap = ImageConverter.getRoundedCornerBitmap(mBitmap, 30);
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                holder.tool1.setImageBitmap(mBitmap);
+                                holder.tool1.setImageBitmap(circularBitmap);
                             }
                         });
                     }
@@ -271,20 +299,22 @@ public class BagFragment extends Fragment
                     if( pUrl[position*3+1]!="" && pUrl[position*3+1]!=null) {
                         final Bitmap mBitmap2 =
                                 getBitmapFromURL("http://coldegarage.tech:8081/api/v1.1/download/img/" + pUrl[position * 3 + 1]);
+                        final Bitmap circularBitmap2 = ImageConverter.getRoundedCornerBitmap(mBitmap2, 30);
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                holder.tool2.setImageBitmap(mBitmap2);
+                                holder.tool2.setImageBitmap(circularBitmap2);
                             }
                         });
                     }//TODO Auto-generated method stub
                     if( pUrl[position*3+2]!="" && pUrl[position*3+2]!=null) {
                         final Bitmap mBitmap3 =
                                 getBitmapFromURL("http://coldegarage.tech:8081/api/v1.1/download/img/" + pUrl[position * 3 + 2]);
+                        final Bitmap circularBitmap3 = ImageConverter.getRoundedCornerBitmap(mBitmap3, 30);
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                holder.tool3.setImageBitmap(mBitmap3);
+                                holder.tool3.setImageBitmap(circularBitmap3);
                             }
                         });
                     }
@@ -369,7 +399,7 @@ public class BagFragment extends Fragment
         }
         @Override
         public int getItemCount() {
-            LENGTH = packList.size();
+            LENGTH = packList.size()+1;
             if(LENGTH%3!=0) {
                 return (LENGTH/3+1);
             }

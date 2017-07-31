@@ -40,4 +40,5 @@
     <dimen name="text_content">20dp</dimen>
     <dimen name="tab_margin">5dp</dimen>
     <dimen name="layout_margin">20dp</dimen>
+    <dimen name="image_margin">15dp</dimen>
 </resources>
