@@ -372,7 +372,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
     private int score;
     void setScore (){
-        TextView pointView = (TextView)getActivity().findViewById(R.id.text_point);
         TextView scoreView = (TextView)getActivity().findViewById(R.id.score);
         //get score
         MyTaskGet httpGetScore = new MyTaskGet();
@@ -384,6 +383,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
             e.printStackTrace();
         }
         scoreView.setText(String.valueOf(score));
+        System.out.println("SCORE!!!!");
     }
     //Parse json received from server
     void parseJson (String info, String instru){

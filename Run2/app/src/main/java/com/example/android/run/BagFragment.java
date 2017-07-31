@@ -253,31 +253,31 @@ public class BagFragment extends Fragment
             //tool name count
             System.out.println("position=" + position);
             holder.name1.setText(pName[position*3]);
-            if(pCount[position*3] == "") {
-                holder.count1.setVisibility(View.INVISIBLE);
-                holder.count1_shadow.setVisibility(View.INVISIBLE);
-            } else {
+            if(pCount[position*3] != "" && pCount[position*3] != "0") {
                 holder.count1.setVisibility(View.VISIBLE);
                 holder.count1.setText(pCount[position*3]);
                 holder.count1_shadow.setVisibility(View.VISIBLE);
+            } else {
+                holder.count1.setVisibility(View.INVISIBLE);
+                holder.count1_shadow.setVisibility(View.INVISIBLE);
             }
             holder.name2.setText(pName[position*3+1]);
-            if(pCount[position*3+1] == "") {
-                holder.count2.setVisibility(View.INVISIBLE);
-                holder.count2_shadow.setVisibility(View.INVISIBLE);
-            } else {
+            if(pCount[position*3+1] != "" && pCount[position*3+1] != "0") {
                 holder.count2.setVisibility(View.VISIBLE);
                 holder.count2.setText(pCount[position*3+1]);
                 holder.count2_shadow.setVisibility(View.VISIBLE);
+            } else {
+                holder.count2.setVisibility(View.INVISIBLE);
+                holder.count2_shadow.setVisibility(View.INVISIBLE);
             }
             holder.name3.setText(pName[position*3+2]);
-            if(pCount[position*3+2] == "") {
-                holder.count3.setVisibility(View.INVISIBLE);
-                holder.count3_shadow.setVisibility(View.INVISIBLE);
-            } else {
+            if(pCount[position*3+2] != "" && pCount[position*3+2] != "0") {
                 holder.count3.setVisibility(View.VISIBLE);
                 holder.count3.setText(pCount[position*3+2]);
                 holder.count3_shadow.setVisibility(View.VISIBLE);
+            } else {
+                holder.count3.setVisibility(View.INVISIBLE);
+                holder.count3_shadow.setVisibility(View.INVISIBLE);
             }
 
             new Thread(new Runnable() {
