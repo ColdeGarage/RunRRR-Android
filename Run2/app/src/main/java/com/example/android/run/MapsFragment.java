@@ -17,7 +17,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -193,15 +192,16 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 //    }
 
     public void Refresh(){
-        // Create new fragment and transaction
-        Fragment newFragment = new MapsFragment();
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-
-        // Replace whatever is in the fragment_container view with this fragment,
-        // and add the transaction to the back stack
-        transaction.replace(R.id.frag_map, newFragment)
-                .addToBackStack(null)
-                .commit();
+//        // Create new fragment and transaction
+//        Fragment newFragment = new MapsFragment();
+//        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+//
+//        // Replace whatever is in the fragment_container view with this fragment,
+//        // and add the transaction to the back stack
+//        transaction.replace(R.id.frag_map, newFragment)
+//                .addToBackStack(null)
+//                .commit();
+        initial(googleMap);
     }
 
     //========================內存=========================
