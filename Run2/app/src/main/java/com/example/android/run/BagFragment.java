@@ -259,7 +259,25 @@ public class BagFragment extends Fragment
             //tool name count
             System.out.println("position=" + position);
             holder.name1.setText(pName[position*3]);
-            if(pCount[position*3] != "" && pCount[position*3] != "0") {
+//            if(LENGTH > position*3 && pCount[position*3] != "") {
+//                holder.count1.setText(pCount[position*3]);
+//                holder.count1.setBackgroundResource(R.drawable.background_circle);
+//                holder.count1_shadow.setBackgroundResource(R.drawable.background_circle_shadow);
+//            }
+//            holder.name2.setText(pName[position*3+1]);
+//            if(LENGTH > position*3+1 && pCount[position*3+1] != "") {
+//                holder.count2.setText(pCount[position*3+1]);
+//                holder.count2.setBackgroundResource(R.drawable.background_circle);
+//                holder.count2_shadow.setBackgroundResource(R.drawable.background_circle_shadow);
+//            }
+//            holder.name3.setText(pName[position*3+2]);
+//            System.out.println("name" + pName[position*3+2]);
+//            if(LENGTH > position*3+2 && pCount[position*3+2] != "") {
+//                holder.count3.setText(pCount[position*3+2]);
+//                holder.count3.setBackgroundResource(R.drawable.background_circle);
+//                holder.count3_shadow.setBackgroundResource(R.drawable.background_circle_shadow);
+//            }
+            if(pCount[position*3] != "" && pCount[position*3] != "0" && pCount[position*3] != null) {
                 holder.count1.setText(pCount[position*3]);
                 holder.count1.setVisibility(View.VISIBLE);
                 holder.count1_shadow.setVisibility(View.VISIBLE);
@@ -268,7 +286,7 @@ public class BagFragment extends Fragment
                 holder.count1_shadow.setVisibility(View.INVISIBLE);
             }
             holder.name2.setText(pName[position*3+1]);
-            if(pCount[position*3+1] != "" && pCount[position*3+1] != "0") {
+            if(pCount[position*3+1] != "" && pCount[position*3+1] != "0" && pCount[position*3+1] != null) {
                 holder.count2.setText(pCount[position*3+1]);
                 holder.count2.setVisibility(View.VISIBLE);
                 holder.count2_shadow.setVisibility(View.VISIBLE);
@@ -277,7 +295,7 @@ public class BagFragment extends Fragment
                 holder.count2_shadow.setVisibility(View.INVISIBLE);
             }
             holder.name3.setText(pName[position*3+2]);
-            if(pCount[position*3+2] != "" && pCount[position*3+2] != "0") {
+            if(pCount[position*3+2] != "" && pCount[position*3+2] != "0" && pCount[position*3+2] != null) {
                 holder.count3.setText(pCount[position*3+2]);
                 holder.count3.setVisibility(View.VISIBLE);
                 holder.count3_shadow.setVisibility(View.VISIBLE);

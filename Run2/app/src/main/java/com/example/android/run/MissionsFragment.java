@@ -64,7 +64,12 @@ public class MissionsFragment extends Fragment
 {
 
     static MissionsFragment instance = null;
+
+    private View rootView;
     private SwipeRefreshLayout mSwipeLayout;
+    private RecyclerView recyclerView;
+    private MissionsFragment.ContentAdapter adapter;
+
     private static int uid;
     private static String token;
 
@@ -87,7 +92,7 @@ public class MissionsFragment extends Fragment
                              Bundle savedInstanceState) {
         //RecyclerView recyclerView = (RecyclerView) inflater.inflate(
         //        R.layout.recycler_view, container, false);
-        View v = inflater.inflate(R.layout.swipe_recycler_view, container, false);
+        rootView = inflater.inflate(R.layout.swipe_recycler_view, container, false);
 
         //read uid and token
         readPrefs();
@@ -96,7 +101,7 @@ public class MissionsFragment extends Fragment
             * Sets up a SwipeRefreshLayout.OnRefreshListener that is invoked when the user
             * performs a swipe-to-refresh gesture.
         */
-        mSwipeLayout = (SwipeRefreshLayout) v.findViewById(R.id.swiperefresh);
+        mSwipeLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swiperefresh);
         mSwipeLayout.setColorSchemeColors(Color.RED);
         mSwipeLayout.setOnRefreshListener(
                 new SwipeRefreshLayout.OnRefreshListener() {
@@ -124,20 +129,20 @@ public class MissionsFragment extends Fragment
                 }
         );
 
-        RecyclerView recyclerView = (RecyclerView) v.findViewById(R.id.my_recycler_view);
+        recyclerView = (RecyclerView) rootView.findViewById(R.id.my_recycler_view);
 
         //Actually, I don't know why I have to add this line, but it solves the error.
         if(recyclerView.getParent()!=null)
             ((ViewGroup)recyclerView.getParent()).removeView(recyclerView);
 
-        MissionsFragment.ContentAdapter adapter = new MissionsFragment.ContentAdapter(v.getContext());
+        MissionsFragment.ContentAdapter adapter = new MissionsFragment.ContentAdapter(rootView.getContext());
         recyclerView.setAdapter(adapter);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        ((ViewGroup)v).addView(recyclerView);
+        ((ViewGroup) rootView).addView(recyclerView);
 
-        return v;
+        return rootView;
     }
 
     @Override
@@ -147,15 +152,17 @@ public class MissionsFragment extends Fragment
     }
 
     public void Refresh(){
-        // Create new fragment and transaction
-        Fragment newFragment = new MissionsFragment();
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-
-        // Replace whatever is in the fragment_container view with this fragment,
-        // and add the transaction to the back stack
-        transaction.replace(R.id.swiperefresh, newFragment)
-                .addToBackStack(null)
-                .commit();
+//        // Create new fragment and transaction
+//        Fragment newFragment = new MissionsFragment();
+//        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+//
+//        // Replace whatever is in the fragment_container view with this fragment,
+//        // and add the transaction to the back stack
+//        transaction.replace(R.id.swiperefresh, newFragment)
+//                .addToBackStack(null)
+//                .commit();
+        adapter = new MissionsFragment.ContentAdapter(rootView.getContext());
+        recyclerView.setAdapter(adapter);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
