@@ -280,6 +280,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
             LatLng latLng = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
             //move map camera
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,17));
+//            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(24.794574, 120.992936), 17));
 
             System.out.println("init");
         }
