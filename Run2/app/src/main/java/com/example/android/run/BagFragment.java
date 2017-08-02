@@ -328,7 +328,7 @@ public class BagFragment extends Fragment
                     //TODO:Intent to other activity
                     Context context = vv.getContext();
 
-                    Intent intent = new Intent(context, BagPopActivity.class);
+                    Intent intent = new Intent(context, BagPopWindowActivity.class);
 
                     Bundle bundle=new Bundle();
 
@@ -338,7 +338,7 @@ public class BagFragment extends Fragment
                     bundle.putString("IMAGEURL",pUrl[position*3]);
                     bundle.putString("CONTENT",pContent[position*3]);
                     bundle.putString("COUNT",pCount[position*3]);
-                    if(position*3<toolNum && position!=0){
+                    if(position*3<=toolNum && position!=0){
                         bundle.putStringArray("IDs",pID.get(position*3-1));
                     }
                     intent.putExtras(bundle);
@@ -353,7 +353,7 @@ public class BagFragment extends Fragment
                         //TODO:Intent to other activity
                         Context context = vv.getContext();
 
-                        Intent intent = new Intent(context, BagPopActivity.class);
+                        Intent intent = new Intent(context, BagPopWindowActivity.class);
 
                         Bundle bundle=new Bundle();
                         bundle.putString("uid",String.valueOf(uid));
@@ -362,7 +362,7 @@ public class BagFragment extends Fragment
                         bundle.putString("IMAGEURL",pUrl[position*3+1]);
                         bundle.putString("CONTENT",pContent[position*3+1]);
                         bundle.putString("COUNT",pCount[position*3+1]);
-                        if(position*3+1<toolNum){
+                        if(position*3+1<=toolNum){
                             bundle.putStringArray("IDs",pID.get(position*3));
                         }
                         intent.putExtras(bundle);
@@ -387,7 +387,7 @@ public class BagFragment extends Fragment
                         bundle.putString("IMAGEURL",pUrl[position*3+2]);
                         bundle.putString("CONTENT",pContent[position*3+2]);
                         bundle.putString("COUNT",pCount[position*3+2]);
-                        if(position*3+2<toolNum){
+                        if(position*3+2<=toolNum){
                             bundle.putStringArray("IDs",pID.get(position*3+1));
                         }
                         intent.putExtras(bundle);

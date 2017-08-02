@@ -98,16 +98,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         return instance;
     }
 
-//    @Override
-//    public void onAttach(Activity activity)
-//    {
-//        super.onAttach(activity);
-//
-//        //access TabActivity and put text content into text
-//        TabActivity mTabActivity = (TabActivity) activity;
-//        text = mTabActivity.getMapsText();
-//    }
-
     @Override
     public void onActivityCreated(Bundle savedInstanceState)
     {
@@ -213,6 +203,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         SharedPreferences settings = getContext().getSharedPreferences("data",MODE_PRIVATE);
         uid = settings.getInt("uid",0);
         token = settings.getString("token","");
+        System.out.println(uid);
+        System.out.println(token);
     }
 
     //======================建立地圖==============================

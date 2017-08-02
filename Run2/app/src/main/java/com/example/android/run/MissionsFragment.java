@@ -21,7 +21,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Color;
-import android.graphics.drawable.GradientDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -35,6 +34,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.json.JSONArray;
@@ -159,6 +159,7 @@ public class MissionsFragment extends Fragment
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
+        public LinearLayout list;
         public TextView type;
         public TextView name;
         public TextView time;
@@ -167,6 +168,7 @@ public class MissionsFragment extends Fragment
         public ViewHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.fragment_missions, parent, false));
 
+            list = (LinearLayout) itemView.findViewById(R.id.list_mission);
             type = (TextView) itemView.findViewById(R.id.list_type);
             name = (TextView) itemView.findViewById(R.id.list_name);
             time = (TextView) itemView.findViewById(R.id.list_time);
@@ -262,31 +264,22 @@ public class MissionsFragment extends Fragment
             String type = mType[position % mType.length];
             String state = mState[position % mState.length];
 
-            GradientDrawable itemShape;
-            int itemColor;
-
             //missions type : MAIN,SUB,URG, set different icon
             switch (type){
                 case "0":
-//                    holder.type.setImageResource(R.drawable.missions_urg);
                     holder.type.setText("限");
-                    itemShape = (GradientDrawable)holder.type.getBackground().getCurrent();
-                    itemColor = ContextCompat.getColor(holder.itemView.getContext(), R.color.urgent);
-                    itemShape.setColor(itemColor);
+                    holder.type.setTextColor(ContextCompat.getColor(getContext(), R.color.limit));
+                    holder.list.setBackgroundResource(R.color.limit);
                     break;
                 case "1":
-//                    holder.type.setImageResource(R.drawable.missions_main_2);
                     holder.type.setText("主");
-                    itemShape = (GradientDrawable)holder.type.getBackground().getCurrent();
-                    itemColor = ContextCompat.getColor(holder.itemView.getContext(), R.color.main);
-                    itemShape.setColor(itemColor);
+                    holder.type.setTextColor(ContextCompat.getColor(getContext(), R.color.main));
+                    holder.list.setBackgroundResource(R.color.main);
                     break;
                 case "2":
-//                    holder.type.setImageResource(R.drawable.missions_sub);
                     holder.type.setText("支");
-                    itemShape = (GradientDrawable)holder.type.getBackground().getCurrent();
-                    itemColor = ContextCompat.getColor(holder.itemView.getContext(), R.color.sub);
-                    itemShape.setColor(itemColor);
+                    holder.type.setTextColor(ContextCompat.getColor(getContext(), R.color.sub));
+                    holder.list.setBackgroundResource(R.color.sub);
                     break;
                 default:
                     break;
@@ -297,7 +290,7 @@ public class MissionsFragment extends Fragment
                 case "-1":
                     break;
                 case "0":
-                    holder.state.setImageResource(R.drawable.waiting);
+                    holder.state.setImageResource(R.drawable.state_waiting);
                     break;
                 case "1":
                     holder.state.setImageResource(R.drawable.state_passed);

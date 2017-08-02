@@ -82,6 +82,9 @@
             android:name=".BagPopActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity
+            android:name=".BagPopWindowActivity"
+            android:theme="@style/AppTheme.CustomTheme" />
+        <activity
             android:name=".LogoutActivity"
             android:theme="@style/AppTheme" />
         <activity

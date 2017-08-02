@@ -4,7 +4,7 @@
     android:shape="oval">
 
     <solid
-        android:color="@color/tab_map"/>
+        android:color="@color/white"/>
 
     <size
         android:width="30dp"
