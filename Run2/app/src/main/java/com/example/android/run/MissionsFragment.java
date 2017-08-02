@@ -17,10 +17,13 @@
 package com.example.android.run;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -28,6 +31,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -206,7 +210,9 @@ public class MissionsFragment extends Fragment
             Resources resources = context.getResources();
 
             String readDataFromHttp;
-
+            if(!isNetworkAvailable()){
+                Alert("Please check your internet connection, then try again.");
+            }
             //get mission list from server
             MyTaskGet httpGetMission = new MyTaskGet();
             httpGetMission.execute(resources.getString(R.string.apiURL)+"/mission/read?operator_uid="+String.valueOf(uid)+"&token="+token);
@@ -581,5 +587,22 @@ public class MissionsFragment extends Fragment
         }
 
     }
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
 
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+    //show an alert dialog
+    void Alert(String mes){
+        new AlertDialog.Builder(getActivity())
+                .setMessage(mes)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                }).show();
+    }
 }

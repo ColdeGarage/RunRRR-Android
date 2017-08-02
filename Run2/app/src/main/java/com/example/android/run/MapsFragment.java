@@ -2,11 +2,15 @@ package com.example.android.run;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
+import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -128,7 +132,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
         //read uid and token
         readPrefs();
-
+        if(!isNetworkAvailable()){
+            Alert("Please check your internet connection, then try again.");
+        }
         //update location
         if(flag == 0){
             updateHandler = new Handler();
@@ -213,7 +219,11 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         googleMap = mgoogleMap;
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(24.794574, 120.992936), 17));
         googleMap.getUiSettings().setZoomControlsEnabled(true);
+        final LocationManager manager = (LocationManager) getActivity().getSystemService( Context.LOCATION_SERVICE );
 
+        if ( !manager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
+            Alert("Please check your GPS.");
+        }
         //Initialize Google Play Services
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(getActivity().getApplicationContext(),
@@ -549,6 +559,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                         MY_PERMISSIONS_REQUEST_LOCATION );
             }
         }
+
     }
 
     //======================建立google api,FusedLocationApi===========================
@@ -752,5 +763,23 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
     }
 
+    //show an alert dialog
+    void Alert(String mes){
+        new AlertDialog.Builder(getActivity())
+                .setMessage(mes)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                }).show();
+    }
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
 }
 

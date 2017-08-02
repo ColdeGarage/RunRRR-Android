@@ -17,14 +17,18 @@
 package com.example.android.run;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -60,6 +64,7 @@ public class BagFragment extends Fragment
     private static String token;
     static BagFragment instance = null;
     private BagFragment.ContentAdapter adapter = null;
+    private RecyclerView recyclerView;
     View v;
 
     private ArrayList<ArrayList<HashMap<String, String>>> packList = new ArrayList<>();
@@ -74,13 +79,7 @@ public class BagFragment extends Fragment
     int toolNum=0;
 
     public static BagFragment getInstance() {
-//        if( instance == null ) {
-//            synchronized (BagFragment.class) {
-//                if (instance == null) {
-//                    instance = new BagFragment();
-//                }
-//            }
-//        }
+
         synchronized (BagFragment.class) {
             instance = new BagFragment();
         }
@@ -91,7 +90,7 @@ public class BagFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         readPrefs();
-        RecyclerView recyclerView = (RecyclerView) inflater.inflate(
+        recyclerView = (RecyclerView) inflater.inflate(
                 R.layout.recycler_view, container, false);
 
         v = inflater.inflate(R.layout.swipe_recycler_view, container, false);
@@ -114,15 +113,12 @@ public class BagFragment extends Fragment
     }
 
     public void Refresh(){
-        // Create new fragment and transaction
-        Fragment newFragment = new BagFragment();
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-
-        // Replace whatever is in the fragment_container view with this fragment,
-        // and add the transaction to the back stack
-        transaction.replace(R.id.swiperefresh, newFragment)
-                .addToBackStack(null)
-                .commit();
+        try {
+            adapter = new ContentAdapter(recyclerView.getContext());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        recyclerView.setAdapter(adapter);
     }
 
     //=====================內存=====================
@@ -172,6 +168,9 @@ public class BagFragment extends Fragment
         private int LENGTH;
 
         ContentAdapter(Context context) throws MalformedURLException {
+            if(!isNetworkAvailable()){
+                Alert("Please check your internet connection, then try again.");
+            }
             packList.clear();
             toolIds = new String[50];
             toolPIds = new String[50];
@@ -422,8 +421,6 @@ public class BagFragment extends Fragment
             System.out.println("back with code 3");
 
         }
-//        setActivityBackgroundColor(R.color.white);
-//        Blurry.delete((ViewGroup) v);
 
     }
 
@@ -466,18 +463,13 @@ public class BagFragment extends Fragment
                         toolIds[tool_index] = id;
                         toolPIds[tool_index] = pid;
                         tool_index++;
-//                            System.out.println("tool index++, index=" + tool_index);
                     }
                     else{
                         clueIds[clue_index] = id;
                         clue_index++;
-//                            System.out.println("clue index++, index=" + clue_index);
                     }
                 }
-//                    System.out.println("toolIds=");
-//                    System.out.println(toolIds);
-//                    System.out.println("clueIds=");
-//                    System.out.println(clueIds);
+
             } catch (final JSONException e) {
                 System.out.print("Json parsing error: " + e.getMessage());
             }
@@ -501,11 +493,10 @@ public class BagFragment extends Fragment
                 // Getting JSON Array node
                 JSONArray objects = payload.getJSONArray("objects");
                 // looping through All Contacts
-//                    System.out.println("tool");
-//                    System.out.println(objects);
+
                 for (int i = 0; i < objects.length(); i++) {
                     JSONObject c = objects.getJSONObject(i);
-//                        String pid = c.getString("pid");
+
                     String tid = c.getString("tid");
                     String title = c.getString("title");
                     String content = c.getString("content");
@@ -527,10 +518,6 @@ public class BagFragment extends Fragment
                     tool.put("price", price);
 
                     // adding contact to contact list
-//                        System.out.println("in parse tool");
-//                        System.out.println(tool);
-//                        System.out.println(findIndex(tool.get("title")));
-
                     if(findIndex(tool.get("title"))>=0){
                         packList.get(findIndex(tool.get("title"))).add(tool);
                         String ct = packList.get(findIndex(tool.get("title"))).get(0).get("count");
@@ -588,11 +575,7 @@ public class BagFragment extends Fragment
     }
     int findIndex(String target){
         int i;
-//            System.out.println("finding index");
-//            System.out.println("target = " + target);
-
         for (i=0; i<packList.size(); i++){
-//                System.out.println("checking at title = " + packList.get(i).get(0).get("title"));
             if(target.equals(packList.get(i).get(0).get("title"))){
                 return i;
             }
@@ -607,8 +590,6 @@ public class BagFragment extends Fragment
                 JSONObject payload = jsonObj.getJSONObject("payload");
                 // Getting JSON Array node
                 JSONArray objects = payload.getJSONArray("objects");
-//                    System.out.println("clue");
-//                    System.out.println(objects);
                 // looping through All Contacts
                 for (int i = 0; i < objects.length(); i++) {
                     JSONObject c = objects.getJSONObject(i);
@@ -626,7 +607,6 @@ public class BagFragment extends Fragment
                     clue.put("url", "");
                     clue.put("count","1");
                     // adding contact to contact list
-//                        System.out.println(clue);
                     clues.add(clue);
                     packList.add(clues);
                 }
@@ -707,6 +687,22 @@ public class BagFragment extends Fragment
             super.onPostExecute(result);
         }
     }
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
 
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+    //show an alert dialog
+    void Alert(String mes){
+        new AlertDialog.Builder(getActivity())
+                .setMessage(mes)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
 
+                    }
+                }).show();
+    }
 }

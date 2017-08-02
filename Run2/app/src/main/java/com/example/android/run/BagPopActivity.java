@@ -60,15 +60,6 @@ public class BagPopActivity extends Activity {
         TextView backButton = (TextView) findViewById(R.id.popCancelButton);
         final TextView toolCount = (TextView) findViewById(R.id.popCount);
 
-//        int width;
-//        int height;
-
-//        DisplayMetrics dm = new DisplayMetrics();
-//        getWindowManager().getDefaultDisplay().getMetrics(dm);
-//        width = dm.widthPixels;
-//        height = dm.heightPixels;
-//        getWindow().setLayout((int)(width*.8),(int)(height*.8));
-
         //get data from bagFragment
         final Bundle bundleReciever =this.getIntent().getExtras();
         final String name = bundleReciever.getString("NAME");
@@ -130,11 +121,12 @@ public class BagPopActivity extends Activity {
             @Override
             public void onClick(View view) {
                 if(liveStatus==0){
-                    Intent intent = new Intent(BagPopActivity.this, ToolUsedActivity.class);
-                    Bundle bundle=new Bundle();
-                    bundle.putString("content","你已經屎惹啊！不能用道具囉～");
-                    intent.putExtras(bundle);
-                    startActivity(intent);
+                    Alert("你已經屎惹啊！不能用道具囉～");
+//                    Intent intent = new Intent(BagPopActivity.this, ToolUsedActivity.class);
+//                    Bundle bundle=new Bundle();
+//                    bundle.putString("content","你已經屎惹啊！不能用道具囉～");
+//                    intent.putExtras(bundle);
+//                    startActivity(intent);
 //                    Toast.makeText(BagPopActivity.this, "你已經屎惹啊！不能用道具囉～", Toast.LENGTH_SHORT).show();
                 }
                 else if(name.equals("金錢")){
@@ -143,17 +135,18 @@ public class BagPopActivity extends Activity {
 //                    bundle.putString("content","會有機會用到的，嘿嘿嘿");
 //                    intent.putExtras(bundle);
 //                    startActivity(intent);
-
-                    new AlertDialog.Builder(BagPopActivity.this)
-                            .setCancelable(false)   //按到旁邊也不會消失
-                            .setMessage("會有機會用到的，嘿嘿嘿")
-                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                }
-                            }).show();
+                    Alert("會有機會用到的，嘿嘿嘿");
+//                    new AlertDialog.Builder(BagPopActivity.this)
+//                            .setCancelable(false)   //按到旁邊也不會消失
+//                            .setMessage("會有機會用到的，嘿嘿嘿")
+//                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//                                @Override
+//                                public void onClick(DialogInterface dialog, int which) {
+//                                }
+//                            }).show();
                 }
                 else if(IDs != null && Integer.valueOf(bundleReciever.getString("COUNT"))-currentToolIndex>0) {
+
                     String readDataFromHttp = null;
 
                     //POST email&password to server
@@ -179,24 +172,17 @@ public class BagPopActivity extends Activity {
 //                    bundle.putString("content","你使用了一個 " + name + "!");
 //                    intent.putExtras(bundle);
 //                    startActivity(intent);
-
-                    new AlertDialog.Builder(BagPopActivity.this)
-                            .setCancelable(false)   //按到旁邊也不會消失
-                            .setMessage("你使用了一個 " + name + "!")
-                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                }
-                            }).show();
+                    Alert("你使用了一個 " + name + "!");
+//                    new AlertDialog.Builder(BagPopActivity.this)
+//                            .setCancelable(false)   //按到旁邊也不會消失
+//                            .setMessage("你使用了一個 " + name + "!")
+//                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//                                @Override
+//                                public void onClick(DialogInterface dialog, int which) {
+//                                }
+//                            }).show();
                 }
                 else{
-//                    Toast.makeText(BagPopActivity.this, "此物品已用盡或無法使用", Toast.LENGTH_SHORT).show();
-
-//                    Intent intent = new Intent(BagPopActivity.this, ToolUsedActivity.class);
-//                    Bundle bundle=new Bundle();
-//                    bundle.putString("content","此物品已用盡或無法使用");
-//                    intent.putExtras(bundle);
-//                    startActivity(intent);
 
                     new AlertDialog.Builder(BagPopActivity.this)
                             .setCancelable(false)   //按到旁邊也不會消失
@@ -394,5 +380,16 @@ public class BagPopActivity extends Activity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+    //show an alert dialog
+    void Alert(String mes){
+        new AlertDialog.Builder(BagPopActivity.this)
+                .setMessage(mes)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                }).show();
     }
 }
