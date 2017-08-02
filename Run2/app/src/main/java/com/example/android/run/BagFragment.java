@@ -24,7 +24,6 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -60,6 +59,7 @@ public class BagFragment extends Fragment
     private static String token;
     static BagFragment instance = null;
     private BagFragment.ContentAdapter adapter = null;
+    private RecyclerView recyclerView;
     View v;
 
     private ArrayList<ArrayList<HashMap<String, String>>> packList = new ArrayList<>();
@@ -91,7 +91,7 @@ public class BagFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         readPrefs();
-        RecyclerView recyclerView = (RecyclerView) inflater.inflate(
+        recyclerView = (RecyclerView) inflater.inflate(
                 R.layout.recycler_view, container, false);
 
         v = inflater.inflate(R.layout.swipe_recycler_view, container, false);
@@ -114,15 +114,21 @@ public class BagFragment extends Fragment
     }
 
     public void Refresh(){
-        // Create new fragment and transaction
-        Fragment newFragment = new BagFragment();
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-
-        // Replace whatever is in the fragment_container view with this fragment,
-        // and add the transaction to the back stack
-        transaction.replace(R.id.swiperefresh, newFragment)
-                .addToBackStack(null)
-                .commit();
+//        // Create new fragment and transaction
+//        Fragment newFragment = new BagFragment();
+//        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+//
+//        // Replace whatever is in the fragment_container view with this fragment,
+//        // and add the transaction to the back stack
+//        transaction.replace(R.id.bag_view, newFragment)
+//                .addToBackStack(null)
+//                .commit();
+        try {
+            adapter = new ContentAdapter(recyclerView.getContext());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        recyclerView.setAdapter(adapter);
     }
 
     //=====================內存=====================
@@ -254,8 +260,8 @@ public class BagFragment extends Fragment
             System.out.println("position=" + position);
             holder.name1.setText(pName[position*3]);
             if(pCount[position*3] != "" && pCount[position*3] != "0") {
-                holder.count1.setVisibility(View.VISIBLE);
                 holder.count1.setText(pCount[position*3]);
+                holder.count1.setVisibility(View.VISIBLE);
                 holder.count1_shadow.setVisibility(View.VISIBLE);
             } else {
                 holder.count1.setVisibility(View.INVISIBLE);
@@ -263,8 +269,8 @@ public class BagFragment extends Fragment
             }
             holder.name2.setText(pName[position*3+1]);
             if(pCount[position*3+1] != "" && pCount[position*3+1] != "0") {
-                holder.count2.setVisibility(View.VISIBLE);
                 holder.count2.setText(pCount[position*3+1]);
+                holder.count2.setVisibility(View.VISIBLE);
                 holder.count2_shadow.setVisibility(View.VISIBLE);
             } else {
                 holder.count2.setVisibility(View.INVISIBLE);
@@ -272,8 +278,8 @@ public class BagFragment extends Fragment
             }
             holder.name3.setText(pName[position*3+2]);
             if(pCount[position*3+2] != "" && pCount[position*3+2] != "0") {
-                holder.count3.setVisibility(View.VISIBLE);
                 holder.count3.setText(pCount[position*3+2]);
+                holder.count3.setVisibility(View.VISIBLE);
                 holder.count3_shadow.setVisibility(View.VISIBLE);
             } else {
                 holder.count3.setVisibility(View.INVISIBLE);
