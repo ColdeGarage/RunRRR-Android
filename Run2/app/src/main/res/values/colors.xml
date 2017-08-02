@@ -35,7 +35,7 @@
 
     <color name="main">#48DABA</color>
     <color name="sub">#F49F36</color>
-    <color name="urgent">#F9331E</color>
+    <color name="limit">#F9331E</color>
 
     <color name="die">#48DABA</color>
     <color name="about_us">#FFB861</color>

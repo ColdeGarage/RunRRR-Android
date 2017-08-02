@@ -328,7 +328,7 @@ public class BagFragment extends Fragment
                     //TODO:Intent to other activity
                     Context context = vv.getContext();
 
-                    Intent intent = new Intent(context, BagPopActivity.class);
+                    Intent intent = new Intent(context, BagPopWindowActivity.class);
 
                     Bundle bundle=new Bundle();
 
@@ -353,7 +353,7 @@ public class BagFragment extends Fragment
                         //TODO:Intent to other activity
                         Context context = vv.getContext();
 
-                        Intent intent = new Intent(context, BagPopActivity.class);
+                        Intent intent = new Intent(context, BagPopWindowActivity.class);
 
                         Bundle bundle=new Bundle();
                         bundle.putString("uid",String.valueOf(uid));
