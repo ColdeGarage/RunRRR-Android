@@ -57,11 +57,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <!-- 宣告其他Activity -->
-        <activity
-            android:name=".TabActivity"
-            android:label="MissionActivity"
-            android:theme="@style/AppTheme" />
         <activity
             android:name=".ViewPagerActivity"
             android:label="MissionActivity"
