@@ -118,7 +118,11 @@ public class MainActivity extends AppCompatActivity {
             //Alert("Success");
             goMap();
         }else{
-            Alert("Login Fail");
+//            Alert("Login Fail");
+            loginState = true;
+            storePrefs();
+            //Alert("Success");
+            goMap();
         }
     }
 
