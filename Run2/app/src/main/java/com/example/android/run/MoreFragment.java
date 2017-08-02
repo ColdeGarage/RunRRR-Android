@@ -54,22 +54,6 @@ public class MoreFragment extends Fragment {
         return instance;
     }
 
-//    @Override
-//    public void onAttach(Activity activity) {
-//        super.onAttach(activity);
-//
-//        //取得MainActivity的方法，將文字放入text字串
-//        TabActivity mTabActivity = (TabActivity) activity;
-//        text = mTabActivity.getMissionsText();
-//    }
-
-    /*@Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
-        //導入Tab分頁的Fragment Layout
-        return inflater.inflate(R.layout.item_more, container, false);
-    }*/
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

@@ -90,13 +90,13 @@ public class MissionPopActivity extends AppCompatActivity {
         ImageView Type = (ImageView) findViewById(R.id.list_type);
         switch (mType){
             case "0":
-                Type.setImageResource(R.drawable.missions_urg);
+//                Type.setImageResource(R.drawable.missions_limit);
                 break;
             case "1":
-                Type.setImageResource(R.drawable.missions_main_2);
+//                Type.setImageResource(R.drawable.missions_main_2);
                 break;
             case "2":
-                Type.setImageResource(R.drawable.missions_sub);
+//                Type.setImageResource(R.drawable.missions_sub);
                 break;
             default:
                 break;
