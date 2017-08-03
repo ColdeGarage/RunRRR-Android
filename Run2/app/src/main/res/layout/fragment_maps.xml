@@ -8,43 +8,48 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_marginTop="25dp"
+        android:layout_weight="1.5"
         android:orientation="horizontal">
 
         <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="10dp"></View>
+
+                <TextView
+                    android:id="@+id/text_point"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="right"
+                    android:text="POINT"
+                    android:textSize="20dp"
+                    android:textColor="@color/text_medium_grey"/>
+            </LinearLayout>
 
             <View
-                android:layout_width="match_parent"
-                android:layout_height="10dp"></View>
+                android:layout_width="20dp"
+                android:layout_height="match_parent"></View>
 
             <TextView
-                android:id="@+id/text_point"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="right"
-                android:text="POINT"
-                android:textSize="20dp"
-                android:textColor="@color/text_medium_grey"/>
+                android:id="@+id/score"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:text="87"
+                android:textSize="50dp"
+                android:textColor="@color/black"/>
         </LinearLayout>
 
-        <View
-            android:layout_width="20dp"
-            android:layout_height="match_parent"></View>
-
-        <TextView
-            android:id="@+id/score"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="left"
-            android:text="87"
-            android:textSize="50dp"
-            android:textColor="@color/black"/>
     </LinearLayout>
 
     <RelativeLayout
