@@ -107,8 +107,8 @@ public class BarcodeActivity extends AppCompatActivity {
         // barcode image margins
         barcode.setLeftMargin(5f);
         barcode.setRightMargin(5f);
-        barcode.setTopMargin(5f);
-        barcode.setBottomMargin(5f);
+        barcode.setTopMargin(2f);
+        barcode.setBottomMargin(3f);
 
         // barcode image resolution in dpi
         barcode.setResolution(72);
@@ -129,9 +129,7 @@ public class BarcodeActivity extends AppCompatActivity {
         specify your barcode drawing area
 	    */
         //(left,top,right,button)
-        RectF bounds = new RectF(160, 200, 100, 100);
+        RectF bounds = new RectF(200, 300, 100, 100);
         barcode.drawBarcode(canvas, bounds);
     }
-
-
 }

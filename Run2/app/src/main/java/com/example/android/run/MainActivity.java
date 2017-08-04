@@ -120,14 +120,14 @@ public class MainActivity extends AppCompatActivity {
         if(Parsejson(readDataFromHttp)==0){
             loginState = true;
             storePrefs();
-            Alert("Success");
+//            Alert("Success");
             goMap();
         }else{
-//            Alert("Login Fail");
-            loginState = true;
-            storePrefs();
-            //Alert("Success");
-            goMap();
+            Alert("Login Fail");
+//            loginState = true;
+//            storePrefs();
+//            //Alert("Success");
+//            goMap();
         }
     }
 

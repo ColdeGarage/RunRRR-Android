@@ -9,18 +9,19 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.example.android.run.SOSActivity">
+    tools:context="com.example.android.run.SOSActivity"
+    android:background="@color/background_grey">
 
     <ScrollView
         android:layout_width="368dp"
-        android:layout_height="551dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <TextView
                 android:text="TextView"

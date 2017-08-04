@@ -148,6 +148,7 @@ public class BagFragment extends Fragment
             tool3 = (ImageView) itemView.findViewById(R.id.toolImage3);
             name3 = (TextView) itemView.findViewById(R.id.toolName3);
             count3 = (TextView) itemView.findViewById(R.id.toolNumber3);
+
         }
     }
     /*
@@ -214,9 +215,9 @@ public class BagFragment extends Fragment
             System.out.println("toolNum = " + toolNum);
 
             //TODO Auto-generated method stub
-            pName[0] = "金錢"+money+"元";
+            pName[0] = "金錢";
             pUrl[0] = "";
-            pCount[0] = "";
+            pCount[0] = String.valueOf(money);
             pContent[0] = "刀，Dollar";
             for(int i=1; i <=packList.size(); i++){
                 pName[i] = packList.get(i-1).get(0).get("title");
@@ -244,6 +245,7 @@ public class BagFragment extends Fragment
             //tool name count
             System.out.println("position=" + position);
             holder.name1.setText(pName[position*3]);
+
             if(pCount[position*3] != "" && pCount[position*3] != "0" && pCount[position*3] != null) {
                 holder.count1.setText(" x" + pCount[position*3] + " ");
                 holder.count1.setVisibility(View.VISIBLE);
@@ -590,7 +592,7 @@ public class BagFragment extends Fragment
                     clue.put("id", cid);
                     clue.put("content", content);
                     clue.put("title", "clue");
-                    clue.put("url", "");
+                    clue.put("url", "clue.jpg");
                     clue.put("count","1");
                     // adding contact to contact list
                     clues.add(clue);
