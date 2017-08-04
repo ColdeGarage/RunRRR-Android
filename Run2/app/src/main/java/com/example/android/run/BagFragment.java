@@ -130,31 +130,24 @@ public class BagFragment extends Fragment
         ImageView tool1;
         TextView name1;
         TextView count1;
-        TextView count1_shadow;
         ImageView tool2;
         TextView name2;
         TextView count2;
-        TextView count2_shadow;
         ImageView tool3;
         TextView name3;
         TextView count3;
-        TextView count3_shadow;
 
         ViewHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.fragment_bag, parent, false));
             tool1 = (ImageView) itemView.findViewById(R.id.toolImage1);
             name1 = (TextView) itemView.findViewById(R.id.toolName1);
             count1 = (TextView) itemView.findViewById(R.id.toolNumber1);
-            count1_shadow = (TextView) itemView.findViewById(R.id.toolNumber1_shadow);
             tool2 = (ImageView) itemView.findViewById(R.id.toolImage2);
             name2 = (TextView) itemView.findViewById(R.id.toolName2);
             count2 = (TextView) itemView.findViewById(R.id.toolNumber2);
-            count2_shadow = (TextView) itemView.findViewById(R.id.toolNumber2_shadow);
             tool3 = (ImageView) itemView.findViewById(R.id.toolImage3);
             name3 = (TextView) itemView.findViewById(R.id.toolName3);
             count3 = (TextView) itemView.findViewById(R.id.toolNumber3);
-            count3_shadow = (TextView) itemView.findViewById(R.id.toolNumber3_shadow);
-
         }
     }
     /*
@@ -251,49 +244,25 @@ public class BagFragment extends Fragment
             //tool name count
             System.out.println("position=" + position);
             holder.name1.setText(pName[position*3]);
-//            if(LENGTH > position*3 && pCount[position*3] != "") {
-//                holder.count1.setText(pCount[position*3]);
-//                holder.count1.setBackgroundResource(R.drawable.background_circle);
-//                holder.count1_shadow.setBackgroundResource(R.drawable.background_circle_shadow);
-//            }
-//            holder.name2.setText(pName[position*3+1]);
-//            if(LENGTH > position*3+1 && pCount[position*3+1] != "") {
-//                holder.count2.setText(pCount[position*3+1]);
-//                holder.count2.setBackgroundResource(R.drawable.background_circle);
-//                holder.count2_shadow.setBackgroundResource(R.drawable.background_circle_shadow);
-//            }
-//            holder.name3.setText(pName[position*3+2]);
-//            System.out.println("name" + pName[position*3+2]);
-//            if(LENGTH > position*3+2 && pCount[position*3+2] != "") {
-//                holder.count3.setText(pCount[position*3+2]);
-//                holder.count3.setBackgroundResource(R.drawable.background_circle);
-//                holder.count3_shadow.setBackgroundResource(R.drawable.background_circle_shadow);
-//            }
             if(pCount[position*3] != "" && pCount[position*3] != "0" && pCount[position*3] != null) {
-                holder.count1.setText(pCount[position*3]);
+                holder.count1.setText(" x" + pCount[position*3] + " ");
                 holder.count1.setVisibility(View.VISIBLE);
-                holder.count1_shadow.setVisibility(View.VISIBLE);
             } else {
                 holder.count1.setVisibility(View.INVISIBLE);
-                holder.count1_shadow.setVisibility(View.INVISIBLE);
             }
             holder.name2.setText(pName[position*3+1]);
             if(pCount[position*3+1] != "" && pCount[position*3+1] != "0" && pCount[position*3+1] != null) {
-                holder.count2.setText(pCount[position*3+1]);
+                holder.count2.setText(" x" + pCount[position*3+1] + " ");
                 holder.count2.setVisibility(View.VISIBLE);
-                holder.count2_shadow.setVisibility(View.VISIBLE);
             } else {
                 holder.count2.setVisibility(View.INVISIBLE);
-                holder.count2_shadow.setVisibility(View.INVISIBLE);
             }
             holder.name3.setText(pName[position*3+2]);
             if(pCount[position*3+2] != "" && pCount[position*3+2] != "0" && pCount[position*3+2] != null) {
-                holder.count3.setText(pCount[position*3+2]);
+                holder.count3.setText(" x" + pCount[position*3+2] + " ");
                 holder.count3.setVisibility(View.VISIBLE);
-                holder.count3_shadow.setVisibility(View.VISIBLE);
             } else {
                 holder.count3.setVisibility(View.INVISIBLE);
-                holder.count3_shadow.setVisibility(View.INVISIBLE);
             }
 
             new Thread(new Runnable() {

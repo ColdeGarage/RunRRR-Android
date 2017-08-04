@@ -5,15 +5,18 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.json.JSONArray;
@@ -25,6 +28,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 public class MissionPopActivity extends AppCompatActivity {
 
@@ -32,6 +38,23 @@ public class MissionPopActivity extends AppCompatActivity {
     private static int liveOrDie;
     private static String uid;
     private static String token;
+    private String url;
+
+    private Bundle bundleReciever;
+    private String mName;
+    private String mTime;
+    private String mContent;
+    private String mType;
+    private String mState;
+    private String readDataFromHttp;
+
+    private LinearLayout list;
+    private TextView type;
+    private TextView name;
+    private TextView time;
+    private ImageView state;
+    private TextView content;
+    private ImageView picture;
 
     private int REQUEST_CAMERA = 0, SELECT_FILE = 1;
     private Button btnSelect;
@@ -42,7 +65,6 @@ public class MissionPopActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_missions_pop);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 //        FloatingActionButton fab = (FloatingActionButton)findViewById(R.id.fab);
 //        fab.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -59,15 +81,14 @@ public class MissionPopActivity extends AppCompatActivity {
         ivImage = (ImageView) findViewById(R.id.ivImage);
         ivImage.setVisibility(View.GONE);
 
-        Bundle bundleReciever = getIntent().getExtras();
-        String mName = bundleReciever.getString("name");
-        String mTime = bundleReciever.getString("time");
-        String mContent = bundleReciever.getString("content");
-        String mType = bundleReciever.getString("type");
-        String mState = bundleReciever.getString("state");
+        bundleReciever = getIntent().getExtras();
+        mName = bundleReciever.getString("name");
+        mTime = bundleReciever.getString("time");
+        mContent = bundleReciever.getString("content");
+        mType = bundleReciever.getString("type");
+        mState = bundleReciever.getString("state");
         uid = bundleReciever.getString("uid");
         token = bundleReciever.getString("token");
-        String readDataFromHttp;
 
         //get liveOrdie
         MissionsFragment.MyTaskGet httpGetMember = new MissionsFragment.MyTaskGet();
@@ -77,55 +98,79 @@ public class MissionPopActivity extends AppCompatActivity {
         try {
             readDataFromHttp = httpGetMember.get();
             //Parse JSON info
-            parseJson(readDataFromHttp,"member");
+            parseJson(readDataFromHttp, "member");
         } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.println("liveOrDie"+liveOrDie);
+        System.out.println("liveOrDie" + liveOrDie);
+
+        list = (LinearLayout) findViewById(R.id.list_mission);
+        type = (TextView) findViewById(R.id.list_type);
+        name = (TextView) findViewById(R.id.list_name);
+        time = (TextView) findViewById(R.id.list_time);
+        state = (ImageView) findViewById(R.id.list_state);
+        content = (TextView) findViewById(R.id.mission_content);
+        picture = (ImageView) findViewById(R.id.mission_picture);
+
+        // Set mission title and content
+        name.setText(mName);
+        content.setText(mContent);
+        picture.setImageResource(R.drawable.yichun8787);
 
         //missions type : MAIN,SUB,URG, set different icon
-        ImageView Type = (ImageView) findViewById(R.id.list_type);
-        switch (mType){
+        switch (mType) {
             case "0":
-//                Type.setImageResource(R.drawable.missions_limit);
+                type.setText("限");
+                type.setTextColor(ContextCompat.getColor(this, R.color.limit));
+                list.setBackgroundResource(R.color.limit);
                 break;
             case "1":
-//                Type.setImageResource(R.drawable.missions_main_2);
+                type.setText("主");
+                type.setTextColor(ContextCompat.getColor(this, R.color.main));
+                list.setBackgroundResource(R.color.main);
                 break;
             case "2":
-//                Type.setImageResource(R.drawable.missions_sub);
+                type.setText("支");
+                type.setTextColor(ContextCompat.getColor(this, R.color.sub));
+                list.setBackgroundResource(R.color.sub);
                 break;
             default:
                 break;
         }
 
         //state type : -1:unsolved 0:being judged 1:success 2:fail
-        switch(mState){
+        switch (mState) {
             case "-1":
                 break;
             case "0": //waiting
+                state.setImageResource(R.drawable.state_waiting);
                 break;
             case "1": //passed
+                state.setImageResource(R.drawable.state_passed);
                 break;
             case "2": //failed
+                state.setImageResource(R.drawable.state_failed);
                 break;
             default:
                 break;
         }
 
-        // Set title with mission name
-        TextView Name = (TextView) findViewById(R.id.list_name);
-        Name.setText(mName);
-
-        // Set content of mission details
-        TextView Content = (TextView) findViewById(R.id.mission_content);
-        Content.setText(mContent);
-
-        // Set picture of mission details
-        ImageView Picture = (ImageView) findViewById(R.id.mission_picture);
-        Picture.setImageResource(R.drawable.yichun8787);
-
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                //TODO Auto-generated method stub
+                final Bitmap mBitmap =
+                        getBitmapFromURL(url);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        picture.setImageBitmap(mBitmap);
+                    }
+                });
+            }
+        }).start();
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -135,6 +180,7 @@ public class MissionPopActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
     //====================取得任務頁面顯示的內容===========================
     //Parse json received from server
     void parseJson (String info, String missionOrReport){
@@ -143,9 +189,25 @@ public class MissionPopActivity extends AppCompatActivity {
             JSONObject payload = new JSONObject(new JSONObject(info).getString("payload"));
             JSONArray objects = payload.getJSONArray("objects");
             JSONObject subObject = objects.getJSONObject(0);
+            url = subObject.getString("url");
             liveOrDie = subObject.getInt("status");
         } catch (JSONException e) {
             e.printStackTrace();
+        }
+    }
+
+    private static Bitmap getBitmapFromURL(String imageUrl) {
+        try {
+            URL url = new URL(imageUrl);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            Bitmap bitmap = BitmapFactory.decodeStream(input);
+            return bitmap;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 
