@@ -221,9 +221,9 @@ public class BagFragment extends Fragment
             System.out.println("toolNum = " + toolNum);
 
             //TODO Auto-generated method stub
-            pName[0] = "金錢"+money+"元";
+            pName[0] = "金錢";
             pUrl[0] = "";
-            pCount[0] = "";
+            pCount[0] = String.valueOf(money);
             pContent[0] = "刀，Dollar";
             for(int i=1; i <=packList.size(); i++){
                 pName[i] = packList.get(i-1).get(0).get("title");
@@ -621,7 +621,7 @@ public class BagFragment extends Fragment
                     clue.put("id", cid);
                     clue.put("content", content);
                     clue.put("title", "clue");
-                    clue.put("url", "");
+                    clue.put("url", "clue.jpg");
                     clue.put("count","1");
                     // adding contact to contact list
                     clues.add(clue);

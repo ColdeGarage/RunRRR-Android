@@ -91,6 +91,7 @@ public class BagPopActivity extends Activity {
 
 //        toolName.setTextSize(30);
 //        toolName.setTextColor(Color.BLACK);
+
 //        toolContent.setTextSize(26);
 //        toolContent.setTextColor(Color.BLACK);
 //        toolCount.setTextSize(16);
