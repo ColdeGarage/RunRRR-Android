@@ -12,7 +12,8 @@ public class AboutUsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about_us);
 
-//        TextView about = (TextView) findViewById(R.id.about_us_content);
+        TextView about = (TextView) findViewById(R.id.about_us_content);
+        about.setText("@string/aboutUs");
 
     }
     @Override
