@@ -1,7 +1,10 @@
 package com.example.android.run;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -46,34 +49,39 @@ public class DieActivity extends AppCompatActivity {
         bt_enter.setOnClickListener(new TextView.OnClickListener(){
             @Override
             public void onClick(View v) {
-                String hunterUid = editTextUid.getText().toString();
-                String hunterPass = editTextPass.getText().toString();
-                //Log.i("text",hunterUid + "  " + hunterPass);
+                if(!isNetworkAvailable()){
+                    Alert("Please check your internet connection, then try again.");
+                }
+                else {
+                    String hunterUid = editTextUid.getText().toString();
+                    String hunterPass = editTextPass.getText().toString();
+                    //Log.i("text",hunterUid + "  " + hunterPass);
 
-                MyTaskPut diePut = new MyTaskPut();
-                diePut.execute(getResources().getString(R.string.apiURL)+"/member/liveordie"
-                        ,"uid=" + String.valueOf(uid) + "&operator_uid=" + hunterUid + "&token=" + hunterPass
-                                + "&status=" + true);
+                    MyTaskPut diePut = new MyTaskPut();
+                    diePut.execute(getResources().getString(R.string.apiURL) + "/member/liveordie"
+                            , "uid=" + String.valueOf(uid) + "&operator_uid=" + hunterUid + "&token=" + hunterPass
+                                    + "&status=" + true);
 
-                //get result from function "onPostExecute" in class "myTaskPut"
-                try {
-                    String readDataFromHttp = diePut.get();
+                    //get result from function "onPostExecute" in class "myTaskPut"
+                    try {
+                        String readDataFromHttp = diePut.get();
 
-                    //If die
-                    if(parseJson(readDataFromHttp) == 0){
-                        new AlertDialog.Builder(v.getContext())
-                                .setCancelable(false)   //按到旁邊也不會消失
-                                .setMessage("You are dead.")
-                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
+                        //If die
+                        if (parseJson(readDataFromHttp) == 0) {
+                            new AlertDialog.Builder(v.getContext())
+                                    .setCancelable(false)   //按到旁邊也不會消失
+                                    .setMessage("You are dead.")
+                                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
 
-                                    }
-                                }).show();
+                                        }
+                                    }).show();
+                        }
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
                 }
             }
         });
@@ -197,6 +205,24 @@ public class DieActivity extends AppCompatActivity {
             super.onPostExecute(result);
         }
 
+    }
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+    //show an alert dialog
+    void Alert(String mes){
+        new AlertDialog.Builder(DieActivity.this)
+                .setMessage(mes)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                }).show();
     }
 }
 

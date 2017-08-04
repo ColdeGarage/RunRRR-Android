@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -53,37 +54,41 @@ public class MainActivity extends AppCompatActivity {
 
         icon.setImageResource(R.drawable.ic_login);
         if(!isNetworkAvailable()){
-            Alert("Please check your internet connection, then restart the app again.");
+            Alert("Please check your internet connection.");
         }
-        else{
-            //add space at the beginning
-            acc.setPadding(10, 0, 0, 0);
-            pass.setPadding(10, 0, 0, 0);
+        final LocationManager manager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
 
-            login.setOnClickListener(new TextView.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    account_in = acc.getText().toString();
-                    pass_in = pass.getText().toString();
+        if ( !manager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
+            Alert("Please check your GPS.");
+        }
+        //add space at the beginning
+        acc.setPadding(10, 0, 0, 0);
+        pass.setPadding(10, 0, 0, 0);
 
-                    if(account_in.isEmpty()){
-                        Alert("Account can't be empty.");
-                    }else if(pass_in.isEmpty()) {
-                        Alert("Password can't be empty.");
-                    }else {
-                        //if account&password aren't empty, check whether it's valid
-                        checkAccount();
-                    }
+        login.setOnClickListener(new TextView.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                account_in = acc.getText().toString();
+                pass_in = pass.getText().toString();
+
+                if(account_in.isEmpty()){
+                    Alert("Account can't be empty.");
+                }else if(pass_in.isEmpty()) {
+                    Alert("Password can't be empty.");
+                }else {
+                    //if account&password aren't empty, check whether it's valid
+                    checkAccount();
                 }
-            });
+            }
+        });
 
-            about.setOnClickListener(new TextView.OnClickListener() {
+        about.setOnClickListener(new TextView.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     goAboutUs();
                 }
             });
-        }
+
     }
 
     @Override
@@ -115,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
         if(Parsejson(readDataFromHttp)==0){
             loginState = true;
             storePrefs();
-            //Alert("Success");
+            Alert("Success");
             goMap();
         }else{
 //            Alert("Login Fail");

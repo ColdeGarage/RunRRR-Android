@@ -1,8 +1,13 @@
 package com.example.android.run;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -36,7 +41,9 @@ public class SOSActivity extends AppCompatActivity {
         TextView helpInfoText = (TextView) findViewById(R.id.sosContent);
 
         readPrefs();
-
+        if(!isNetworkAvailable()){
+            Alert("Please check your internet connection, then try again.");
+        }
         myTaskGet httpGet= null;
         try {
             httpGet = new myTaskGet("http://coldegarage.tech:8081/api/v1.1/utility/0");
@@ -300,5 +307,23 @@ public class SOSActivity extends AppCompatActivity {
         public void onPostExecute(String result) {
             super.onPostExecute(result);
         }
+    }
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+    //show an alert dialog
+    void Alert(String mes){
+        new AlertDialog.Builder(SOSActivity.this)
+                .setMessage(mes)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                }).show();
     }
 }

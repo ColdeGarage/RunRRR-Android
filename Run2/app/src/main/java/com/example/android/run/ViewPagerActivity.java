@@ -128,11 +128,7 @@ public class ViewPagerActivity extends FragmentActivity
     public void switchPage(int index){
 
         iCurrPage = index;
-        final LocationManager manager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
 
-        if ( !manager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
-            Alert("Please check your GPS.");
-        }
 
         if(!isNetworkAvailable()){
             Alert("Please check your internet connection, then try again.");

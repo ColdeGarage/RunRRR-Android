@@ -17,10 +17,13 @@
 package com.example.android.run;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -28,6 +31,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -64,7 +68,12 @@ public class MissionsFragment extends Fragment
 {
 
     static MissionsFragment instance = null;
+
+    private View rootView;
     private SwipeRefreshLayout mSwipeLayout;
+    private RecyclerView recyclerView;
+    private MissionsFragment.ContentAdapter adapter;
+
     private static int uid;
     private static String token;
 
@@ -87,7 +96,7 @@ public class MissionsFragment extends Fragment
                              Bundle savedInstanceState) {
         //RecyclerView recyclerView = (RecyclerView) inflater.inflate(
         //        R.layout.recycler_view, container, false);
-        View v = inflater.inflate(R.layout.swipe_recycler_view, container, false);
+        rootView = inflater.inflate(R.layout.swipe_recycler_view, container, false);
 
         //read uid and token
         readPrefs();
@@ -96,7 +105,7 @@ public class MissionsFragment extends Fragment
             * Sets up a SwipeRefreshLayout.OnRefreshListener that is invoked when the user
             * performs a swipe-to-refresh gesture.
         */
-        mSwipeLayout = (SwipeRefreshLayout) v.findViewById(R.id.swiperefresh);
+        mSwipeLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swiperefresh);
         mSwipeLayout.setColorSchemeColors(Color.RED);
         mSwipeLayout.setOnRefreshListener(
                 new SwipeRefreshLayout.OnRefreshListener() {
@@ -124,20 +133,20 @@ public class MissionsFragment extends Fragment
                 }
         );
 
-        RecyclerView recyclerView = (RecyclerView) v.findViewById(R.id.my_recycler_view);
+        recyclerView = (RecyclerView) rootView.findViewById(R.id.my_recycler_view);
 
         //Actually, I don't know why I have to add this line, but it solves the error.
         if(recyclerView.getParent()!=null)
             ((ViewGroup)recyclerView.getParent()).removeView(recyclerView);
 
-        MissionsFragment.ContentAdapter adapter = new MissionsFragment.ContentAdapter(v.getContext());
+        MissionsFragment.ContentAdapter adapter = new MissionsFragment.ContentAdapter(rootView.getContext());
         recyclerView.setAdapter(adapter);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        ((ViewGroup)v).addView(recyclerView);
+        ((ViewGroup) rootView).addView(recyclerView);
 
-        return v;
+        return rootView;
     }
 
     @Override
@@ -147,15 +156,17 @@ public class MissionsFragment extends Fragment
     }
 
     public void Refresh(){
-        // Create new fragment and transaction
-        Fragment newFragment = new MissionsFragment();
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-
-        // Replace whatever is in the fragment_container view with this fragment,
-        // and add the transaction to the back stack
-        transaction.replace(R.id.swiperefresh, newFragment)
-                .addToBackStack(null)
-                .commit();
+//        // Create new fragment and transaction
+//        Fragment newFragment = new MissionsFragment();
+//        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+//
+//        // Replace whatever is in the fragment_container view with this fragment,
+//        // and add the transaction to the back stack
+//        transaction.replace(R.id.swiperefresh, newFragment)
+//                .addToBackStack(null)
+//                .commit();
+        adapter = new MissionsFragment.ContentAdapter(rootView.getContext());
+        recyclerView.setAdapter(adapter);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -206,7 +217,9 @@ public class MissionsFragment extends Fragment
             Resources resources = context.getResources();
 
             String readDataFromHttp;
-
+            if(!isNetworkAvailable()){
+                Alert("Please check your internet connection, then try again.");
+            }
             //get mission list from server
             MyTaskGet httpGetMission = new MyTaskGet();
             httpGetMission.execute(resources.getString(R.string.apiURL)+"/mission/read?operator_uid="+String.valueOf(uid)+"&token="+token);
@@ -581,5 +594,22 @@ public class MissionsFragment extends Fragment
         }
 
     }
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
 
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+    //show an alert dialog
+    void Alert(String mes){
+        new AlertDialog.Builder(getActivity())
+                .setMessage(mes)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                }).show();
+    }
 }
