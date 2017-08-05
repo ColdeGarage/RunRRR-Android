@@ -38,11 +38,11 @@ public class MissionPopActivity extends AppCompatActivity {
     private static int liveOrDie;
     private static String uid;
     private static String token;
-    private String url;
 
     private Bundle bundleReciever;
     private String mName;
     private String mTime;
+    private String mUrl;
     private String mContent;
     private String mType;
     private String mState;
@@ -87,6 +87,7 @@ public class MissionPopActivity extends AppCompatActivity {
         mContent = bundleReciever.getString("content");
         mType = bundleReciever.getString("type");
         mState = bundleReciever.getString("state");
+        mUrl = bundleReciever.getString("url");
         uid = bundleReciever.getString("uid");
         token = bundleReciever.getString("token");
 
@@ -98,7 +99,7 @@ public class MissionPopActivity extends AppCompatActivity {
         try {
             readDataFromHttp = httpGetMember.get();
             //Parse JSON info
-            parseJson(readDataFromHttp, "member");
+            parseJson(readDataFromHttp);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -114,9 +115,28 @@ public class MissionPopActivity extends AppCompatActivity {
 
         // Set mission title and content
         name.setText(mName);
+        System.out.println("name!!!!!");
         content.setText(mContent);
-        picture.setImageResource(R.drawable.yichun8787);
+        System.out.println("url===========" + mUrl);
+        if(mUrl != null && mUrl!="") {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    //TODO Auto-generated method stub
+                    final Bitmap mBitmap =
+                            getBitmapFromURL("http://coldegarage.tech:8081/api/v1.1/download/img/" + mUrl);
+//                    final Bitmap circularBitmap = ImageConverter.getRoundedCornerBitmap(mBitmap, 30);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+//                            picture.setImageBitmap(circularBitmap);
+                            picture.setImageBitmap(mBitmap);
+                        }
+                    });
 
+                }
+            }).start();
+        }
         //missions type : MAIN,SUB,URG, set different icon
         switch (mType) {
             case "0":
@@ -154,21 +174,6 @@ public class MissionPopActivity extends AppCompatActivity {
             default:
                 break;
         }
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                //TODO Auto-generated method stub
-                final Bitmap mBitmap =
-                        getBitmapFromURL(url);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        picture.setImageBitmap(mBitmap);
-                    }
-                });
-            }
-        }).start();
     }
 
     @Override
@@ -183,13 +188,12 @@ public class MissionPopActivity extends AppCompatActivity {
 
     //====================取得任務頁面顯示的內容===========================
     //Parse json received from server
-    void parseJson (String info, String missionOrReport){
+    void parseJson (String info){
         try {
 //                    System.out.println(info);
             JSONObject payload = new JSONObject(new JSONObject(info).getString("payload"));
             JSONArray objects = payload.getJSONArray("objects");
             JSONObject subObject = objects.getJSONObject(0);
-            url = subObject.getString("url");
             liveOrDie = subObject.getInt("status");
         } catch (JSONException e) {
             e.printStackTrace();
