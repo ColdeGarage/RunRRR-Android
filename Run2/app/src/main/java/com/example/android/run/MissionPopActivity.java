@@ -195,7 +195,6 @@ public class MissionPopActivity extends AppCompatActivity {
                             selectedPhoto.setVisibility(View.VISIBLE);
                         }
                     });
-
                 }
             }).start();
         }
