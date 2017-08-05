@@ -86,6 +86,11 @@ public class MissionPopActivity extends AppCompatActivity {
 //            public void onClick(View v) { selectImage();
 //            }
 //        });
+
+        //initial
+        rid = -1;
+        photoUrl = null;
+
         btnSelect = (Button) findViewById(R.id.btnSelectPhoto);
         btnSelect.setVisibility(View.GONE);
         btnSelect.setOnClickListener(new View.OnClickListener() {
@@ -152,6 +157,7 @@ public class MissionPopActivity extends AppCompatActivity {
         content.setText(mContent);
         picture.setVisibility(View.GONE);
         selectedPhoto.setVisibility(View.GONE);
+
         System.out.println("url===========" + mUrl);
         if(mUrl != null && mUrl!="") {
             new Thread(new Runnable() {
@@ -270,9 +276,16 @@ public class MissionPopActivity extends AppCompatActivity {
             try {
                 JSONObject payload = new JSONObject(new JSONObject(info).getString("payload"));
                 JSONArray objects = payload.getJSONArray("objects");
-                JSONObject subObject = objects.getJSONObject(0);
-                rid = subObject.getInt("rid");
-                photoUrl = subObject.getString("url");
+                int LENGTH = objects.length();
+                for(int i=0; i<LENGTH; i++){
+                    JSONObject subObject;
+                    subObject = objects.getJSONObject(i);
+                    if(subObject.getString("mid").equals(mid)) {
+//                        System.out.println("aaaaaa" + subObject.getString("mid") + "/" +mid);
+                        rid = subObject.getInt("rid");
+                        photoUrl = subObject.getString("url");
+                    }
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -403,6 +416,7 @@ public class MissionPopActivity extends AppCompatActivity {
         MissionPost(thumbnail);
         selectedPhoto.setImageBitmap(thumbnail);
         selectedPhoto.setVisibility(View.VISIBLE);
+        btnSelect.setVisibility(View.GONE);
 
     }
 
@@ -421,23 +435,43 @@ public class MissionPopActivity extends AppCompatActivity {
         MissionPost(bm);
         selectedPhoto.setImageBitmap(bm);
         selectedPhoto.setVisibility(View.VISIBLE);
+        btnSelect.setVisibility(View.GONE);
 
     }
 
     private void MissionPost(Bitmap bitmap){
-        //Convert Bitmap to String for "POST"
-        photoPath = BitmapToString(bitmap);
+        if(mState.equals("2")){
+            //Convert Bitmap to String for "POST"
+            photoPath = BitmapToString(bitmap);
 
-        //POST mid&image to server
-        MyTaskPost httpPost = new MyTaskPost();
-        httpPost.execute();
+            //POST mid&image to server
+            MyTaskPut httpPut = new MyTaskPut();
+            httpPut.execute(getResources().getString(R.string.apiURL)+"/report/edit"
+                    ,"uid="+uid+"&operator_uid="+uid+"&token="+token+"&rid="+rid+"&image="+photoPath);
 
-        try {
-            //get result from function "onPostExecute" in class "myTaskPost"
-            readDataFromHttp = httpPost.get();
-            System.out.println(readDataFromHttp);
-        } catch (Exception e) {
-            e.printStackTrace();
+            try {
+                //get result from function "onPostExecute" in class "myTaskPost"
+                readDataFromHttp = httpPut.get();
+                System.out.println(readDataFromHttp);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        else {
+            //Convert Bitmap to String for "POST"
+            photoPath = BitmapToString(bitmap);
+
+            //POST mid&image to server
+            MyTaskPost httpPost = new MyTaskPost();
+            httpPost.execute();
+
+            try {
+                //get result from function "onPostExecute" in class "myTaskPost"
+                readDataFromHttp = httpPost.get();
+                System.out.println(readDataFromHttp);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -493,6 +527,89 @@ public class MissionPopActivity extends AppCompatActivity {
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(wr, "UTF-8"));
 
                 writer.write("uid=" + uid + "&token=" + token + "&operator_uid=" + uid + "&mid=" + mid + "&image=" + photoPath);
+
+                //flush the data in buffer to server and close the writer
+                writer.flush();
+                writer.close();
+
+                //read response
+                reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+                stringBuilder = new StringBuilder();
+                String line ;
+
+                while ((line = reader.readLine()) != null)
+                {
+                    stringBuilder.append(line + "\n");
+                }
+                return stringBuilder.toString();
+
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+            finally {
+                urlConnection.disconnect();
+                // close the reader; this can throw an exception too, so
+                // wrap it in another try/catch block.
+                if (reader != null)
+                {
+                    try
+                    {
+                        reader.close();
+                    }
+                    catch (Exception e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        @Override
+        public void onPostExecute(String result) {
+            super.onPostExecute(result);
+        }
+
+    }
+    class MyTaskPut extends AsyncTask<String,Void,String> {
+
+        @Override
+        public void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(String... arg0) {
+            URL url;
+            HttpURLConnection urlConnection = null;
+            BufferedReader reader = null;
+            StringBuilder stringBuilder;
+            String urlStr = arg0[0];
+            String para = arg0[1];
+
+            try {
+                url = new URL(urlStr);
+                urlConnection = (HttpURLConnection) url.openConnection();
+
+                //連線方式
+                urlConnection.setRequestMethod("PUT");
+
+                //設置輸出入流串
+                urlConnection.setDoInput(true);
+                urlConnection.setDoOutput(true);
+
+                //POST方法不能緩存數據,需手動設置使用緩存的值為false
+                urlConnection.setUseCaches(false);
+
+                //Send request
+                DataOutputStream wr = new DataOutputStream(
+                        urlConnection.getOutputStream());
+
+                //encode data in UTF-8
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(wr, "UTF-8"));
+
+                writer.write(para);
 
                 //flush the data in buffer to server and close the writer
                 writer.flush();
