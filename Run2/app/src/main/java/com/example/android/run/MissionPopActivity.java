@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -163,7 +164,11 @@ public class MissionPopActivity extends AppCompatActivity {
             case "-1":
                 break;
             case "0": //waiting
-                state.setImageResource(R.drawable.state_waiting);
+//                    state.setImageResource(R.drawable.state_waiting);
+                state.setImageResource(R.drawable.anim_gif_waiting);
+                Object ob_waiting = state.getBackground();
+                AnimationDrawable anim_waiting = (AnimationDrawable) ob_waiting;
+                anim_waiting.start();
                 break;
             case "1": //passed
                 state.setImageResource(R.drawable.state_passed);
@@ -219,6 +224,17 @@ public class MissionPopActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         switch (requestCode) {
+            case Utility.MY_PERMISSIONS_REQUEST_CAMERA:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    if(userChoosenTask.equals("Take Photo"))
+                        cameraIntent();
+                    else if(userChoosenTask.equals("Choose from Library"))
+                        galleryIntent();
+                } else {
+                    //code for deny
+                }
+                break;
+
             case Utility.MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     if(userChoosenTask.equals("Take Photo"))
@@ -241,15 +257,17 @@ public class MissionPopActivity extends AppCompatActivity {
         builder.setItems(items, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int item) {
-                boolean result=Utility.checkPermission(MissionPopActivity.this);
+                boolean result;
 
                 if (items[item].equals("Take Photo")) {
                     userChoosenTask ="Take Photo";
+                    result = Utility.checkPermission(Utility.MY_PERMISSIONS_REQUEST_CAMERA, MissionPopActivity.this);
                     if(result)
                         cameraIntent();
 
                 } else if (items[item].equals("Choose from Library")) {
                     userChoosenTask ="Choose from Library";
+                    result = Utility.checkPermission(Utility.MY_PERMISSIONS_REQUEST_CAMERA, MissionPopActivity.this);
                     if(result)
                         galleryIntent();
 
