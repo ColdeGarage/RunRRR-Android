@@ -79,7 +79,7 @@ public class MissionPopActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_missions_pop);
+        setContentView(R.layout.activity_missions_pop_test);
 //        FloatingActionButton fab = (FloatingActionButton)findViewById(R.id.fab);
 //        fab.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -252,10 +252,16 @@ public class MissionPopActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == android.R.id.home) {
-            super.onBackPressed();
+            onBackPressed();
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void onBackPressed() {
+        Intent intent = new Intent();
+        setResult(MissionsFragment.MY_MISSION_REFRESH, intent);
+        finish();
     }
 
     //====================取得任務頁面顯示的內容===========================
