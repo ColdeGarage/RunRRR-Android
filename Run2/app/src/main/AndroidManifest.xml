@@ -71,7 +71,6 @@
             android:theme="@style/AppTheme" />
         <activity
             android:name=".MissionPopActivity"
-            android:label="@string/title_activity_missions"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".BagPopActivity"
