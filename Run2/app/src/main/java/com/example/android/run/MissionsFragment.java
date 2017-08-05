@@ -77,6 +77,7 @@ public class MissionsFragment extends Fragment
 
     private static int uid;
     private static String token;
+    private static String mid;
 
     public static MissionsFragment getInstance() {
 //        if( instance == null ) {
@@ -208,6 +209,7 @@ public class MissionsFragment extends Fragment
         private int serverTimeHour;
         private int serverTimeMin;
 
+        private String [] mMid = new String[20];
         private String[] mName = new String[20];
         private String[] mTime = new String[20];
         private String[] mType = new String[20];
@@ -256,6 +258,7 @@ public class MissionsFragment extends Fragment
 
             // Set missions data to string array
             for(int i=0;i<solvingMissionList.size();i++){
+                mMid[i] = solvingMissionList.get(i).get("mid");
                 mName[i] = solvingMissionList.get(i).get("title");
                 mTime[i] = solvingMissionList.get(i).get("time_end");
                 mType[i] = solvingMissionList.get(i).get("class");
@@ -307,7 +310,7 @@ public class MissionsFragment extends Fragment
                     break;
                 case "0":
 //                    holder.state.setImageResource(R.drawable.state_waiting);
-                    holder.state.setImageResource(R.drawable.anim_gif_waiting);
+                    holder.state.setBackgroundResource(R.drawable.anim_gif_waiting);
                     Object ob_waiting = holder.state.getBackground();
                     AnimationDrawable anim_waiting = (AnimationDrawable) ob_waiting;
                     anim_waiting.start();
@@ -332,6 +335,7 @@ public class MissionsFragment extends Fragment
 
                     //New Bundle object fot passing data
                     Bundle bundle = new Bundle();
+                    bundle.putString("mid", mMid[position % mMid.length]);
                     bundle.putString("name", mName[position % mName.length]);
                     bundle.putString("time", mTime[position % mTime.length]);
                     bundle.putString("type", mType[position % mType.length]);

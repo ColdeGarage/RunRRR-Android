@@ -7,12 +7,14 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.AnimationDrawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Base64;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -24,23 +26,33 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 
 public class MissionPopActivity extends AppCompatActivity {
 
     public static final String EXTRA_POSITION = "position";
     private static int liveOrDie;
+    private static int rid;
+    private static String photoUrl;
     private static String uid;
     private static String token;
 
     private Bundle bundleReciever;
+    private String mid;
     private String mName;
     private String mTime;
     private String mUrl;
@@ -57,9 +69,11 @@ public class MissionPopActivity extends AppCompatActivity {
     private TextView content;
     private ImageView picture;
 
+    private ImageView selectedPhoto;
+    private String photoPath;
+
     private int REQUEST_CAMERA = 0, SELECT_FILE = 1;
     private Button btnSelect;
-    private ImageView ivImage;
     private String userChoosenTask;
 
     @Override
@@ -73,14 +87,13 @@ public class MissionPopActivity extends AppCompatActivity {
 //            }
 //        });
         btnSelect = (Button) findViewById(R.id.btnSelectPhoto);
+        btnSelect.setVisibility(View.GONE);
         btnSelect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 selectImage();
             }
         });
-        ivImage = (ImageView) findViewById(R.id.ivImage);
-        ivImage.setVisibility(View.GONE);
 
         bundleReciever = getIntent().getExtras();
         mName = bundleReciever.getString("name");
@@ -89,22 +102,40 @@ public class MissionPopActivity extends AppCompatActivity {
         mType = bundleReciever.getString("type");
         mState = bundleReciever.getString("state");
         mUrl = bundleReciever.getString("url");
+        mid = bundleReciever.getString("mid");
         uid = bundleReciever.getString("uid");
         token = bundleReciever.getString("token");
 
+
         //get liveOrdie
         MissionsFragment.MyTaskGet httpGetMember = new MissionsFragment.MyTaskGet();
-        httpGetMember.execute("http://coldegarage.tech:8081/api/v1.1/member/read?operator_uid="+String.valueOf(uid)+"&token="+token+"&uid="+String.valueOf(uid));
+        httpGetMember.execute("http://coldegarage.tech:8081/api/v1.1/member/read?operator_uid="+uid+"&token="+token+"&uid="+uid);
 
         //get result from function "onPostExecute" in class "myTaskGet"
         try {
             readDataFromHttp = httpGetMember.get();
             //Parse JSON info
-            parseJson(readDataFromHttp);
+            parseJson(readDataFromHttp, "mission");
         } catch (Exception e) {
             e.printStackTrace();
         }
         System.out.println("liveOrDie" + liveOrDie);
+
+
+        //get missionPhoto
+        MissionsFragment.MyTaskGet httpGetReport = new MissionsFragment.MyTaskGet();
+        httpGetReport.execute("http://coldegarage.tech:8081/api/v1.1/report/read?operator_uid="+uid+"&token="+token+"&uid="+uid);
+        System.out.println("operator_uid="+uid+"&token="+token+"&uid="+uid+"&mid="+mid);
+
+        //get result from function "onPostExecute" in class "myTaskGet"
+        try {
+            readDataFromHttp = httpGetReport.get();
+            //Parse JSON info
+            parseJson(readDataFromHttp, "report");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        System.out.println("photoUrl=" + photoUrl);
 
         list = (LinearLayout) findViewById(R.id.list_mission);
         type = (TextView) findViewById(R.id.list_type);
@@ -113,11 +144,14 @@ public class MissionPopActivity extends AppCompatActivity {
         state = (ImageView) findViewById(R.id.list_state);
         content = (TextView) findViewById(R.id.mission_content);
         picture = (ImageView) findViewById(R.id.mission_picture);
+        selectedPhoto = (ImageView) findViewById(R.id.select_mission_photo);
 
         // Set mission title and content
         name.setText(mName);
-        System.out.println("name!!!!!");
+        time.setText(mTime);
         content.setText(mContent);
+        picture.setVisibility(View.GONE);
+        selectedPhoto.setVisibility(View.GONE);
         System.out.println("url===========" + mUrl);
         if(mUrl != null && mUrl!="") {
             new Thread(new Runnable() {
@@ -132,6 +166,27 @@ public class MissionPopActivity extends AppCompatActivity {
                         public void run() {
 //                            picture.setImageBitmap(circularBitmap);
                             picture.setImageBitmap(mBitmap);
+                        }
+                    });
+
+                }
+            }).start();
+        }
+
+        if(photoUrl != null && photoUrl != "") {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    //TODO Auto-generated method stub
+                    final Bitmap mBitmap =
+                            getBitmapFromURL("http://coldegarage.tech:8081/api/v1.1/download/img/" + photoUrl);
+//                    final Bitmap circularBitmap = ImageConverter.getRoundedCornerBitmap(mBitmap, 30);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+//                            picture.setImageBitmap(circularBitmap);
+                            selectedPhoto.setImageBitmap(mBitmap);
+                            selectedPhoto.setVisibility(View.VISIBLE);
                         }
                     });
 
@@ -162,10 +217,13 @@ public class MissionPopActivity extends AppCompatActivity {
         //state type : -1:unsolved 0:being judged 1:success 2:fail
         switch (mState) {
             case "-1":
+                if(liveOrDie == 1){ //live
+                    btnSelect.setVisibility(View.VISIBLE);
+                }
                 break;
             case "0": //waiting
 //                    state.setImageResource(R.drawable.state_waiting);
-                state.setImageResource(R.drawable.anim_gif_waiting);
+                state.setBackgroundResource(R.drawable.anim_gif_waiting);
                 Object ob_waiting = state.getBackground();
                 AnimationDrawable anim_waiting = (AnimationDrawable) ob_waiting;
                 anim_waiting.start();
@@ -174,6 +232,9 @@ public class MissionPopActivity extends AppCompatActivity {
                 state.setImageResource(R.drawable.state_passed);
                 break;
             case "2": //failed
+                if(liveOrDie == 1){ //live
+                    btnSelect.setVisibility(View.VISIBLE);
+                }
                 state.setImageResource(R.drawable.state_failed);
                 break;
             default:
@@ -193,16 +254,30 @@ public class MissionPopActivity extends AppCompatActivity {
 
     //====================取得任務頁面顯示的內容===========================
     //Parse json received from server
-    void parseJson (String info){
-        try {
+    void parseJson (String info, String missionOrReport){
+        if(missionOrReport.equals("mission")) {
+            try {
 //                    System.out.println(info);
-            JSONObject payload = new JSONObject(new JSONObject(info).getString("payload"));
-            JSONArray objects = payload.getJSONArray("objects");
-            JSONObject subObject = objects.getJSONObject(0);
-            liveOrDie = subObject.getInt("status");
-        } catch (JSONException e) {
-            e.printStackTrace();
+                JSONObject payload = new JSONObject(new JSONObject(info).getString("payload"));
+                JSONArray objects = payload.getJSONArray("objects");
+                JSONObject subObject = objects.getJSONObject(0);
+                liveOrDie = subObject.getInt("status");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        } else if(missionOrReport.equals("report")) {
+            System.out.println(info);
+            try {
+                JSONObject payload = new JSONObject(new JSONObject(info).getString("payload"));
+                JSONArray objects = payload.getJSONArray("objects");
+                JSONObject subObject = objects.getJSONObject(0);
+                rid = subObject.getInt("rid");
+                photoUrl = subObject.getString("url");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
+
     }
 
     private static Bitmap getBitmapFromURL(String imageUrl) {
@@ -325,14 +400,16 @@ public class MissionPopActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        ivImage.setImageBitmap(thumbnail);
-        ivImage.setVisibility(View.VISIBLE);
+        MissionPost(thumbnail);
+        selectedPhoto.setImageBitmap(thumbnail);
+        selectedPhoto.setVisibility(View.VISIBLE);
+
     }
 
     @SuppressWarnings("deprecation")
     private void onSelectFromGalleryResult(Intent data) {
 
-        Bitmap bm=null;
+        Bitmap bm = null;
         if (data != null) {
             try {
                 bm = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData());
@@ -341,7 +418,124 @@ public class MissionPopActivity extends AppCompatActivity {
             }
         }
 
-        ivImage.setImageBitmap(bm);
-        ivImage.setVisibility(View.VISIBLE);
+        MissionPost(bm);
+        selectedPhoto.setImageBitmap(bm);
+        selectedPhoto.setVisibility(View.VISIBLE);
+
+    }
+
+    private void MissionPost(Bitmap bitmap){
+        //Convert Bitmap to String for "POST"
+        photoPath = BitmapToString(bitmap);
+
+        //POST mid&image to server
+        MyTaskPost httpPost = new MyTaskPost();
+        httpPost.execute();
+
+        try {
+            //get result from function "onPostExecute" in class "myTaskPost"
+            readDataFromHttp = httpPost.get();
+            System.out.println(readDataFromHttp);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String BitmapToString(Bitmap bitmap) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte [] b = baos.toByteArray();
+        String bitmapString = Base64.encodeToString(b, Base64.DEFAULT);
+//        System.out.println("bmstr=" + bitmapString);
+        String encodeURL = null;
+        try {
+            encodeURL = URLEncoder.encode(bitmapString, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return encodeURL;
+    }
+
+    //HTTPPost
+    class MyTaskPost extends AsyncTask<Void,Void,String> {
+
+        @Override
+        public void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(Void... params) {
+            URL url;
+            HttpURLConnection urlConnection = null;
+            BufferedReader reader = null;
+            StringBuilder stringBuilder;
+
+            try {
+                url = new URL(getApplicationContext().getResources().getString(R.string.apiURL) + "/report/create");
+                urlConnection = (HttpURLConnection) url.openConnection();
+
+                //連線方式
+                urlConnection.setRequestMethod("POST");
+
+                //設置輸出入流串
+                urlConnection.setDoInput(true);
+                urlConnection.setDoOutput(true);
+
+                //POST方法不能緩存數據,需手動設置使用緩存的值為false
+                urlConnection.setUseCaches(false);
+
+                //Send request
+                DataOutputStream wr = new DataOutputStream(
+                        urlConnection.getOutputStream());
+
+                //encode data in UTF-8
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(wr, "UTF-8"));
+
+                writer.write("uid=" + uid + "&token=" + token + "&operator_uid=" + uid + "&mid=" + mid + "&image=" + photoPath);
+
+                //flush the data in buffer to server and close the writer
+                writer.flush();
+                writer.close();
+
+                //read response
+                reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+                stringBuilder = new StringBuilder();
+                String line ;
+
+                while ((line = reader.readLine()) != null)
+                {
+                    stringBuilder.append(line + "\n");
+                }
+                return stringBuilder.toString();
+
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+            finally {
+                urlConnection.disconnect();
+                // close the reader; this can throw an exception too, so
+                // wrap it in another try/catch block.
+                if (reader != null)
+                {
+                    try
+                    {
+                        reader.close();
+                    }
+                    catch (Exception e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        @Override
+        public void onPostExecute(String result) {
+            super.onPostExecute(result);
+        }
+
     }
 }
