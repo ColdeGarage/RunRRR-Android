@@ -755,25 +755,25 @@ public class MoreFragment extends Fragment {
         // Unit of Measure, pixel, cm, or inch
         barcode.setUom(IBarcode.UOM_PIXEL);
         // barcode bar module width (X) in pixel
-        barcode.setX(4f);
+        barcode.setX(5f);
         // barcode bar module height (Y) in pixel
-        barcode.setY(150f);
+        barcode.setY(180f);
 
         // barcode image margins
-        barcode.setLeftMargin(5f);
-        barcode.setRightMargin(5f);
-        barcode.setTopMargin(5f);
-        barcode.setBottomMargin(5f);
+        barcode.setLeftMargin(1f);
+        barcode.setRightMargin(1f);
+        barcode.setTopMargin(1f);
+        barcode.setBottomMargin(1f);
 
         // barcode image resolution in dpi
-        barcode.setResolution(72);
+        barcode.setResolution(36);
 
         // disply barcode encoding data below the barcode
         barcode.setShowText(false);
         // barcode encoding data font style
         barcode.setTextFont(new AndroidFont("Arial", Typeface.NORMAL, 24));
         // space between barcode and barcode encoding data
-        barcode.setTextMargin(6);
+        barcode.setTextMargin(4);
         barcode.setTextColor(AndroidColor.black);
 
         // barcode bar color and background color in Android device
@@ -784,7 +784,7 @@ public class MoreFragment extends Fragment {
         specify your barcode drawing area
 	    */
         //(left,top,right,button)
-        RectF bounds = new RectF(160, 200, 100, 100);
+        RectF bounds = new RectF(150, 50, 0, 0);
         barcode.drawBarcode(canvas, bounds);
     }
     private boolean isNetworkAvailable() {

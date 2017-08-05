@@ -22,6 +22,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.drawable.AnimationDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -76,6 +77,7 @@ public class MissionsFragment extends Fragment
 
     private static int uid;
     private static String token;
+    private static String mid;
 
     public static MissionsFragment getInstance() {
 //        if( instance == null ) {
@@ -86,7 +88,7 @@ public class MissionsFragment extends Fragment
 //            }
 //        }
         synchronized (MissionsFragment.class) {
-                instance = new MissionsFragment();
+            instance = new MissionsFragment();
         }
         return instance;
     }
@@ -207,11 +209,13 @@ public class MissionsFragment extends Fragment
         private int serverTimeHour;
         private int serverTimeMin;
 
+        private String [] mMid = new String[20];
         private String[] mName = new String[20];
         private String[] mTime = new String[20];
         private String[] mType = new String[20];
         private String[] mState = new String[20];
         private String[] mContent = new String[20];
+        private String[] mUrl = new String[20];
 
         public ContentAdapter(Context context) {
             Resources resources = context.getResources();
@@ -254,11 +258,13 @@ public class MissionsFragment extends Fragment
 
             // Set missions data to string array
             for(int i=0;i<solvingMissionList.size();i++){
+                mMid[i] = solvingMissionList.get(i).get("mid");
                 mName[i] = solvingMissionList.get(i).get("title");
                 mTime[i] = solvingMissionList.get(i).get("time_end");
                 mType[i] = solvingMissionList.get(i).get("class");
                 mState[i] = solvingMissionList.get(i).get("status");
                 mContent[i] = solvingMissionList.get(i).get("content");
+                mUrl[i] = solvingMissionList.get(i).get("url");
             }
         }
 
@@ -303,7 +309,11 @@ public class MissionsFragment extends Fragment
                 case "-1":
                     break;
                 case "0":
-                    holder.state.setImageResource(R.drawable.state_waiting);
+//                    holder.state.setImageResource(R.drawable.state_waiting);
+                    holder.state.setBackgroundResource(R.drawable.anim_gif_waiting);
+                    Object ob_waiting = holder.state.getBackground();
+                    AnimationDrawable anim_waiting = (AnimationDrawable) ob_waiting;
+                    anim_waiting.start();
                     break;
                 case "1":
                     holder.state.setImageResource(R.drawable.state_passed);
@@ -319,22 +329,24 @@ public class MissionsFragment extends Fragment
             holder.name.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                //TODO:Intent to other activity
-                Context context = v.getContext();
-                Intent intent = new Intent(context, MissionPopActivity.class);
+                    //TODO:Intent to other activity
+                    Context context = v.getContext();
+                    Intent intent = new Intent(context, MissionPopActivity.class);
 
-                //New Bundle object fot passing data
-                Bundle bundle = new Bundle();
-                bundle.putString("name", mName[position % mName.length]);
-                bundle.putString("time", mTime[position % mTime.length]);
-                bundle.putString("content", mContent[position % mContent.length]);
-                bundle.putString("type", mType[position % mType.length]);
-                bundle.putString("state", mState[position % mState.length]);
-                bundle.putString("uid",String.valueOf(uid));
-                bundle.putString("token",token);
+                    //New Bundle object fot passing data
+                    Bundle bundle = new Bundle();
+                    bundle.putString("mid", mMid[position % mMid.length]);
+                    bundle.putString("name", mName[position % mName.length]);
+                    bundle.putString("time", mTime[position % mTime.length]);
+                    bundle.putString("type", mType[position % mType.length]);
+                    bundle.putString("state", mState[position % mState.length]);
+                    bundle.putString("content", mContent[position % mContent.length]);
+                    bundle.putString("url", mUrl[position % mUrl.length]);
+                    bundle.putString("uid",String.valueOf(uid));
+                    bundle.putString("token",token);
 
-                intent.putExtras(bundle);
-                context.startActivity(intent);
+                    intent.putExtras(bundle);
+                    context.startActivity(intent);
                 }
             });
         }
@@ -365,6 +377,9 @@ public class MissionsFragment extends Fragment
 
                         //put content into hashmap
                         mission.put("content",subObject.getString("content"));
+
+                        //put url into hashmap
+                        mission.put("url",subObject.getString("url"));
 
                         //parse time, take hour&min only
                         //and put time_end into hashmap
