@@ -273,6 +273,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
             Alert("Please check your GPS.");
         }
 
+        //clear old setting of map
+        mMap.clear();
         setBoundary(mMap);
         addMissionMarker(mMap);
 
