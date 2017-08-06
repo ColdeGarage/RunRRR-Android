@@ -74,6 +74,7 @@ import static android.content.Context.MODE_PRIVATE;
 public class MapsFragment extends Fragment implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     static MapsFragment instance = null;
+    private PolygonOptions polygonOpt;
 
     //show text content
     private String text = "";
@@ -219,11 +220,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         googleMap = mgoogleMap;
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(24.794574, 120.992936), 17));
         googleMap.getUiSettings().setZoomControlsEnabled(true);
-        final LocationManager manager = (LocationManager) getActivity().getSystemService( Context.LOCATION_SERVICE );
-
-        if ( !manager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
-            Alert("Please check your GPS.");
-        }
         //Initialize Google Play Services
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(getActivity().getApplicationContext(),
@@ -271,6 +267,12 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         }
     }
     private void initial(GoogleMap mMap){
+
+        final LocationManager manager = (LocationManager) getActivity().getSystemService( Context.LOCATION_SERVICE );
+        if ( !manager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
+            Alert("Please check your GPS.");
+        }
+
         setBoundary(mMap);
         addMissionMarker(mMap);
 
@@ -286,7 +288,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         }
     }
     private void setBoundary(GoogleMap mMap){
-        PolygonOptions polygonOpt = new PolygonOptions();
+        polygonOpt = new PolygonOptions();
 
         //get map boundary from server
         MyTaskGet httpGetBoundary = new MyTaskGet();
@@ -441,10 +443,10 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-                //serverTimeHour = cal.get(Calendar.HOUR_OF_DAY);
-                //serverTimeMin = cal.get(Calendar.MINUTE);
-                serverTimeHour = 0;
-                serverTimeMin = 0;
+                serverTimeHour = cal.get(Calendar.HOUR_OF_DAY);
+                serverTimeMin = cal.get(Calendar.MINUTE);
+                //serverTimeHour = 0;
+                //serverTimeMin = 0;
 
                 JSONObject payload = new JSONObject(jObject.getString("payload"));
                 JSONArray objects = payload.getJSONArray("objects");

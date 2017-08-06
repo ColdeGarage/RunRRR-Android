@@ -220,6 +220,7 @@ public class MissionsFragment extends Fragment
                 e.printStackTrace();
             }
             System.out.println(reportList);
+            System.out.println("serverTime!!!");
             System.out.println(serverTimeHour+":"+serverTimeMin);
 
             missionState();
@@ -392,10 +393,10 @@ public class MissionsFragment extends Fragment
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
-                    //serverTimeHour = cal.get(Calendar.HOUR_OF_DAY);
-                    //serverTimeMin = cal.get(Calendar.MINUTE);
-                    serverTimeHour = 0;
-                    serverTimeMin = 0;
+                    serverTimeHour = cal.get(Calendar.HOUR_OF_DAY);
+                    serverTimeMin = cal.get(Calendar.MINUTE);
+                    //serverTimeHour = 0;
+                    //serverTimeMin = 0;
 
                     JSONObject payload = new JSONObject(jObject.getString("payload"));
                     JSONArray objects = payload.getJSONArray("objects");

@@ -31,11 +31,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -77,6 +75,10 @@ public class MoreFragment extends Fragment {
     String token;
     String helpInfo;
 
+    private View rootview;
+    private RecyclerView recyclerView;
+    private ContentAdapter adapter;
+
     public static MoreFragment getInstance() {
 //        if( instance == null ) {
 //            synchronized (MoreFragment.class) {
@@ -94,15 +96,15 @@ public class MoreFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_more, container, false);
-        RecyclerView recyclerView = (RecyclerView) v.findViewById(R.id.more_recycler_view);
-        ContentAdapter adapter = new ContentAdapter(recyclerView.getContext());
+        rootview = inflater.inflate(R.layout.fragment_more, container, false);
+        recyclerView = (RecyclerView) rootview.findViewById(R.id.more_recycler_view);
+        adapter = new ContentAdapter(recyclerView.getContext());
         recyclerView.setAdapter(adapter);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         readPrefs();
 
-        return v;
+        return rootview;
     }
 
     @Override
@@ -117,15 +119,8 @@ public class MoreFragment extends Fragment {
     }
 
     public void Refresh(){
-        // Create new fragment and transaction
-        Fragment newFragment = new MoreFragment();
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-
-        // Replace whatever is in the fragment_container view with this fragment,
-        // and add the transaction to the back stack
-        transaction.replace(R.id.more_list, newFragment)
-                .addToBackStack(null)
-                .commit();
+        ContentAdapter adapter = new ContentAdapter(recyclerView.getContext());
+        recyclerView.setAdapter(adapter);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
@@ -370,7 +365,6 @@ public class MoreFragment extends Fragment {
 
                                 holder.moreItem_die.setVisibility(View.VISIBLE);
                             } else {
-
                                 isDieFolded = true;
                                 holder.moreItem_die.setVisibility(View.GONE);
                             }
@@ -467,6 +461,7 @@ public class MoreFragment extends Fragment {
                 }
             });
         }
+
 
         @Override
         public int getItemCount() {
