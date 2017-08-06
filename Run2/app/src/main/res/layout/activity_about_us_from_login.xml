@@ -2,31 +2,71 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_mission_pop"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
     android:background="@color/background_grey"
     tools:context="com.example.android.run.AboutUsActivity">
 
-    <android.support.v4.widget.NestedScrollView
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="center_horizontal"
-            android:layout_margin="@dimen/layout_margin"
-            android:orientation="vertical">
+            android:background="@drawable/background_shadow">
 
-            <TextView
-                android:id="@+id/about_us_content"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/dark_grey"
-                android:text="@string/aboutUs"
-                android:textSize="20dp" />
-        </LinearLayout>
-    </android.support.v4.widget.NestedScrollView>
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/layout_margin"
+                android:background="@color/background_grey"
+                android:orientation="vertical">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:background="@color/about_us">
 
+                    <TextView
+                        android:id="@+id/about_us_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="20dp"
+                        tools:text="@string/title_activity_about_us"
+                        android:textSize="@dimen/text_content"
+                        android:textColor="@color/white"
+                        android:textAppearance="?attr/textAppearanceListItem" />
+                </LinearLayout>
+
+                <android.support.v4.widget.NestedScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_margin="@dimen/layout_margin">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="@dimen/layout_margin"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/about_us_content"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/dark_grey"
+                            android:text="@string/aboutUs"
+                            android:textSize="20dp" />
+                    </LinearLayout>
+                </android.support.v4.widget.NestedScrollView>
+            </LinearLayout>
+        </RelativeLayout>
+
+    </LinearLayout>
 </LinearLayout>
