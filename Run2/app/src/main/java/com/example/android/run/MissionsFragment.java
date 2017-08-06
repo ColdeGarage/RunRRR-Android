@@ -188,6 +188,8 @@ public class MissionsFragment extends Fragment
         private String[] mState = new String[20];
         private String[] mContent = new String[20];
         private String[] mUrl = new String[20];
+        private String[] mPrize = new String[20];
+        private String[] mScore = new String[20];
 
         public ContentAdapter(Context context) {
             Resources resources = context.getResources();
@@ -237,6 +239,8 @@ public class MissionsFragment extends Fragment
                 mState[i] = solvingMissionList.get(i).get("status");
                 mContent[i] = solvingMissionList.get(i).get("content");
                 mUrl[i] = solvingMissionList.get(i).get("url");
+                mPrize[i] = solvingMissionList.get(i).get("prize");
+                mScore[i] = solvingMissionList.get(i).get("score");
             }
         }
 
@@ -314,6 +318,8 @@ public class MissionsFragment extends Fragment
                     bundle.putString("state", mState[position % mState.length]);
                     bundle.putString("content", mContent[position % mContent.length]);
                     bundle.putString("url", mUrl[position % mUrl.length]);
+                    bundle.putString("prize", mPrize[position % mPrize.length]);
+                    bundle.putString("score", mScore[position % mScore.length]);
                     bundle.putString("uid",String.valueOf(uid));
                     bundle.putString("token",token);
 
@@ -333,6 +339,7 @@ public class MissionsFragment extends Fragment
         void parseJson (String info, String missionOrReport){
             if(missionOrReport.equals("mission")){
                 missionList = new ArrayList<>();
+                System.out.println(info);
                 try {
                     JSONObject payload = new JSONObject(new JSONObject(info).getString("payload"));
                     JSONArray objects = payload.getJSONArray("objects");
@@ -352,6 +359,12 @@ public class MissionsFragment extends Fragment
 
                         //put url into hashmap
                         mission.put("url",subObject.getString("url"));
+
+                        //put prize into hashmap
+                        mission.put("prize",subObject.getString("prize"));
+
+                        //put score into hashmap
+                        mission.put("score",subObject.getString("score"));
 
                         //parse time, take hour&min only
                         //and put time_end into hashmap
@@ -392,10 +405,10 @@ public class MissionsFragment extends Fragment
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
-                    //serverTimeHour = cal.get(Calendar.HOUR_OF_DAY);
-                    //serverTimeMin = cal.get(Calendar.MINUTE);
-                    serverTimeHour = 0;
-                    serverTimeMin = 0;
+                    serverTimeHour = cal.get(Calendar.HOUR_OF_DAY);
+                    serverTimeMin = cal.get(Calendar.MINUTE);
+//                    serverTimeHour = 0;
+//                    serverTimeMin = 0;
 
                     JSONObject payload = new JSONObject(jObject.getString("payload"));
                     JSONArray objects = payload.getJSONArray("objects");
@@ -410,19 +423,7 @@ public class MissionsFragment extends Fragment
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
             }
-//            else{
-//                try {
-////                    System.out.println(info);
-//                    JSONObject payload = new JSONObject(new JSONObject(info).getString("payload"));
-//                    JSONArray objects = payload.getJSONArray("objects");
-//                    JSONObject subObject = objects.getJSONObject(0);
-//                    liveOrDie = subObject.getInt("status");
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//            }
         }
         //Add mission state
         void missionState(){

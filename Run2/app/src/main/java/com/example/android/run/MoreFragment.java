@@ -132,11 +132,11 @@ public class MoreFragment extends Fragment {
 
         public TextView moreItem_name;
         public LinearLayout moreItem_background;
-        public ConstraintLayout moreItem_die;
-        public ConstraintLayout moreItem_about_us;
-        public ConstraintLayout moreItem_barcode;
-        public ConstraintLayout moreItem_sos;
-        public ConstraintLayout moreItem_logout;
+        public LinearLayout moreItem_die;
+        public LinearLayout moreItem_about_us;
+        public LinearLayout moreItem_barcode;
+        public LinearLayout moreItem_sos;
+        public LinearLayout moreItem_logout;
         public Button helpMe;
         public TextView helpInfoText;
         public TextView bt_enter;
@@ -150,11 +150,11 @@ public class MoreFragment extends Fragment {
             super(inflater.inflate(R.layout.item_list_more, parent, false));
             moreItem_name = (TextView) itemView.findViewById(R.id.list_title);
             moreItem_background = (LinearLayout) itemView.findViewById(R.id.more_list_background);
-            moreItem_die = (ConstraintLayout) itemView.findViewById(R.id.more_die);
-            moreItem_about_us = (ConstraintLayout) itemView.findViewById(R.id.more_about_us);
-            moreItem_barcode = (ConstraintLayout) itemView.findViewById(R.id.more_barcode);
-            moreItem_sos = (ConstraintLayout) itemView.findViewById(R.id.more_sos);
-            moreItem_logout = (ConstraintLayout) itemView.findViewById(R.id.more_logout);
+            moreItem_die = (LinearLayout) itemView.findViewById(R.id.more_die);
+            moreItem_about_us = (LinearLayout) itemView.findViewById(R.id.more_about_us);
+            moreItem_barcode = (LinearLayout) itemView.findViewById(R.id.more_barcode);
+            moreItem_sos = (LinearLayout) itemView.findViewById(R.id.more_sos);
+            moreItem_logout = (LinearLayout) itemView.findViewById(R.id.more_logout);
 
             bt_enter = (TextView) moreItem_die.findViewById(R.id.button_enter);
             editTextUid = (EditText) moreItem_die.findViewById(R.id.edit_uid);
@@ -318,6 +318,7 @@ public class MoreFragment extends Fragment {
                             } catch (ExecutionException e) {
                                 e.printStackTrace();
                             }
+                            Alert("原地待命");
                         }
                     });
                     holder.moreItem_background.setBackgroundResource(R.color.sos);
@@ -334,6 +335,7 @@ public class MoreFragment extends Fragment {
 
                             //intent to login
                             Context context = v.getContext();
+                            MapsFragment.instance.updateHandler.removeCallbacks(MapsFragment.instance.updateRunnable);
                             Intent intent = new Intent(context, MainActivity.class);
                             context.startActivity(intent);
                             getActivity().finish();
