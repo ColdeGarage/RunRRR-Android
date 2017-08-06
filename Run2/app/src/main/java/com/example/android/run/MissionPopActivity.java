@@ -17,7 +17,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -60,6 +59,8 @@ public class MissionPopActivity extends AppCompatActivity {
     private String mType;
     private String mState;
     private String readDataFromHttp;
+    private String mScore;
+    private String mPrize;
 
     private LinearLayout list;
     private TextView type;
@@ -68,79 +69,23 @@ public class MissionPopActivity extends AppCompatActivity {
     private ImageView state;
     private TextView content;
     private ImageView picture;
+    private TextView btnSelect;
+    private TextView btnCancel;
 
     private ImageView selectedPhoto;
     private String photoPath;
 
     private int REQUEST_CAMERA = 0, SELECT_FILE = 1;
-    private Button btnSelect;
     private String userChoosenTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_missions_pop);
-//        FloatingActionButton fab = (FloatingActionButton)findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) { selectImage();
-//            }
-//        });
 
         //initial
         rid = -1;
         photoUrl = null;
-
-        btnSelect = (Button) findViewById(R.id.btnSelectPhoto);
-        btnSelect.setVisibility(View.GONE);
-        btnSelect.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                selectImage();
-            }
-        });
-
-        bundleReciever = getIntent().getExtras();
-        mName = bundleReciever.getString("name");
-        mTime = bundleReciever.getString("time");
-        mContent = bundleReciever.getString("content");
-        mType = bundleReciever.getString("type");
-        mState = bundleReciever.getString("state");
-        mUrl = bundleReciever.getString("url");
-        mid = bundleReciever.getString("mid");
-        uid = bundleReciever.getString("uid");
-        token = bundleReciever.getString("token");
-
-
-        //get liveOrdie
-        MissionsFragment.MyTaskGet httpGetMember = new MissionsFragment.MyTaskGet();
-        httpGetMember.execute("http://coldegarage.tech:8081/api/v1.1/member/read?operator_uid="+uid+"&token="+token+"&uid="+uid);
-
-        //get result from function "onPostExecute" in class "myTaskGet"
-        try {
-            readDataFromHttp = httpGetMember.get();
-            //Parse JSON info
-            parseJson(readDataFromHttp, "mission");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        System.out.println("liveOrDie" + liveOrDie);
-
-
-        //get missionPhoto
-        MissionsFragment.MyTaskGet httpGetReport = new MissionsFragment.MyTaskGet();
-        httpGetReport.execute("http://coldegarage.tech:8081/api/v1.1/report/read?operator_uid="+uid+"&token="+token+"&uid="+uid);
-        System.out.println("operator_uid="+uid+"&token="+token+"&uid="+uid+"&mid="+mid);
-
-        //get result from function "onPostExecute" in class "myTaskGet"
-        try {
-            readDataFromHttp = httpGetReport.get();
-            //Parse JSON info
-            parseJson(readDataFromHttp, "report");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        System.out.println("photoUrl=" + photoUrl);
 
         list = (LinearLayout) findViewById(R.id.list_mission);
         type = (TextView) findViewById(R.id.list_type);
@@ -150,13 +95,56 @@ public class MissionPopActivity extends AppCompatActivity {
         content = (TextView) findViewById(R.id.mission_content);
         picture = (ImageView) findViewById(R.id.mission_picture);
         selectedPhoto = (ImageView) findViewById(R.id.select_mission_photo);
+        btnSelect = (TextView) findViewById(R.id.photoSelectButton);
+        btnCancel = (TextView) findViewById(R.id.popCancelButton);
+
+        bundleReciever = getIntent().getExtras();
+        mName = bundleReciever.getString("name");
+        mTime = bundleReciever.getString("time");
+        mContent = bundleReciever.getString("content");
+        mType = bundleReciever.getString("type");
+        mState = bundleReciever.getString("state");
+        mUrl = bundleReciever.getString("url");
+        mid = bundleReciever.getString("mid");
+        mPrize = bundleReciever.getString("prize");
+        mScore = bundleReciever.getString("score");
+        uid = bundleReciever.getString("uid");
+        token = bundleReciever.getString("token");
+
+        //get liveOrdie
+        MissionsFragment.MyTaskGet httpGetMember = new MissionsFragment.MyTaskGet();
+        httpGetMember.execute("http://coldegarage.tech:8081/api/v1.1/member/read?operator_uid="+uid+"&token="+token+"&uid="+uid);
+
+        //get result from function "onPostExecute" in class "myTaskGet"
+        try {
+            readDataFromHttp = httpGetMember.get();
+            //Parse JSON info
+            parseJson(readDataFromHttp, "member");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        System.out.println("liveOrDie" + liveOrDie);
+
+        //get missionPhoto
+        MissionsFragment.MyTaskGet httpGetReport = new MissionsFragment.MyTaskGet();
+        httpGetReport.execute("http://coldegarage.tech:8081/api/v1.1/report/read?operator_uid="+uid+"&token="+token+"&uid="+uid);
+
+        //get result from function "onPostExecute" in class "myTaskGet"
+        try {
+            readDataFromHttp = httpGetReport.get();
+            //Parse JSON info
+            parseJson(readDataFromHttp, "report");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         // Set mission title and content
         name.setText(mName);
         time.setText(mTime);
-        content.setText(mContent);
+        content.setText(mContent+"\n獎勵分數:"+mScore+"\n獎勵金錢:"+mPrize);
         picture.setVisibility(View.GONE);
         selectedPhoto.setVisibility(View.GONE);
+        btnSelect.setVisibility(View.GONE);
 
         System.out.println("url===========" + mUrl);
         if(mUrl != null && mUrl!="") {
@@ -172,6 +160,7 @@ public class MissionPopActivity extends AppCompatActivity {
                         public void run() {
 //                            picture.setImageBitmap(circularBitmap);
                             picture.setImageBitmap(mBitmap);
+                            picture.setVisibility(View.VISIBLE);
                         }
                     });
 
@@ -195,10 +184,10 @@ public class MissionPopActivity extends AppCompatActivity {
                             selectedPhoto.setVisibility(View.VISIBLE);
                         }
                     });
-
                 }
             }).start();
         }
+
         //missions type : MAIN,SUB,URG, set different icon
         switch (mType) {
             case "0":
@@ -246,22 +235,42 @@ public class MissionPopActivity extends AppCompatActivity {
             default:
                 break;
         }
+
+        btnSelect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectImage();
+            }
+        });
+
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == android.R.id.home) {
-            super.onBackPressed();
+            onBackPressed();
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
+    public void onBackPressed() {
+        Intent intent = new Intent();
+        setResult(MissionsFragment.MY_MISSION_REFRESH, intent);
+        finish();
+    }
+
     //====================取得任務頁面顯示的內容===========================
     //Parse json received from server
     void parseJson (String info, String missionOrReport){
-        if(missionOrReport.equals("mission")) {
+        if(missionOrReport.equals("member")) {
             try {
 //                    System.out.println(info);
                 JSONObject payload = new JSONObject(new JSONObject(info).getString("payload"));

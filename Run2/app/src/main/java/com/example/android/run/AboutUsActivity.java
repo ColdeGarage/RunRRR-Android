@@ -10,11 +10,9 @@ public class AboutUsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_about_us);
-
-        TextView about = (TextView) findViewById(R.id.about_us_content);
-        about.setText("@string/aboutUs");
-
+        setContentView(R.layout.activity_about_us_from_login);
+        TextView title = (TextView) findViewById(R.id.about_us_title);
+        title.setText("ABOUT US");
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

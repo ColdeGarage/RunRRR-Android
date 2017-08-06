@@ -8,128 +8,120 @@
     android:layout_height="match_parent"
     tools:context="com.example.android.run.BagPopActivity">
 
-    <LinearLayout
-        android:orientation="horizontal"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:background="@drawable/background_round_shadow">
 
         <RelativeLayout
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="28"
-            android:background="@drawable/background_round_shadow">
+            android:layout_margin="@dimen/layout_margin"
+            android:background="@drawable/background_round">
 
-            <RelativeLayout
+            <LinearLayout
+                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_margin="@dimen/layout_margin"
-                android:background="@drawable/background_round">
-
+                android:layout_weight="1">
                 <LinearLayout
                     android:orientation="vertical"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="103dp"
                     android:layout_weight="1">
+
+                    <TextView
+                        android:id="@+id/popToolName"
+                        android:text="ToolName"
+                        android:textSize="@dimen/text_title"
+                        android:textColor="@color/black"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2">
+
                     <LinearLayout
                         android:orientation="vertical"
-                        android:layout_width="match_parent"
-                        android:layout_height="103dp"
-                        android:layout_weight="1">
-
-                        <TextView
-                            android:id="@+id/popToolName"
-                            android:text="ToolName"
-                            android:textSize="@dimen/text_title"
-                            android:textColor="@color/black"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:gravity="center"/>
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:orientation="horizontal"
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="2">
 
-                        <LinearLayout
-                            android:orientation="vertical"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="2">
+                    </LinearLayout>
 
-                        </LinearLayout>
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="8">
 
-                        <LinearLayout
-                            android:orientation="vertical"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="8">
+                        <TextView
+                            android:id="@+id/popContent"
+                            android:text="TextView"
+                            android:textSize="@dimen/text_content"
+                            android:textColor="@color/black"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="15"
+                            android:gravity="center_horizontal"/>
 
-                            <TextView
-                                android:id="@+id/popContent"
-                                android:text="TextView"
-                                android:textSize="@dimen/text_content"
-                                android:textColor="@color/black"
-                                android:layout_width="match_parent"
-                                android:layout_height="0dp"
-                                android:layout_weight="15"
-                                android:gravity="center_horizontal"/>
-
-                            <TextView
-                                android:id="@+id/popCount"
-                                android:text="TextView"
-                                android:textSize="@dimen/text_content"
-                                android:textColor="@color/black"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:gravity="center_horizontal" />
-
-                            <RelativeLayout
-                                android:orientation="horizontal"
-                                android:layout_width="match_parent"
-                                android:layout_height="0dp"
-                                android:layout_weight="3">
-
-                                <TextView
-                                    android:id="@+id/useButton"
-                                    android:text="USE"
-                                    android:textSize="20dp"
-                                    android:textColor="@color/red"
-                                    android:gravity="center"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="match_parent"
-                                    android:layout_alignParentRight="true"/>
-
-                                <TextView
-                                    android:id="@+id/popCancelButton"
-                                    android:text="CANCEL"
-                                    android:textSize="20dp"
-                                    android:textColor="@color/black"
-                                    android:gravity="center"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="match_parent"
-                                    android:layout_alignParentLeft="true"/>
-
-                            </RelativeLayout>
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:orientation="vertical"
-                            android:layout_width="0dp"
+                        <TextView
+                            android:id="@+id/popCount"
+                            android:text="TextView"
+                            android:textSize="@dimen/text_content"
+                            android:textColor="@color/black"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="2">
-                        </LinearLayout>
+                            android:layout_weight="1"
+                            android:gravity="center_horizontal" />
+
+                        <RelativeLayout
+                            android:orientation="horizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="3">
+
+                            <TextView
+                                android:id="@+id/useButton"
+                                android:text="USE"
+                                android:textSize="20dp"
+                                android:textColor="@color/red"
+                                android:gravity="center"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_alignParentRight="true"/>
+
+                            <TextView
+                                android:id="@+id/popCancelButton"
+                                android:text="CANCEL"
+                                android:textSize="20dp"
+                                android:textColor="@color/black"
+                                android:gravity="center"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_alignParentLeft="true"/>
+
+                        </RelativeLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2">
                     </LinearLayout>
                 </LinearLayout>
-            </RelativeLayout>
-
+            </LinearLayout>
         </RelativeLayout>
 
-    </LinearLayout>
+    </RelativeLayout>
     <LinearLayout
         android:id="@+id/bag_pop_margin"
         android:layout_width="match_parent"

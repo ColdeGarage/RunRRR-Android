@@ -6,7 +6,6 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/transparent"
     tools:context="com.example.android.run.MissionPopActivity">
 
     <LinearLayout
@@ -184,5 +183,11 @@
             </LinearLayout>
         </RelativeLayout>
 
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/mission_pop_margin"
+        android:layout_width="match_parent"
+        android:layout_height="95dp"
+        android:orientation="vertical">
     </LinearLayout>
 </LinearLayout>

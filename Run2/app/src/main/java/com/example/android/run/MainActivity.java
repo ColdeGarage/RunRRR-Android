@@ -146,17 +146,17 @@ public class MainActivity extends AppCompatActivity {
     private String token;
     //Parse json received from server
     int Parsejson (String info){
-        System.out.println("info is");
-        System.out.println(info);
         int correct=1;
-        try {
-            JSONObject jObject = new JSONObject(info);
-            uid = jObject.getInt("uid");
-            token = jObject.getString("token");
-            JSONObject payload = new JSONObject(jObject.getString("payload"));
-            correct = payload.getInt("correct");
-        } catch (JSONException e) {
-            e.printStackTrace();
+        if(info != null) {
+            try {
+                JSONObject jObject = new JSONObject(info);
+                uid = jObject.getInt("uid");
+                token = jObject.getString("token");
+                JSONObject payload = new JSONObject(jObject.getString("payload"));
+                correct = payload.getInt("correct");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
         return correct;
     }

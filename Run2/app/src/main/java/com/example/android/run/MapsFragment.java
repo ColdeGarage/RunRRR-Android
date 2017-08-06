@@ -81,8 +81,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     private static String token;
     private static boolean valid;
 
-    Handler updateHandler ;
-    Runnable updateRunnable ;
+    public Handler updateHandler ;
+    public Runnable updateRunnable ;
     static int flag = 0;
     static int num = 0;
     static boolean show = false;
@@ -140,7 +140,11 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
             updateRunnable = new Runnable() {
                 @Override
                 public void run() {
-                    if(lastLocation!=null){
+                    final LocationManager manager = (LocationManager) getActivity().getSystemService( Context.LOCATION_SERVICE );
+                    if ( !manager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
+                        Alert("Please check your GPS.");
+                    }
+                    else if(lastLocation!=null){
                         MyTaskPut updatePut = new MyTaskPut();
                         updatePut.execute(getResources().getString(R.string.apiURL)+"/member/update"
                                 ,"uid=" + String.valueOf(uid) + "&operator_uid=" + String.valueOf(uid) + "&token=" + token + "&position_n=" + String.valueOf(lastLocation.getLatitude())
@@ -219,11 +223,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         googleMap = mgoogleMap;
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(24.794574, 120.992936), 17));
         googleMap.getUiSettings().setZoomControlsEnabled(true);
-        final LocationManager manager = (LocationManager) getActivity().getSystemService( Context.LOCATION_SERVICE );
 
-        if ( !manager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
-            Alert("Please check your GPS.");
-        }
         //Initialize Google Play Services
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(getActivity().getApplicationContext(),
@@ -271,11 +271,16 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         }
     }
     private void initial(GoogleMap mMap){
+        final LocationManager manager = (LocationManager) getActivity().getSystemService( Context.LOCATION_SERVICE );
+        if ( !manager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
+            Alert("Please check your GPS.");
+        }
+
+        mMap.clear();
+
         setBoundary(mMap);
         addMissionMarker(mMap);
-
         setScore();
-
         if(lastLocation!=null){
             LatLng latLng = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
             //move map camera
@@ -441,10 +446,10 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-                //serverTimeHour = cal.get(Calendar.HOUR_OF_DAY);
-                //serverTimeMin = cal.get(Calendar.MINUTE);
-                serverTimeHour = 0;
-                serverTimeMin = 0;
+                serverTimeHour = cal.get(Calendar.HOUR_OF_DAY);
+                serverTimeMin = cal.get(Calendar.MINUTE);
+//                serverTimeHour = 0;
+//                serverTimeMin = 0;
 
                 JSONObject payload = new JSONObject(jObject.getString("payload"));
                 JSONArray objects = payload.getJSONArray("objects");
