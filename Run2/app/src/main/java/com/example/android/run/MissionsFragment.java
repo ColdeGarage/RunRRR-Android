@@ -222,6 +222,7 @@ public class MissionsFragment extends Fragment
                 e.printStackTrace();
             }
             System.out.println(reportList);
+            System.out.println("server time");
             System.out.println(serverTimeHour+":"+serverTimeMin);
 
             missionState();
