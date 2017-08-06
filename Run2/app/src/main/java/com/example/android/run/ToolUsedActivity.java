@@ -22,9 +22,9 @@ public class ToolUsedActivity extends Activity {
         final Bundle bundleReciever =this.getIntent().getExtras();
         String content = bundleReciever.getString("content");
 
-        usedContent.setTextSize(26);
+
         usedContent.setTextColor(Color.BLACK);
-        usedContent.setText(content);
+        usedContent.setText("\n  "+content);
         backButton.setText("知道了");
         backButton.setOnClickListener(new Button.OnClickListener(){
             @Override

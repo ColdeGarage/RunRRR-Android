@@ -67,13 +67,13 @@ public class BagFragment extends Fragment
     View v;
 
     private ArrayList<ArrayList<HashMap<String, String>>> packList = new ArrayList<>();
-    private String[] toolIds = new String[50];
-    private String[] toolPIds = new String[50];
+    private String[] toolIds = new String[100];
+    private String[] toolPIds = new String[100];
     private String[] clueIds = new String[50];
-    private String[] pName = new String[100];
-    private String[] pUrl = new String[100];
-    private String[] pCount = new String[100];
-    private String[] pContent = new String[100];
+    private String[] pName = new String[200];
+    private String[] pUrl = new String[200];
+    private String[] pCount = new String[200];
+    private String[] pContent = new String[200];
     private ArrayList<String[]> pID = new ArrayList<>();
     int toolNum=0;
 
@@ -165,13 +165,13 @@ public class BagFragment extends Fragment
                 Alert("Please check your internet connection, then try again.");
             }
             packList.clear();
-            toolIds = new String[50];
-            toolPIds = new String[50];
+            toolIds = new String[100];
+            toolPIds = new String[100];
             clueIds = new String[50];
-            pName = new String[100];
-            pUrl = new String[100];
-            pCount = new String[100];
-            pContent = new String[100];
+            pName = new String[200];
+            pUrl = new String[200];
+            pCount = new String[200];
+            pContent = new String[200];
             pID.clear();
             toolNum=0;
             int money=0;
@@ -226,7 +226,7 @@ public class BagFragment extends Fragment
                 pContent[i] = packList.get(i-1).get(0).get("content");
 
                 if(i<=toolNum){
-                    String[] pid = new String[10];
+                    String[] pid = new String[50];
                     pid[0] = packList.get(i-1).get(0).get("pid");
                     for(int j=1; j < packList.get(i-1).size(); j++){
                         pid[j] = packList.get(i-1).get(j).get("pid");

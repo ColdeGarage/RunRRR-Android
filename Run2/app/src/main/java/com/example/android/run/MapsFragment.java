@@ -391,7 +391,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
             e.printStackTrace();
         }
         scoreView.setText(String.valueOf(score));
-        System.out.println("SCORE!!!!");
+
     }
     //Parse json received from server
     void parseJson (String info, String instru){
