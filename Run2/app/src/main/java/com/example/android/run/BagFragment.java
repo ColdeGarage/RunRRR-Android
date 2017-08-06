@@ -274,36 +274,42 @@ public class BagFragment extends Fragment
                     if( !pUrl[position*3].equals("")) {
                         final Bitmap mBitmap =
                                 getBitmapFromURL("http://coldegarage.tech:8081/api/v1.1/download/img/" + pUrl[position * 3]);
-                        final Bitmap circularBitmap = ImageConverter.getRoundedCornerBitmap(mBitmap, 30);
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                holder.tool1.setImageBitmap(circularBitmap);
-                            }
-                        });
+                        if(mBitmap!=null) {
+                            final Bitmap circularBitmap = ImageConverter.getRoundedCornerBitmap(mBitmap, 30);
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    holder.tool1.setImageBitmap(circularBitmap);
+                                }
+                            });
+                        }
                     }
                     //TODO Auto-generated method stub
                     if( pUrl[position*3+1]!="" && pUrl[position*3+1]!=null) {
                         final Bitmap mBitmap2 =
                                 getBitmapFromURL("http://coldegarage.tech:8081/api/v1.1/download/img/" + pUrl[position * 3 + 1]);
-                        final Bitmap circularBitmap2 = ImageConverter.getRoundedCornerBitmap(mBitmap2, 30);
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                holder.tool2.setImageBitmap(circularBitmap2);
-                            }
-                        });
+                        if(mBitmap2!=null) {
+                            final Bitmap circularBitmap2 = ImageConverter.getRoundedCornerBitmap(mBitmap2, 30);
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    holder.tool2.setImageBitmap(circularBitmap2);
+                                }
+                            });
+                        }
                     }//TODO Auto-generated method stub
                     if( pUrl[position*3+2]!="" && pUrl[position*3+2]!=null) {
                         final Bitmap mBitmap3 =
                                 getBitmapFromURL("http://coldegarage.tech:8081/api/v1.1/download/img/" + pUrl[position * 3 + 2]);
-                        final Bitmap circularBitmap3 = ImageConverter.getRoundedCornerBitmap(mBitmap3, 30);
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                holder.tool3.setImageBitmap(circularBitmap3);
-                            }
-                        });
+                        if(mBitmap3!=null) {
+                            final Bitmap circularBitmap3 = ImageConverter.getRoundedCornerBitmap(mBitmap3, 30);
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    holder.tool3.setImageBitmap(circularBitmap3);
+                                }
+                            });
+                        }
                     }
                 }
             }).start();

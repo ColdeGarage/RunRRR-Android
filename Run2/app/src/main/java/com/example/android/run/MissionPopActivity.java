@@ -59,6 +59,8 @@ public class MissionPopActivity extends AppCompatActivity {
     private String mType;
     private String mState;
     private String readDataFromHttp;
+    private String mScore;
+    private String mPrize;
 
     private LinearLayout list;
     private TextView type;
@@ -80,21 +82,6 @@ public class MissionPopActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_missions_pop);
-
-//        // setting the tab size depending on device size
-//        int height;
-//        boolean tabletSize = getResources().getBoolean(R.bool.isTablet);
-//        LinearLayout margin = (LinearLayout) findViewById(R.id.mission_pop_margin);
-//
-//        if (tabletSize) {
-//            // convert dip to pixels
-//            height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 147, getResources().getDisplayMetrics());
-//            margin.getLayoutParams().height = height;
-//        } else {
-//            // convert dip to pixels
-//            height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 103, getResources().getDisplayMetrics());
-//            margin.getLayoutParams().height = height;
-//        }
 
         //initial
         rid = -1;
@@ -119,6 +106,8 @@ public class MissionPopActivity extends AppCompatActivity {
         mState = bundleReciever.getString("state");
         mUrl = bundleReciever.getString("url");
         mid = bundleReciever.getString("mid");
+        mPrize = bundleReciever.getString("prize");
+        mScore = bundleReciever.getString("score");
         uid = bundleReciever.getString("uid");
         token = bundleReciever.getString("token");
 
@@ -130,7 +119,7 @@ public class MissionPopActivity extends AppCompatActivity {
         try {
             readDataFromHttp = httpGetMember.get();
             //Parse JSON info
-            parseJson(readDataFromHttp, "mission");
+            parseJson(readDataFromHttp, "member");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -152,7 +141,7 @@ public class MissionPopActivity extends AppCompatActivity {
         // Set mission title and content
         name.setText(mName);
         time.setText(mTime);
-        content.setText(mContent);
+        content.setText(mContent+"\n獎勵分數:"+mScore+"\n獎勵金錢:"+mPrize);
         picture.setVisibility(View.GONE);
         selectedPhoto.setVisibility(View.GONE);
         btnSelect.setVisibility(View.GONE);
@@ -281,7 +270,7 @@ public class MissionPopActivity extends AppCompatActivity {
     //====================取得任務頁面顯示的內容===========================
     //Parse json received from server
     void parseJson (String info, String missionOrReport){
-        if(missionOrReport.equals("mission")) {
+        if(missionOrReport.equals("member")) {
             try {
 //                    System.out.println(info);
                 JSONObject payload = new JSONObject(new JSONObject(info).getString("payload"));

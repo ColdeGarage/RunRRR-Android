@@ -312,6 +312,7 @@ public class MoreFragment extends Fragment {
                             } catch (ExecutionException e) {
                                 e.printStackTrace();
                             }
+                            Alert("原地待命");
                         }
                     });
                     holder.moreItem_background.setBackgroundResource(R.color.sos);
@@ -328,6 +329,7 @@ public class MoreFragment extends Fragment {
 
                             //intent to login
                             Context context = v.getContext();
+                            MapsFragment.instance.updateHandler.removeCallbacks(MapsFragment.instance.updateRunnable);
                             Intent intent = new Intent(context, MainActivity.class);
                             context.startActivity(intent);
                             getActivity().finish();
