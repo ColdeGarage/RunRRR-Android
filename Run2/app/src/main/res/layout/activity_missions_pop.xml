@@ -112,7 +112,7 @@
                 android:padding="10dp" >
 
                 <ImageView
-                    android:id="@+id/ivImage"
+                    android:id="@+id/select_mission_photo"
                     android:layout_width="200dp"
                     android:layout_height="200dp"
                     android:src="@drawable/gallery" />

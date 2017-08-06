@@ -18,7 +18,7 @@ public class LogoutActivity extends AppCompatActivity {
 
         //Button Function
         TextView btYes = (TextView) findViewById(R.id.logout_yes);
-        TextView btNo = (TextView) findViewById(R.id.logout_no);
+//        TextView btNo = (TextView) findViewById(R.id.logout_no);
 
         //button to logout
         btYes.setOnClickListener(new TextView.OnClickListener() {
@@ -39,12 +39,12 @@ public class LogoutActivity extends AppCompatActivity {
         });
 
         //button to cancel
-        btNo.setOnClickListener(new TextView.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-            finish();
-            }
-        });
+//        btNo.setOnClickListener(new TextView.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//            finish();
+//            }
+//        });
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
