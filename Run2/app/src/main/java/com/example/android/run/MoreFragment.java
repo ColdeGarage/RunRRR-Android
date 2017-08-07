@@ -701,13 +701,7 @@ public class MoreFragment extends Fragment {
                 MyTaskPut help = new MyTaskPut();
                 help.execute("http://coldegarage.tech:8081/api/v1.1/member/callhelp","uid=" + String.valueOf(uid) + "&operator_uid=" + String.valueOf(uid) + "&token=" + token
                         + "&position_e=" + c.getDouble("position_e") + "&position_n=" + c.getDouble("position_n"));
-                try {
-                    System.out.println(help.get());
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                }
+
             } catch (final JSONException e) {
                 System.out.print("Json parsing error: " + e.getMessage());
             }
@@ -722,12 +716,14 @@ public class MoreFragment extends Fragment {
         }
     }
     int parseJson (String info){
-        int brea = 0;
-        try {
-            JSONObject jObject = new JSONObject(info);
-            brea = jObject.getInt("brea");
-        } catch (JSONException e) {
-            e.printStackTrace();
+        int brea = -1;
+        if(info!=null) {
+            try {
+                JSONObject jObject = new JSONObject(info);
+                brea = jObject.getInt("brea");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
         return brea;
     }

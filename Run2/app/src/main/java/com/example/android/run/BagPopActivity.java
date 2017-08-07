@@ -137,14 +137,7 @@ public class BagPopActivity extends Activity {
 //                    intent.putExtras(bundle);
 //                    startActivity(intent);
                     Alert("會有機會用到的，嘿嘿嘿");
-//                    new AlertDialog.Builder(BagPopActivity.this)
-//                            .setCancelable(false)   //按到旁邊也不會消失
-//                            .setMessage("會有機會用到的，嘿嘿嘿")
-//                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-//                                @Override
-//                                public void onClick(DialogInterface dialog, int which) {
-//                                }
-//                            }).show();
+
                 }
                 else if(IDs != null && Integer.valueOf(bundleReciever.getString("COUNT"))-currentToolIndex>0) {
 
@@ -174,25 +167,10 @@ public class BagPopActivity extends Activity {
 //                    intent.putExtras(bundle);
 //                    startActivity(intent);
                     Alert("你使用了一個 " + name + "!");
-//                    new AlertDialog.Builder(BagPopActivity.this)
-//                            .setCancelable(false)   //按到旁邊也不會消失
-//                            .setMessage("你使用了一個 " + name + "!")
-//                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-//                                @Override
-//                                public void onClick(DialogInterface dialog, int which) {
-//                                }
-//                            }).show();
+
                 }
                 else{
-
-                    new AlertDialog.Builder(BagPopActivity.this)
-                            .setCancelable(false)   //按到旁邊也不會消失
-                            .setMessage("此物品已用盡或無法使用")
-                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                }
-                            }).show();
+                    Alert("此物品已用盡或無法使用");
                 }
             }
         });
@@ -291,7 +269,6 @@ public class BagPopActivity extends Activity {
     class myTaskGet extends AsyncTask<Void,Void,String> {
         myTaskGet(String toGet) throws MalformedURLException {
             url = new URL(toGet);
-            System.out.println("url="+url);
         }
         @Override
         public void onPreExecute() {
@@ -329,8 +306,6 @@ public class BagPopActivity extends Activity {
                 while ((line = reader.readLine()) != null) {
                     stringBuilder.append(line + "\n");
                 }
-//                    System.out.println("happy~");
-//                    System.out.print(stringBuilder.toString());
                 return stringBuilder.toString();
             } catch (Exception e) {
                 e.printStackTrace();
@@ -367,7 +342,6 @@ public class BagPopActivity extends Activity {
                 // looping through All Contacts
                 JSONObject c = objects.getJSONObject(0);
                 liveStatus = c.getInt("status");
-                System.out.println("liveStatus= "+liveStatus);
 
             } catch (final JSONException e) {
                 System.out.print("Json parsing error: " + e.getMessage());

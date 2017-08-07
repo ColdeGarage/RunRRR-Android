@@ -123,7 +123,7 @@ public class MissionPopActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.println("liveOrDie" + liveOrDie);
+        System.out.println("liveOrDie = " + liveOrDie);
 
         //get missionPhoto
         MissionsFragment.MyTaskGet httpGetReport = new MissionsFragment.MyTaskGet();
@@ -146,7 +146,6 @@ public class MissionPopActivity extends AppCompatActivity {
         selectedPhoto.setVisibility(View.GONE);
         btnSelect.setVisibility(View.GONE);
 
-        System.out.println("url===========" + mUrl);
         if(mUrl != null && mUrl!="") {
             new Thread(new Runnable() {
                 @Override
@@ -159,8 +158,10 @@ public class MissionPopActivity extends AppCompatActivity {
                         @Override
                         public void run() {
 //                            picture.setImageBitmap(circularBitmap);
-                            picture.setImageBitmap(mBitmap);
-                            picture.setVisibility(View.VISIBLE);
+                            if(mBitmap!=null) {
+                                picture.setImageBitmap(mBitmap);
+                                picture.setVisibility(View.VISIBLE);
+                            }
                         }
                     });
 
@@ -180,8 +181,10 @@ public class MissionPopActivity extends AppCompatActivity {
                         @Override
                         public void run() {
 //                            picture.setImageBitmap(circularBitmap);
-                            selectedPhoto.setImageBitmap(mBitmap);
-                            selectedPhoto.setVisibility(View.VISIBLE);
+                            if(mBitmap!=null) {
+                                selectedPhoto.setImageBitmap(mBitmap);
+                                selectedPhoto.setVisibility(View.VISIBLE);
+                            }
                         }
                     });
                 }
@@ -482,6 +485,12 @@ public class MissionPopActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
+        Alert("上傳成功");
+        mState = "0";
+        state.setBackgroundResource(R.drawable.anim_gif_waiting);
+        Object ob_waiting = state.getBackground();
+        AnimationDrawable anim_waiting = (AnimationDrawable) ob_waiting;
+        anim_waiting.start();
     }
 
     private String BitmapToString(Bitmap bitmap) {
@@ -498,7 +507,17 @@ public class MissionPopActivity extends AppCompatActivity {
         }
         return encodeURL;
     }
+    //show an alert dialog
+    void Alert(String mes){
+        new AlertDialog.Builder(MissionPopActivity.this)
+                .setMessage(mes)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
 
+                    }
+                }).show();
+    }
     //HTTPPost
     class MyTaskPost extends AsyncTask<Void,Void,String> {
 
