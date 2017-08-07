@@ -122,12 +122,13 @@ public class BagPopWindowActivity extends Activity {
             @Override
             public void onClick(View view) {
                 if(liveStatus==0){
-                    Intent intent = new Intent(BagPopWindowActivity.this, ToolUsedActivity.class);
-                    Bundle bundle=new Bundle();
-                    bundle.putString("content","你已經屎惹啊！不能用道具囉～");
-                    intent.putExtras(bundle);
-                    startActivity(intent);
+//                    Intent intent = new Intent(BagPopWindowActivity.this, ToolUsedActivity.class);
+//                    Bundle bundle=new Bundle();
+//                    bundle.putString("content","你已經屎惹啊！不能用道具囉～");
+//                    intent.putExtras(bundle);
+//                    startActivity(intent);
 //                    Toast.makeText(BagPopActivity.this, "你已經屎惹啊！不能用道具囉～", Toast.LENGTH_SHORT).show();
+
                 }
                 else if(name.equals("金錢")){
 //                    Intent intent = new Intent(BagPopActivity.this, ToolUsedActivity.class);

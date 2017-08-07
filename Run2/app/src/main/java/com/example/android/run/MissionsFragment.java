@@ -21,6 +21,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -255,6 +256,7 @@ public class MissionsFragment extends Fragment
             // Use holder to get data from arrays in ContentAdapter
             holder.name.setText(mName[position % mName.length]);
             holder.time.setText(mTime[position % mTime.length]);
+            holder.time.setTextColor(Color.BLACK);
 
             String content = mContent[position % mContent.length];
             String type = mType[position % mType.length];
@@ -370,14 +372,14 @@ public class MissionsFragment extends Fragment
                         //parse time, take hour&min only
                         //and put time_end into hashmap
                         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.s'Z'");
-                        Calendar cal = Calendar.getInstance();
                         try {
                             Date date = dateFormat.parse(subObject.getString("time_end"));
-                            cal.setTime(date);
+                            mission.put("time_end",new SimpleDateFormat("HH:mm")
+                                    .format(date));
+
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }
-                        mission.put("time_end",String.valueOf(cal.get(Calendar.HOUR_OF_DAY))+":"+String.valueOf(cal.get(Calendar.MINUTE)));
 
                         //put class into hashmap
                         if(subObject.getString("class").equals("URG")){

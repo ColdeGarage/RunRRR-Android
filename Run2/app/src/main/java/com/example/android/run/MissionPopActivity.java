@@ -74,8 +74,9 @@ public class MissionPopActivity extends AppCompatActivity {
 
     private ImageView selectedPhoto;
     private String photoPath;
+    private Intent galleryData;
 
-    private int REQUEST_CAMERA = 0, SELECT_FILE = 1;
+    private int REQUEST_CAMERA = 0, SELECT_FILE = 1 , RESELECT_FILE = 2  ,UPLOAD_FROM_GALLERY=3;
     private String userChoosenTask;
 
     @Override
@@ -398,10 +399,20 @@ public class MissionPopActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == SELECT_FILE)
-                onSelectFromGalleryResult(data);
+            if (requestCode == SELECT_FILE) {
+                galleryData = data;
+                Intent intent = new Intent(MissionPopActivity.this, CheckPickFromGalleryActivity.class);
+
+                startActivityForResult(intent, 0);
+            }
             else if (requestCode == REQUEST_CAMERA)
                 onCaptureImageResult(data);
+        }
+        else if(resultCode == RESELECT_FILE){
+            galleryIntent();
+        }
+        else if(resultCode == UPLOAD_FROM_GALLERY){
+            onSelectFromGalleryResult();
         }
     }
 
@@ -433,12 +444,12 @@ public class MissionPopActivity extends AppCompatActivity {
     }
 
     @SuppressWarnings("deprecation")
-    private void onSelectFromGalleryResult(Intent data) {
+    private void onSelectFromGalleryResult() {
 
         Bitmap bm = null;
-        if (data != null) {
+        if (galleryData != null) {
             try {
-                bm = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData());
+                bm = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), galleryData.getData());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -448,7 +459,6 @@ public class MissionPopActivity extends AppCompatActivity {
         selectedPhoto.setImageBitmap(bm);
         selectedPhoto.setVisibility(View.VISIBLE);
         btnSelect.setVisibility(View.GONE);
-
     }
 
     private void MissionPost(Bitmap bitmap){
