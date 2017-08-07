@@ -68,12 +68,11 @@
         <activity
             android:name=".AboutUsActivity"
             android:label="@string/title_activity_about_us"
-            android:theme="@style/AppTheme"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
             android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation|screenSize"/>
         <activity
             android:name=".SOSActivity"
-            android:label="@string/title_activity_about_us"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".MissionPopActivity"
