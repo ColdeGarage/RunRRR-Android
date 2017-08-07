@@ -207,7 +207,7 @@ public class MoreFragment extends Fragment {
             final String moreItem = mMoreList[position % mMoreList.length];
             GradientDrawable itemShape;
             int itemColor;
-
+            System.out.println("more on bind bind bind");
             holder.moreItem_name.setText(moreItem);
 
             //Set tag for recording item position
@@ -473,7 +473,6 @@ public class MoreFragment extends Fragment {
                                 holder.moreItem_sos.setVisibility(View.GONE);
                                 holder.moreItem_logout.setVisibility(View.GONE);
                             }
-
                             break;
                         case 4: //Logout
 
@@ -487,7 +486,6 @@ public class MoreFragment extends Fragment {
                                 holder.moreItem_sos.setVisibility(View.GONE);
                                 holder.moreItem_logout.setVisibility(View.GONE);
                             }
-
                             break;
                         default:
                             break;
