@@ -1,12 +1,15 @@
 package com.example.android.run;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.AnimationDrawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -75,6 +78,7 @@ public class MissionPopActivity extends AppCompatActivity {
     private ImageView selectedPhoto;
     private String photoPath;
     private Intent galleryData;
+    private Intent photoData;
 
     private int REQUEST_CAMERA = 0, SELECT_FILE = 1 , RESELECT_FILE = 2  ,UPLOAD_FROM_GALLERY=3;
     private String userChoosenTask;
@@ -243,7 +247,12 @@ public class MissionPopActivity extends AppCompatActivity {
         btnSelect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                selectImage();
+                if(!isNetworkAvailable()){
+                    Alert("please check your internet connection");
+                }
+                else {
+                    selectImage();
+                }
             }
         });
 
@@ -403,38 +412,52 @@ public class MissionPopActivity extends AppCompatActivity {
                 galleryData = data;
                 Intent intent = new Intent(MissionPopActivity.this, CheckPickFromGalleryActivity.class);
 
-                startActivityForResult(intent, 0);
+                startActivityForResult(intent, SELECT_FILE);
+            } else if (requestCode == REQUEST_CAMERA){
+                photoData = data;
+
+                Intent intent = new Intent(MissionPopActivity.this, CheckPickFromGalleryActivity.class);
+                startActivityForResult(intent, REQUEST_CAMERA);
             }
-            else if (requestCode == REQUEST_CAMERA)
-                onCaptureImageResult(data);
         }
         else if(resultCode == RESELECT_FILE){
-            galleryIntent();
+
+            if (requestCode == SELECT_FILE) {
+                galleryIntent();
+            } else if (requestCode == REQUEST_CAMERA) {
+                cameraIntent();
+            }
         }
         else if(resultCode == UPLOAD_FROM_GALLERY){
-            onSelectFromGalleryResult();
+            if (requestCode == SELECT_FILE) {
+                onSelectFromGalleryResult();
+            } else if (requestCode == REQUEST_CAMERA){
+                onCaptureImageResult();
+            }
         }
     }
 
-    private void onCaptureImageResult(Intent data) {
-        Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
+    private void onCaptureImageResult() {
+        Bitmap thumbnail = (Bitmap) photoData.getExtras().get("data");
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         thumbnail.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
 
-        File destination = new File(Environment.getExternalStorageDirectory(),
-                System.currentTimeMillis() + ".jpg");
+        MediaStore.Images.Media.insertImage(getContentResolver(), thumbnail, "Runrrr"+mid+System.currentTimeMillis() + ".jpg" , "this is what you take haha");
 
-        FileOutputStream fo;
-        try {
-            destination.createNewFile();
-            fo = new FileOutputStream(destination);
-            fo.write(bytes.toByteArray());
-            fo.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        File destination = new File(Environment.getExternalStorageDirectory(),
+//                System.currentTimeMillis() + ".jpg");
+//
+//        FileOutputStream fo;
+//        try {
+//            destination.createNewFile();
+//            fo = new FileOutputStream(destination);
+//            fo.write(bytes.toByteArray());
+//            fo.close();
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
         MissionPost(thumbnail);
         selectedPhoto.setImageBitmap(thumbnail);
@@ -527,6 +550,13 @@ public class MissionPopActivity extends AppCompatActivity {
 
                     }
                 }).show();
+    }
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
     //HTTPPost
     class MyTaskPost extends AsyncTask<Void,Void,String> {

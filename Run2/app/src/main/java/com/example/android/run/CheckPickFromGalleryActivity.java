@@ -25,7 +25,7 @@ public class CheckPickFromGalleryActivity extends Activity {
         usedContent.setTextSize(20);
         usedContent.setText("\n   Are you sure?");
 
-        repickButton.setText("NO");
+        repickButton.setText("BACK");
         repickButton.setTextColor(Color.BLACK);
         repickButton.setTextSize(22);
         repickButton.setOnClickListener(new Button.OnClickListener(){
