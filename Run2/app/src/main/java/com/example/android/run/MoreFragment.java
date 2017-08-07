@@ -419,6 +419,7 @@ public class MoreFragment extends Fragment {
                     }
 
                     notifyDataSetChanged();
+<<<<<<< HEAD
                     switch(position){
                         case 0: //Die
 
@@ -490,6 +491,8 @@ public class MoreFragment extends Fragment {
                         default:
                             break;
                     }
+=======
+>>>>>>> 7db6bab0745781aa9477cb9dd67b3e116badd7c8
                 }
             });
         }
