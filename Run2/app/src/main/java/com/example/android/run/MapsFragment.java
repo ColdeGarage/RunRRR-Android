@@ -165,7 +165,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                         //if invalid, show alert
                         if(!valid && !show){
                             num ++;
-                            if(num >= 6){
+                            if(num >= 4){   //一次五秒，數四次
                                 show = true;
                                 new AlertDialog.Builder(getContext())
                                         .setCancelable(false)   //按到旁邊也不會消失
@@ -251,6 +251,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                 //Request Location Permission
                 System.out.println("request");
                 checkLocationPermission();
+                initial(googleMap);
             }
         }
         else {
@@ -282,13 +283,14 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         setBoundary(mMap);
         addMissionMarker(mMap);
         setScore();
+        System.out.println("init");
         if(lastLocation!=null){
             LatLng latLng = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
             //move map camera
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,17));
 //            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(24.794574, 120.992936), 17));
 
-            System.out.println("init");
+//            System.out.println("init");
         }
     }
     private void setBoundary(GoogleMap mMap){
