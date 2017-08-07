@@ -31,11 +31,14 @@
                 android:text="TextView"
                 android:textSize="20dp"/>
 
-            <Button
-                android:text="Button"
+            <TextView
+                android:id="@+id/sosButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/sosButton" />
+                android:gravity="center"
+                android:text="HELP"
+                android:textSize="20dp"
+                android:textColor="@color/red" />
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

@@ -36,7 +36,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -76,7 +75,7 @@ public class MoreFragment extends Fragment {
 
     private View rootview;
     private RecyclerView recyclerView;
-    private ContentAdapter adapter;
+    private OnExpandAdapter adapter;
 
     public static MoreFragment getInstance() {
 //        if( instance == null ) {
@@ -97,7 +96,7 @@ public class MoreFragment extends Fragment {
                              Bundle savedInstanceState) {
         rootview = inflater.inflate(R.layout.fragment_more, container, false);
         recyclerView = (RecyclerView) rootview.findViewById(R.id.more_recycler_view);
-        adapter = new ContentAdapter(recyclerView.getContext());
+        adapter = new OnExpandAdapter(recyclerView.getContext());
         recyclerView.setAdapter(adapter);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -118,20 +117,20 @@ public class MoreFragment extends Fragment {
     }
 
     public void Refresh(){
-        ContentAdapter adapter = new ContentAdapter(recyclerView.getContext());
+        adapter = new OnExpandAdapter(recyclerView.getContext());
         recyclerView.setAdapter(adapter);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
 
         public TextView moreItem_name;
-        public LinearLayout moreItem_background;
+        public LinearLayout moreItem_list;
         public LinearLayout moreItem_die;
         public LinearLayout moreItem_about_us;
         public LinearLayout moreItem_barcode;
         public LinearLayout moreItem_sos;
         public LinearLayout moreItem_logout;
-        public Button helpMe;
+        public TextView helpMe;
         public TextView helpInfoText;
         public TextView bt_enter;
         public final EditText editTextUid;
@@ -143,7 +142,7 @@ public class MoreFragment extends Fragment {
         public ViewHolder(final LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.item_list_more, parent, false));
             moreItem_name = (TextView) itemView.findViewById(R.id.list_title);
-            moreItem_background = (LinearLayout) itemView.findViewById(R.id.more_list_background);
+            moreItem_list = (LinearLayout) itemView.findViewById(R.id.more_list);
             moreItem_die = (LinearLayout) itemView.findViewById(R.id.more_die);
             moreItem_about_us = (LinearLayout) itemView.findViewById(R.id.more_about_us);
             moreItem_barcode = (LinearLayout) itemView.findViewById(R.id.more_barcode);
@@ -154,7 +153,7 @@ public class MoreFragment extends Fragment {
             editTextUid = (EditText) moreItem_die.findViewById(R.id.edit_uid);
             editTextPass = (EditText) moreItem_die.findViewById(R.id.edit_pass);
 
-            helpMe = (Button) moreItem_sos.findViewById(R.id.sosButton);
+            helpMe = (TextView) moreItem_sos.findViewById(R.id.sosButton);
             helpInfoText = (TextView) moreItem_sos.findViewById(R.id.sosContent);
 
             r = (RelativeLayout) moreItem_barcode.findViewById(R.id.relative);
@@ -178,24 +177,26 @@ public class MoreFragment extends Fragment {
     /**
      * Adapter to display recycler view.
      */
-    public class ContentAdapter extends RecyclerView.Adapter<ViewHolder> {
+    public class OnExpandAdapter extends RecyclerView.Adapter<ViewHolder> {
         // Set numbers of List in RecyclerView.
         private static final int LENGTH = 5;
 
         private final String[] mMoreList;
 
-        //Check if the layout is folded
-        public boolean isDieFolded = true;
-        public boolean isAboutUSFolded = true;
-        public boolean isBarcodeFolded = true;
-        public boolean isSOSFolded = true;
-        public boolean isLogoutFolded = true;
+        //Record item position
+        private int currentItem = -1;
 
-        public ContentAdapter(Context context) {
+        public OnExpandAdapter(Context context) {
 
             Resources resources = context.getResources();
             mMoreList = resources.getStringArray(R.array.more);
         }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             return new ViewHolder(LayoutInflater.from(parent.getContext()), parent);
@@ -208,12 +209,17 @@ public class MoreFragment extends Fragment {
             int itemColor;
 
             holder.moreItem_name.setText(moreItem);
+
+            //Set tag for recording item position
+            holder.moreItem_list.setTag(position);
+
             //Set layout content
             holder.moreItem_die.setVisibility(View.GONE);
             holder.moreItem_about_us.setVisibility(View.GONE);
             holder.moreItem_barcode.setVisibility(View.GONE);
             holder.moreItem_sos.setVisibility(View.GONE);
             holder.moreItem_logout.setVisibility(View.GONE);
+
             //Set background color
             switch(position){
                 case 0: //Die
@@ -261,19 +267,54 @@ public class MoreFragment extends Fragment {
                             }
                         }
                     });
-                    holder.moreItem_background.setBackgroundResource(R.color.die);
+                    holder.moreItem_list.setBackgroundResource(R.color.die);
+
+                    //Set visibility of layout content with currentItem
+                    if (currentItem == position) {
+                        holder.moreItem_die.setVisibility(View.VISIBLE);
+                    } else {
+                        holder.moreItem_die.setVisibility(View.GONE);
+                        holder.moreItem_about_us.setVisibility(View.GONE);
+                        holder.moreItem_barcode.setVisibility(View.GONE);
+                        holder.moreItem_sos.setVisibility(View.GONE);
+                        holder.moreItem_logout.setVisibility(View.GONE);
+                    }
                     break;
                 case 1: //About us
 
-                    holder.moreItem_background.setBackgroundResource(R.color.about_us);
+                    holder.moreItem_list.setBackgroundResource(R.color.about_us);
+
+                    //Set visibility of layout content with currentItem
+                    if (currentItem == position) {
+                        holder.moreItem_about_us.setVisibility(View.VISIBLE);
+                    } else {
+                        holder.moreItem_die.setVisibility(View.GONE);
+                        holder.moreItem_about_us.setVisibility(View.GONE);
+                        holder.moreItem_barcode.setVisibility(View.GONE);
+                        holder.moreItem_sos.setVisibility(View.GONE);
+                        holder.moreItem_logout.setVisibility(View.GONE);
+                    }
                     break;
                 case 2: //Barcode
+
                     MyView barcode = new MyView(getContext());
                     holder.r.addView(barcode);
 
-                    holder.moreItem_background.setBackgroundResource(R.color.barcode);
+                    holder.moreItem_list.setBackgroundResource(R.color.barcode);
+
+                    //Set visibility of layout content with currentItem
+                    if (currentItem == position) {
+                        holder.moreItem_barcode.setVisibility(View.VISIBLE);
+                    } else {
+                        holder.moreItem_die.setVisibility(View.GONE);
+                        holder.moreItem_about_us.setVisibility(View.GONE);
+                        holder.moreItem_barcode.setVisibility(View.GONE);
+                        holder.moreItem_sos.setVisibility(View.GONE);
+                        holder.moreItem_logout.setVisibility(View.GONE);
+                    }
                     break;
                 case 3: //SOS
+
                     myTaskGet httpGet = null;
                     try {
                         httpGet = new myTaskGet("http://coldegarage.tech:8081/api/v1.1/utility/0");
@@ -291,8 +332,8 @@ public class MoreFragment extends Fragment {
                     }
 
                     holder.helpInfoText.setText(helpInfo);
-                    holder.helpInfoText.setTextSize(20);
-                    holder.helpMe.setText("help me~~");
+                    //holder.helpInfoText.setTextSize(20);
+                    //holder.helpMe.setText("help me~~");
 
                     holder.helpMe.setOnClickListener(new TextView.OnClickListener(){
                         @Override
@@ -315,9 +356,21 @@ public class MoreFragment extends Fragment {
                             Alert("原地待命");
                         }
                     });
-                    holder.moreItem_background.setBackgroundResource(R.color.sos);
+                    holder.moreItem_list.setBackgroundResource(R.color.sos);
+
+                    //Set visibility of layout content with currentItem
+                    if (currentItem == position) {
+                        holder.moreItem_sos.setVisibility(View.VISIBLE);
+                    } else {
+                        holder.moreItem_die.setVisibility(View.GONE);
+                        holder.moreItem_about_us.setVisibility(View.GONE);
+                        holder.moreItem_barcode.setVisibility(View.GONE);
+                        holder.moreItem_sos.setVisibility(View.GONE);
+                        holder.moreItem_logout.setVisibility(View.GONE);
+                    }
                     break;
                 case 4: //Logout
+
                     holder.btYes.setOnClickListener(new TextView.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -335,126 +388,106 @@ public class MoreFragment extends Fragment {
                             getActivity().finish();
                         }
                     });
-                    holder.moreItem_background.setBackgroundResource(R.color.logout);
+                    holder.moreItem_list.setBackgroundResource(R.color.logout);
+
+                    //Set visibility of layout content with currentItem
+                    if (currentItem == position) {
+                        holder.moreItem_logout.setVisibility(View.VISIBLE);
+                    } else {
+                        holder.moreItem_die.setVisibility(View.GONE);
+                        holder.moreItem_about_us.setVisibility(View.GONE);
+                        holder.moreItem_barcode.setVisibility(View.GONE);
+                        holder.moreItem_sos.setVisibility(View.GONE);
+                        holder.moreItem_logout.setVisibility(View.GONE);
+                    }
                     break;
                 default:
                     break;
             }
 
             //Set onclickListener
-            holder.moreItem_name.setOnClickListener(new View.OnClickListener(){
+            holder.moreItem_list.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v) {
                     Context context = v.getContext();
+                    int tag = (Integer) v.getTag();
 
+                    if (tag == currentItem) { //Click again
+                        currentItem = -1; //initial the currentItem
+                    } else {
+                        currentItem = tag;
+                    }
+
+                    notifyDataSetChanged();
                     switch(position){
                         case 0: //Die
-//                            Intent intent = new Intent(context, DieActivity.class);
-//                            context.startActivity(intent);
-                            if(isDieFolded) {
-                                isDieFolded = false;
 
-                                isAboutUSFolded = true;
-                                isBarcodeFolded = true;
-                                isLogoutFolded = true;
-                                isSOSFolded = true;
-
+                            //Set visibility of layout content with currentItem
+                            if (currentItem == position) {
+                                holder.moreItem_die.setVisibility(View.VISIBLE);
+                            } else {
+                                holder.moreItem_die.setVisibility(View.GONE);
                                 holder.moreItem_about_us.setVisibility(View.GONE);
                                 holder.moreItem_barcode.setVisibility(View.GONE);
                                 holder.moreItem_sos.setVisibility(View.GONE);
                                 holder.moreItem_logout.setVisibility(View.GONE);
-
-                                holder.moreItem_die.setVisibility(View.VISIBLE);
-                            } else {
-                                isDieFolded = true;
-                                holder.moreItem_die.setVisibility(View.GONE);
                             }
                             break;
                         case 1: //About us
-//                            intent = new Intent(context, AboutUsActivity.class);
-//                            context.startActivity(intent);
-                            if(isAboutUSFolded) {
-                                isAboutUSFolded = false;
 
-                                isDieFolded = true;
-                                isBarcodeFolded = true;
-                                isLogoutFolded = true;
-                                isSOSFolded = true;
-
-                                holder.moreItem_barcode.setVisibility(View.GONE);
-                                holder.moreItem_sos.setVisibility(View.GONE);
-                                holder.moreItem_logout.setVisibility(View.GONE);
-                                holder.moreItem_die.setVisibility(View.GONE);
-
+                            //Set visibility of layout content with currentItem
+                            if (currentItem == position) {
                                 holder.moreItem_about_us.setVisibility(View.VISIBLE);
                             } else {
-
-                                isAboutUSFolded = true;
+                                holder.moreItem_die.setVisibility(View.GONE);
                                 holder.moreItem_about_us.setVisibility(View.GONE);
+                                holder.moreItem_barcode.setVisibility(View.GONE);
+                                holder.moreItem_sos.setVisibility(View.GONE);
+                                holder.moreItem_logout.setVisibility(View.GONE);
                             }
+
                             break;
                         case 2: //Barcode
-//                            intent = new Intent(context, BarcodeActivity.class);
-//                            context.startActivity(intent);
-                            if(isBarcodeFolded) {
-                                isBarcodeFolded = false;
 
-                                isDieFolded = true;
-                                isAboutUSFolded = true;
-                                isLogoutFolded = true;
-                                isSOSFolded = true;
-
-                                holder.moreItem_about_us.setVisibility(View.GONE);
-                                holder.moreItem_sos.setVisibility(View.GONE);
-                                holder.moreItem_logout.setVisibility(View.GONE);
-                                holder.moreItem_die.setVisibility(View.GONE);
-
+                            //Set visibility of layout content with currentItem
+                            if (currentItem == position) {
                                 holder.moreItem_barcode.setVisibility(View.VISIBLE);
                             } else {
-
-                                isBarcodeFolded = true;
+                                holder.moreItem_die.setVisibility(View.GONE);
+                                holder.moreItem_about_us.setVisibility(View.GONE);
                                 holder.moreItem_barcode.setVisibility(View.GONE);
+                                holder.moreItem_sos.setVisibility(View.GONE);
+                                holder.moreItem_logout.setVisibility(View.GONE);
                             }
+
                             break;
                         case 3: //SOS
-//                            intent = new Intent(context, AboutUsActivity.class);
-//                            context.startActivity(intent);
-                            if(isSOSFolded) {
-                                isSOSFolded = false;
 
-                                isDieFolded = true;
-                                isAboutUSFolded = true;
-                                isBarcodeFolded = true;
-                                isLogoutFolded = true;
-
-                                holder.moreItem_about_us.setVisibility(View.GONE);
-                                holder.moreItem_barcode.setVisibility(View.GONE);
-                                holder.moreItem_logout.setVisibility(View.GONE);
-                                holder.moreItem_die.setVisibility(View.GONE);
-
+                            //Set visibility of layout content with currentItem
+                            if (currentItem == position) {
                                 holder.moreItem_sos.setVisibility(View.VISIBLE);
                             } else {
-                                isSOSFolded = true;
-
-                                holder.moreItem_sos.setVisibility(View.GONE);
-                            }
-                            break;
-                        case 4: //Logout
-                            if(isLogoutFolded) {
-                                isLogoutFolded = false;
-                                isDieFolded = true;
-                                isAboutUSFolded = true;
-                                isBarcodeFolded = true;
-                                isSOSFolded = true;
+                                holder.moreItem_die.setVisibility(View.GONE);
                                 holder.moreItem_about_us.setVisibility(View.GONE);
                                 holder.moreItem_barcode.setVisibility(View.GONE);
                                 holder.moreItem_sos.setVisibility(View.GONE);
-                                holder.moreItem_die.setVisibility(View.GONE);
-                                holder.moreItem_logout.setVisibility(View.VISIBLE);
-                            } else {
-                                isLogoutFolded = true;
                                 holder.moreItem_logout.setVisibility(View.GONE);
                             }
+
+                            break;
+                        case 4: //Logout
+
+                            //Set visibility of layout content with currentItem
+                            if (currentItem == position) {
+                                holder.moreItem_logout.setVisibility(View.VISIBLE);
+                            } else {
+                                holder.moreItem_die.setVisibility(View.GONE);
+                                holder.moreItem_about_us.setVisibility(View.GONE);
+                                holder.moreItem_barcode.setVisibility(View.GONE);
+                                holder.moreItem_sos.setVisibility(View.GONE);
+                                holder.moreItem_logout.setVisibility(View.GONE);
+                            }
+
                             break;
                         default:
                             break;
