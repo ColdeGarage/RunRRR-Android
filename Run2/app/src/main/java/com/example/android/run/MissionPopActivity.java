@@ -225,7 +225,6 @@ public class MissionPopActivity extends AppCompatActivity {
                 }
                 break;
             case "0": //waiting
-//                    state.setImageResource(R.drawable.state_waiting);
                 state.setBackgroundResource(R.drawable.anim_gif_waiting);
                 Object ob_waiting = state.getBackground();
                 AnimationDrawable anim_waiting = (AnimationDrawable) ob_waiting;
@@ -442,22 +441,8 @@ public class MissionPopActivity extends AppCompatActivity {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         thumbnail.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
 
-        MediaStore.Images.Media.insertImage(getContentResolver(), thumbnail, "Runrrr"+mid+System.currentTimeMillis() + ".jpg" , "this is what you take haha");
-
-//        File destination = new File(Environment.getExternalStorageDirectory(),
-//                System.currentTimeMillis() + ".jpg");
-//
-//        FileOutputStream fo;
-//        try {
-//            destination.createNewFile();
-//            fo = new FileOutputStream(destination);
-//            fo.write(bytes.toByteArray());
-//            fo.close();
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+        MediaStore.Images.Media.insertImage(getContentResolver(), thumbnail,
+                "Runrrr"+mid+System.currentTimeMillis() + ".jpg" , "this is what you take haha");
 
         MissionPost(thumbnail);
         selectedPhoto.setImageBitmap(thumbnail);
@@ -520,6 +505,7 @@ public class MissionPopActivity extends AppCompatActivity {
         }
         Alert("上傳成功");
         mState = "0";
+        state.setImageBitmap(null);
         state.setBackgroundResource(R.drawable.anim_gif_waiting);
         Object ob_waiting = state.getBackground();
         AnimationDrawable anim_waiting = (AnimationDrawable) ob_waiting;
