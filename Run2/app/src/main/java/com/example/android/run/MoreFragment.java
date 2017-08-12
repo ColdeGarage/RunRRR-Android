@@ -71,7 +71,7 @@ public class MoreFragment extends Fragment {
     static MoreFragment instance = null;
     int uid;
     String token;
-    String helpInfo;
+    String helpInfo = "";
 
     private View rootview;
     private RecyclerView recyclerView;
@@ -323,7 +323,6 @@ public class MoreFragment extends Fragment {
                     }
                     httpGet.execute();
                     try {
-                        System.out.println(httpGet.get());
                         ParseJsonForPhoneNumber(httpGet.get());
                     } catch (InterruptedException e) {
                         e.printStackTrace();
@@ -332,8 +331,6 @@ public class MoreFragment extends Fragment {
                     }
 
                     holder.helpInfoText.setText(helpInfo);
-                    //holder.helpInfoText.setTextSize(20);
-                    //holder.helpMe.setText("help me~~");
 
                     holder.helpMe.setOnClickListener(new TextView.OnClickListener(){
                         @Override
@@ -423,8 +420,6 @@ public class MoreFragment extends Fragment {
                 }
             });
         }
-
-
         @Override
         public int getItemCount() {
             return LENGTH;
@@ -593,24 +588,19 @@ public class MoreFragment extends Fragment {
                 // Getting JSON Array node
                 JSONArray objects = jsonObj.getJSONArray("object");
                 // looping through All Contacts
-                JSONObject c = objects.getJSONObject(0);
-
-                helpInfo = "第一小隊:" +c.getString("name") + " " + c.getString("nickname") + " " + c.getString("phone")+"\n";
-                c = objects.getJSONObject(1);
-                helpInfo += "第二小隊:" +c.getString("name") + " " + c.getString("nickname") + " " + c.getString("phone")+"\n";
-
+                helpInfo="";
+                for(int i=0; i < objects.length(); i++) {
+                    JSONObject c = objects.getJSONObject(i);
+                    System.out.println("c=");
+                    System.out.println(c.getString("team") + "小:" + c.getString("name") + " " + c.getString("nickname") + " " + c.getString("phone") + "\n");
+                    helpInfo += (c.getString("team") + "小:" + c.getString("name") + " " + c.getString("nickname") + " " + c.getString("phone") + "\n");
+                }
 
             } catch (final JSONException e) {
                 System.out.print("Json parsing error: " + e.getMessage());
             }
         } else {
             System.out.print("Couldn't get json from server.");
-        }
-        try {
-            JSONObject jObject = new JSONObject(info);
-
-        } catch (JSONException e) {
-            e.printStackTrace();
         }
     }
     void ParseJsonForLocation(String info){

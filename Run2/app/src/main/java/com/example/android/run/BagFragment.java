@@ -64,7 +64,6 @@ public class BagFragment extends Fragment
     static BagFragment instance = null;
     private BagFragment.ContentAdapter adapter = null;
     private RecyclerView recyclerView;
-    View v;
 
     private ArrayList<ArrayList<HashMap<String, String>>> packList = new ArrayList<>();
     private String[] toolIds = new String[100];
@@ -92,7 +91,6 @@ public class BagFragment extends Fragment
         recyclerView = (RecyclerView) inflater.inflate(
                 R.layout.recycler_view, container, false);
 
-        v = inflater.inflate(R.layout.swipe_recycler_view, container, false);
         try {
             adapter = new ContentAdapter(recyclerView.getContext());
         } catch (MalformedURLException e) {

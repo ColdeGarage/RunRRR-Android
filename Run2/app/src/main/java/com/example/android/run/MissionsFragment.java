@@ -364,12 +364,10 @@ public class MissionsFragment extends Fragment
                         //parse time, take hour&min only
                         //and put time_end into hashmap
                         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-                        System.out.println("time end from db = " + subObject.getString("time_end"));
                         try {
                             Date date = dateFormat.parse(subObject.getString("time_end"));
                             mission.put("time_end",new SimpleDateFormat("HH:mm")
                                     .format(date));
-                            System.out.println("time end date = " + date);
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }
@@ -389,7 +387,7 @@ public class MissionsFragment extends Fragment
                 }
             }else if(missionOrReport.equals("report")){
                 reportList = new ArrayList<>();
-                System.out.println("report");
+                System.out.println("report = ");
                 System.out.println(info);
                 try {
                     JSONObject jObject = new JSONObject(info);
@@ -406,12 +404,9 @@ public class MissionsFragment extends Fragment
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
-                    System.out.println("serverTime = " +serverTime);
                     String[] part = serverTime.split(":");
                     serverTimeHour = Integer.valueOf(part[0]);
                     serverTimeMin = Integer.valueOf(part[1]);
-                    System.out.println("server hour = " + serverTimeHour);
-                    System.out.println("server MIn = " + serverTimeMin);
 
                     JSONObject payload = new JSONObject(jObject.getString("payload"));
                     JSONArray objects = payload.getJSONArray("objects");
