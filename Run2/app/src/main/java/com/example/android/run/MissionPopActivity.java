@@ -376,7 +376,7 @@ public class MissionPopActivity extends AppCompatActivity {
 
                 } else if (items[item].equals("Choose from Library")) {
                     userChoosenTask ="Choose from Library";
-                    result = Utility.checkPermission(Utility.MY_PERMISSIONS_REQUEST_CAMERA, MissionPopActivity.this);
+                    result = Utility.checkPermission(Utility.MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE, MissionPopActivity.this);
                     if(result)
                         galleryIntent();
 

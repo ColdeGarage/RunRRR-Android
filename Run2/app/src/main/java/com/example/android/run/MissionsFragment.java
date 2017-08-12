@@ -122,15 +122,7 @@ public class MissionsFragment extends Fragment
     }
 
     public void Refresh(){
-//        // Create new fragment and transaction
-//        Fragment newFragment = new MissionsFragment();
-//        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-//
-//        // Replace whatever is in the fragment_container view with this fragment,
-//        // and add the transaction to the back stack
-//        transaction.replace(R.id.swiperefresh, newFragment)
-//                .addToBackStack(null)
-//                .commit();
+
         adapter = new ContentAdapter(recyclerView.getContext());
         recyclerView.setAdapter(adapter);
     }
@@ -223,7 +215,7 @@ public class MissionsFragment extends Fragment
                 e.printStackTrace();
             }
             System.out.println(reportList);
-            System.out.println("serverTime!!!");
+            System.out.println("serverTime = ");
             System.out.println(serverTimeHour+":"+serverTimeMin);
 
             missionState();
@@ -340,7 +332,7 @@ public class MissionsFragment extends Fragment
         //====================取得任務頁面顯示的內容===========================
         //Parse json received from server
         void parseJson (String info, String missionOrReport){
-            System.out.println(info);
+
             if(missionOrReport.equals("mission")){
                 missionList = new ArrayList<>();
                 try {
@@ -371,12 +363,13 @@ public class MissionsFragment extends Fragment
 
                         //parse time, take hour&min only
                         //and put time_end into hashmap
-                        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.s'Z'");
+                        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+                        System.out.println("time end from db = " + subObject.getString("time_end"));
                         try {
                             Date date = dateFormat.parse(subObject.getString("time_end"));
                             mission.put("time_end",new SimpleDateFormat("HH:mm")
                                     .format(date));
-
+                            System.out.println("time end date = " + date);
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }
@@ -396,22 +389,29 @@ public class MissionsFragment extends Fragment
                 }
             }else if(missionOrReport.equals("report")){
                 reportList = new ArrayList<>();
+                System.out.println("report");
+                System.out.println(info);
                 try {
                     JSONObject jObject = new JSONObject(info);
 
                     //parse and get server time
-                    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.s'Z'");
-                    Calendar cal = Calendar.getInstance();
+                    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+                    String serverTime=" : ";
                     try {
+                        System.out.println(jObject.getString("server_time"));
                         Date date = dateFormat.parse(jObject.getString("server_time"));
-                        cal.setTime(date);
+                        System.out.println("date= " + date);
+                        serverTime = new SimpleDateFormat("HH:mm").format(date);
+
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
-                    serverTimeHour = cal.get(Calendar.HOUR_OF_DAY);
-                    serverTimeMin = cal.get(Calendar.MINUTE);
-//                    serverTimeHour = 0;
-//                    serverTimeMin = 0;
+                    System.out.println("serverTime = " +serverTime);
+                    String[] part = serverTime.split(":");
+                    serverTimeHour = Integer.valueOf(part[0]);
+                    serverTimeMin = Integer.valueOf(part[1]);
+                    System.out.println("server hour = " + serverTimeHour);
+                    System.out.println("server MIn = " + serverTimeMin);
 
                     JSONObject payload = new JSONObject(jObject.getString("payload"));
                     JSONArray objects = payload.getJSONArray("objects");

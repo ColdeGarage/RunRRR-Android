@@ -251,6 +251,20 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                 //Request Location Permission
                 System.out.println("request");
                 checkLocationPermission();
+                buildGoogleApiClient();
+                googleMap.setMyLocationEnabled(true);
+                googleMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
+                    @Override
+                    public boolean onMyLocationButtonClick() {
+                        if(lastLocation!=null){
+                            LatLng latLng = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
+                            //move map camera
+                            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,17));
+                            System.out.println("update");
+                        }
+                        return false;
+                    }
+                });
                 initial(googleMap);
             }
         }
@@ -415,7 +429,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
                     //parse time, take hour&min only
                     //and put time_end into hashmap
-                    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.s'Z'");
+                    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
                     Calendar cal = Calendar.getInstance();
                     try {
                         Date date = dateFormat.parse(subObject.getString("time_end"));
@@ -441,7 +455,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                 JSONObject jObject = new JSONObject(info);
 
                 //parse and get server time
-                DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.s'Z'");
+                DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
                 Calendar cal = Calendar.getInstance();
                 try {
                     Date date = dateFormat.parse(jObject.getString("server_time"));
