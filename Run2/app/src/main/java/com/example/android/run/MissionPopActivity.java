@@ -437,6 +437,10 @@ public class MissionPopActivity extends AppCompatActivity {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         thumbnail.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
 
+//        boolean result;
+
+//        result = Utility.checkPermission(Utility.MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE, MissionPopActivity.this);
+//        if(result)
         MediaStore.Images.Media.insertImage(getContentResolver(), thumbnail,
                 "Runrrr"+mid+System.currentTimeMillis() + ".jpg" , "this is what you take haha");
 
@@ -510,7 +514,7 @@ public class MissionPopActivity extends AppCompatActivity {
 
     private String BitmapToString(Bitmap bitmap) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 40, baos);
         byte [] b = baos.toByteArray();
         String bitmapString = Base64.encodeToString(b, Base64.DEFAULT);
 //        System.out.println("bmstr=" + bitmapString);

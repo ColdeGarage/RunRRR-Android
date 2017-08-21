@@ -214,7 +214,7 @@ public class BagFragment extends Fragment
 
             //TODO Auto-generated method stub
             pName[0] = "金錢";
-            pUrl[0] = "";
+            pUrl[0] = "money.jpg";
             pCount[0] = String.valueOf(money);
             pContent[0] = "刀，Dollar";
             for(int i=1; i <=packList.size(); i++){
