@@ -51,7 +51,6 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -68,22 +67,13 @@ public class MissionsFragment extends Fragment
     public static final int MY_MISSION_REFRESH = 0;
     static MissionsFragment instance = null;
 
-    private View rootView;
     private RecyclerView recyclerView;
     private ContentAdapter adapter;
 
     private static int uid;
     private static String token;
-    private static String mid;
 
     public static MissionsFragment getInstance() {
-//        if( instance == null ) {
-//            synchronized (MissionsFragment.class) {
-//                if (instance == null) {
-//                    instance = new MissionsFragment();
-//                }
-//            }
-//        }
         synchronized (MissionsFragment.class) {
             instance = new MissionsFragment();
         }
@@ -93,9 +83,7 @@ public class MissionsFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        //RecyclerView recyclerView = (RecyclerView) inflater.inflate(
-        //        R.layout.recycler_view, container, false);
-        rootView = inflater.inflate(R.layout.fragment_missions, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_missions, container, false);
 
         //read uid and token
         readPrefs();
@@ -115,25 +103,17 @@ public class MissionsFragment extends Fragment
         return rootView;
     }
 
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState)
-    {
-        super.onActivityCreated(savedInstanceState);
-    }
-
     public void Refresh(){
-
         adapter = new ContentAdapter(recyclerView.getContext());
         recyclerView.setAdapter(adapter);
     }
 
-    // Call Back method  to get the Message form other Activity
+    // Call Back method to get the Message from other Activity
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         super.onActivityResult(requestCode, resultCode, data);
         Refresh();
-
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -151,18 +131,17 @@ public class MissionsFragment extends Fragment
             name = (TextView) itemView.findViewById(R.id.list_name);
             time = (TextView) itemView.findViewById(R.id.list_time);
             state = (ImageView) itemView.findViewById(R.id.list_state);
-
         }
     }
 
-    //=====================內存=====================
+    //====================內存====================
     private void readPrefs(){
         SharedPreferences settings = getContext().getSharedPreferences("data",MODE_PRIVATE);
         uid = settings.getInt("uid",0);
         token = settings.getString("token","");
     }
 
-    //======================建立RecyclerView===========================
+    //====================建立RecyclerView====================
     public class ContentAdapter extends RecyclerView.Adapter<ViewHolder> {
         ArrayList<HashMap<String,String>> missionList;
         ArrayList<HashMap<String,String>> reportList;
@@ -508,7 +487,7 @@ public class MissionsFragment extends Fragment
     }
 
 
-    //===================HTTP==========================
+    //====================HTTP====================
     //HTTPGet
     static class MyTaskGet extends AsyncTask<String,Void,String> {
         URL url = null;
