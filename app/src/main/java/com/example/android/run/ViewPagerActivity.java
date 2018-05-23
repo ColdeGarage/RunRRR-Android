@@ -59,7 +59,7 @@ public class ViewPagerActivity extends FragmentActivity{
     private ImageView tab_bag;
     private ImageView tab_more;
 
-    static int iCurrPage = 0;
+    //static int iCurrPage = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -270,7 +270,7 @@ public class ViewPagerActivity extends FragmentActivity{
 
         private int NUM_ITEMS = 4;
 
-        public FragPagerAdapter(FragmentManager fragmentManager) {
+        private FragPagerAdapter(FragmentManager fragmentManager) {
             super(fragmentManager);
         }
 
@@ -340,15 +340,15 @@ public class ViewPagerActivity extends FragmentActivity{
 
         return super.onKeyDown(keyCode, event);
     }
-    private boolean isNetworkAvailable() {
+    /*private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
 
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-    }
+    }*/
     //show an alert dialog
-    void Alert(String mes){
+    /*void Alert(String mes){
         new AlertDialog.Builder(ViewPagerActivity.this)
                 .setMessage(mes)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -357,5 +357,5 @@ public class ViewPagerActivity extends FragmentActivity{
 
                     }
                 }).show();
-    }
+    }*/
 }
