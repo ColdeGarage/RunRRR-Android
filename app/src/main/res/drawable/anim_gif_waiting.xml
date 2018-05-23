@@ -1,5 +1,0 @@
-<animation-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:duration="400" android:drawable="@drawable/state_waiting_0" />
-    <item android:duration="400" android:drawable="@drawable/state_waiting_1" />
-    <item android:duration="400" android:drawable="@drawable/state_waiting_2" />
-</animation-list>

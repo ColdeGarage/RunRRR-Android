@@ -12,18 +12,26 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true">
 
-        <com.example.android.run.NonSwipeableViewPager
-            android:id="@+id/viewpager"
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/viewPager"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:background="@color/background_grey"/>
+            android:layout_height="600dp"
+            android:layout_weight="8">
+
+            <android.support.v4.view.PagerTitleStrip
+                android:id="@+id/pager_title_strip"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:background="@color/background_grey"
+                android:layout_gravity="bottom"/>
+        </android.support.v4.view.ViewPager>
 
         <View
             android:id="@+id/pager_bar"
             android:layout_width="match_parent"
             android:layout_height="8dp"
-            android:background="@color/tab_map"></View>
+            android:background="@color/tab_map"/>
 
         <LinearLayout
             android:id="@+id/tab_layout"
@@ -65,6 +73,11 @@
                 android:layout_margin="@dimen/tab_margin"/>
 
         </LinearLayout>
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tabLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/tab_background"/>
     </LinearLayout>
 
 </RelativeLayout>
