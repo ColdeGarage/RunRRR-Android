@@ -116,6 +116,7 @@ public class MapsFragment extends Fragment
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        setScore();
     }
 
 
