@@ -373,16 +373,20 @@ public class MoreFragment extends Fragment {
                         public void onClick(View v) {
                             //change login state
                             String KEY = "login";
-                            SharedPreferences settings = getContext().getSharedPreferences("data",MODE_PRIVATE);
-                            settings.edit().putBoolean(KEY,false)
-                                    .apply();
+                            if (!isNetworkAvailable()) {
+                                Alert("Please check your internet connection, then try again.");
+                            }else {
+                                SharedPreferences settings = getContext().getSharedPreferences("data",MODE_PRIVATE);
+                                settings.edit().putBoolean(KEY,false)
+                                        .apply();
 
-                            //intent to login
-                            Context context = v.getContext();
-                            MapsFragment.instance.updateHandler.removeCallbacks(MapsFragment.instance.updateRunnable);
-                            Intent intent = new Intent(context, MainActivity.class);
-                            context.startActivity(intent);
-                            getActivity().finish();
+                                //intent to login
+                                Context context = v.getContext();
+                                MapsFragment.instance.updateHandler.removeCallbacks(MapsFragment.instance.updateRunnable);
+                                Intent intent = new Intent(context, MainActivity.class);
+                                context.startActivity(intent);
+                                getActivity().finish();
+                            }
                         }
                     });
                     holder.moreItem_list.setBackgroundResource(R.color.logout);

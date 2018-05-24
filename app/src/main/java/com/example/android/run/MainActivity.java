@@ -45,7 +45,6 @@ public class MainActivity extends AppCompatActivity {
         * he/she will be directly leaded to Map*/
         if(readPrefs()){
             goMap();
-            //Alert("Skip Login");
         }
 
 
@@ -58,14 +57,8 @@ public class MainActivity extends AppCompatActivity {
         final EditText pass = (EditText) findViewById(R.id.password);
 
         icon.setImageResource(R.drawable.ic_login);
-        if(!isNetworkAvailable()){
-            Alert("Please check your internet connection.");
-        }
         final LocationManager manager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
 
-        if ( !manager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
-            Alert("Please check your GPS.");
-        }
         //add space at the beginning
         acc.setPadding(10, 0, 0, 0);
         pass.setPadding(10, 0, 0, 0);
@@ -77,9 +70,11 @@ public class MainActivity extends AppCompatActivity {
                 pass_in = pass.getText().toString();
 
                 if(account_in.isEmpty()){
-                    Alert("Account can't be empty.");
+                    Alert("Email can't be empty.");
                 }else if(pass_in.isEmpty()) {
                     Alert("Password can't be empty.");
+                }else if (!isNetworkAvailable()){
+                    Alert("Please check your internet connection.");
                 }else {
                     //if account&password aren't empty, check whether it's valid
                     checkAccount();
@@ -353,5 +348,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+
 }
 

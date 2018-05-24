@@ -1,84 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    android:id="@+id/content_frame"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android">
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true">
-
-
-        <android.support.v4.view.ViewPager
-            android:id="@+id/viewPager"
-            android:layout_width="match_parent"
-            android:layout_height="600dp"
-            android:layout_weight="8">
-
-            <android.support.v4.view.PagerTitleStrip
-                android:id="@+id/pager_title_strip"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:background="@color/background_grey"
-                android:layout_gravity="bottom"/>
-        </android.support.v4.view.ViewPager>
-
-        <View
-            android:id="@+id/pager_bar"
-            android:layout_width="match_parent"
-            android:layout_height="8dp"
-            android:background="@color/tab_map"/>
-
-        <LinearLayout
-            android:id="@+id/tab_layout"
-            android:layout_width="match_parent"
-            android:layout_height="95dp"
-            android:orientation="horizontal"
-            android:background="@color/tab_background">
-
-            <ImageView
-                android:id="@+id/tab_map"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:src="@drawable/tab_map_focused"
-                android:layout_margin="@dimen/tab_margin"/>
-
-            <ImageView
-                android:id="@+id/tab_mission"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:src="@drawable/tab_mission_idle"
-                android:layout_margin="@dimen/tab_margin"/>
-
-            <ImageView
-                android:id="@+id/tab_bag"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:src="@drawable/tab_bag_idle"
-                android:layout_margin="@dimen/tab_margin"/>
-
-            <ImageView
-                android:id="@+id/tab_more"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:src="@drawable/tab_more_idle"
-                android:layout_margin="@dimen/tab_margin"/>
-
-
-        </LinearLayout>
+        android:layout_height="50dp"
+        android:background="@color/tab_background"
+        android:paddingLeft="10dp"
+        android:paddingTop="10dp">
+        <TextView
+            android:id="@+id/title"
+            android:textSize="20sp"
+            android:textColor="#ffffff"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:orientation="horizontal"
+        android:background="@color/tab_background">
         <android.support.design.widget.TabLayout
             android:id="@+id/tabLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:background="@color/tab_background"/>
     </LinearLayout>
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="600dp"
+        android:layout_weight="8"/>
 
-</RelativeLayout>
+</LinearLayout>

@@ -116,6 +116,9 @@ public class MapsFragment extends Fragment
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        if(!isNetworkAvailable()){
+            Alert("Please check your internet connection, then try again.");
+        }
         setScore();
     }
 
