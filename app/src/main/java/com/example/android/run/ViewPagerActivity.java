@@ -29,12 +29,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerTitleStrip;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -75,14 +74,15 @@ public class ViewPagerActivity extends AppCompatActivity{
         tab_more = (ImageView) findViewById(R.id.tab_more);
         pager_bar = findViewById(R.id.pager_bar);*/
         //viewPager
-        title = (TextView) findViewById(R.id.title);
-        title.setText("地圖");
+        /*title = (TextView) findViewById(R.id.title);
+        title.setText("地圖");*/
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         //tabLayout.setupWithViewPager(viewPager);
         tabLayout.setSmoothScrollingEnabled(true);
+        tabLayout.setSelectedTabIndicatorColor(0);
 
-        FragmentPagerAdapter adapter = new FragPagerAdapter(fm);
+        FragmentStatePagerAdapter adapter = new FragPagerStateAdapter(fm);
         //
         LayoutInflater inflater = this.getLayoutInflater();
 
@@ -90,6 +90,8 @@ public class ViewPagerActivity extends AppCompatActivity{
         View view = inflater.inflate(R.layout.tab, null);
         tab.setCustomView(view);
         ImageView imageView = (ImageView) view.findViewById(R.id.imageView);
+        TextView textView = (TextView) view.findViewById(R.id.textView);
+        textView.setText("地圖");
         imageView.setImageResource(R.drawable.map_icon);
         tabLayout.addTab(tab);
 
@@ -97,6 +99,8 @@ public class ViewPagerActivity extends AppCompatActivity{
         view = inflater.inflate(R.layout.tab, null);
         tab.setCustomView(view);
         imageView = (ImageView) view.findViewById(R.id.imageView);
+        textView = (TextView) view.findViewById(R.id.textView);
+        textView.setText("任務");
         imageView.setImageResource(R.drawable.mission_icon);
         tabLayout.addTab(tab);
 
@@ -104,6 +108,8 @@ public class ViewPagerActivity extends AppCompatActivity{
         view = inflater.inflate(R.layout.tab, null);
         tab.setCustomView(view);
         imageView = (ImageView) view.findViewById(R.id.imageView);
+        textView = (TextView) view.findViewById(R.id.textView);
+        textView.setText("背包");
         imageView.setImageResource(R.drawable.bag_icon);
         tabLayout.addTab(tab);
 
@@ -111,6 +117,8 @@ public class ViewPagerActivity extends AppCompatActivity{
         view = inflater.inflate(R.layout.tab, null);
         tab.setCustomView(view);
         imageView = (ImageView) view.findViewById(R.id.imageView);
+        textView = (TextView) view.findViewById(R.id.textView);
+        textView.setText("其他");
         imageView.setImageResource(R.drawable.more_icon);
         tabLayout.addTab(tab);
 
@@ -119,40 +127,7 @@ public class ViewPagerActivity extends AppCompatActivity{
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager));
         viewPager.setAdapter(adapter);
         viewPager.setOffscreenPageLimit(3);
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                tabLayout.getTabAt(position).select();
-                switch (position) {
-                    case 0:
-                        MapsFragment.instance.Refresh();
-                        title.setText("地圖");
-                        break;
-                    case 1:
-                        MissionsFragment.instance.Refresh();
-                        title.setText("任務");
-                        break;
-                    case 2:
-                        BagFragment.instance.Refresh();
-                        title.setText("背包");
-                        break;
-                    case 3:
-                        MoreFragment.instance.Refresh();
-                        title.setText("其他");
-                        break;
-                }
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
 
     }
 
@@ -176,9 +151,9 @@ public class ViewPagerActivity extends AppCompatActivity{
         }*/
 
 
-     class FragPagerAdapter extends FragmentPagerAdapter {
+     class FragPagerStateAdapter extends FragmentStatePagerAdapter {
 
-         public FragPagerAdapter(FragmentManager fragmentManager) {
+         public FragPagerStateAdapter(FragmentManager fragmentManager) {
              super(fragmentManager);
          }
 

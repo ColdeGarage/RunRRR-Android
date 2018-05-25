@@ -27,8 +27,10 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -70,6 +72,7 @@ public class MissionsFragment extends Fragment
 
     private View rootView;
     private RecyclerView recyclerView;
+    private SwipeRefreshLayout refreshLayout;
     private ContentAdapter adapter;
 
     private static int uid;
@@ -106,7 +109,14 @@ public class MissionsFragment extends Fragment
         */
 
         recyclerView = (RecyclerView) rootView.findViewById(R.id.mission_recycler_view);
-
+        refreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.refresh_layout);
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                instance.Refresh();
+                refreshLayout.setRefreshing(false);
+            }
+        });
         adapter = new ContentAdapter(recyclerView.getContext());
         recyclerView.setAdapter(adapter);
         recyclerView.setHasFixedSize(true);
