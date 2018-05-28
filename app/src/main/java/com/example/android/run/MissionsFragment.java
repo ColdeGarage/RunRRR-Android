@@ -61,10 +61,7 @@ import static android.content.Context.MODE_PRIVATE;
 /**
  * Provides UI for the view with Tile.
  */
-public class MissionsFragment extends Fragment
-{
-
-    public static final int MY_MISSION_REFRESH = 0;
+public class MissionsFragment extends Fragment {
     static MissionsFragment instance = null;
 
     private RecyclerView recyclerView;
@@ -88,13 +85,12 @@ public class MissionsFragment extends Fragment
         //read uid and token
         readPrefs();
 
-        /*
+        /*TODO:
             * Sets up a SwipeRefreshLayout.OnRefreshListener that is invoked when the user
             * performs a swipe-to-refresh gesture.
         */
 
         recyclerView = (RecyclerView) rootView.findViewById(R.id.mission_recycler_view);
-
         adapter = new ContentAdapter(recyclerView.getContext());
         recyclerView.setAdapter(adapter);
         recyclerView.setHasFixedSize(true);
@@ -103,15 +99,14 @@ public class MissionsFragment extends Fragment
         return rootView;
     }
 
-    public void Refresh(){
+    public void Refresh() {
         adapter = new ContentAdapter(recyclerView.getContext());
         recyclerView.setAdapter(adapter);
     }
 
     // Call Back method to get the Message from other Activity
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Refresh();
     }
@@ -123,7 +118,7 @@ public class MissionsFragment extends Fragment
         public TextView time;
         public ImageView state;
 
-        public ViewHolder(LayoutInflater inflater, ViewGroup parent) {
+        private ViewHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.item_list_missions, parent, false));
 
             list = (LinearLayout) itemView.findViewById(R.id.list_mission);
@@ -135,7 +130,7 @@ public class MissionsFragment extends Fragment
     }
 
     //====================內存====================
-    private void readPrefs(){
+    private void readPrefs() {
         SharedPreferences settings = getContext().getSharedPreferences("data",MODE_PRIVATE);
         uid = settings.getInt("uid",0);
         token = settings.getString("token","");
@@ -148,28 +143,30 @@ public class MissionsFragment extends Fragment
         ArrayList<HashMap<String,String>> solvingMissionList;
         ArrayList<HashMap<String,String>> unsolvedMissionList;
         ArrayList<HashMap<String,String>> completedMissionList;
+
         // Set numbers of List in RecyclerView.
         private int LENGTH;
         private int serverTimeHour;
         private int serverTimeMin;
 
-        private String [] mMid = new String[20];
+        private String[] mMid = new String[20];
         private String[] mName = new String[20];
         private String[] mTime = new String[20];
         private String[] mType = new String[20];
         private String[] mState = new String[20];
         private String[] mContent = new String[20];
-        private String[] mUrl = new String[20];
         private String[] mPrize = new String[20];
         private String[] mScore = new String[20];
+        private String[] mUrl = new String[20];
 
-        public ContentAdapter(Context context) {
+        private ContentAdapter(Context context) {
             Resources resources = context.getResources();
-
             String readDataFromHttp;
-            if(!isNetworkAvailable()){
+
+            if(!isNetworkAvailable()) {
                 Alert("Please check your internet connection, then try again.");
             }
+
             //get mission list from server
             MyTaskGet httpGetMission = new MyTaskGet();
             httpGetMission.execute(resources.getString(R.string.apiURL)+"/mission/read?operator_uid="+String.valueOf(uid)+"&token="+token);
@@ -200,20 +197,21 @@ public class MissionsFragment extends Fragment
             missionState();
             missionSort();
 
+            //TODO:
             //compare the new mission list with the old one
             //newMissionNotify();
 
             // Set missions data to string array
-            for(int i=0;i<solvingMissionList.size();i++){
+            for(int i=0;i<solvingMissionList.size();i++) {
                 mMid[i] = solvingMissionList.get(i).get("mid");
                 mName[i] = solvingMissionList.get(i).get("title");
                 mTime[i] = solvingMissionList.get(i).get("time_end");
                 mType[i] = solvingMissionList.get(i).get("class");
                 mState[i] = solvingMissionList.get(i).get("status");
                 mContent[i] = solvingMissionList.get(i).get("content");
-                mUrl[i] = solvingMissionList.get(i).get("url");
                 mPrize[i] = solvingMissionList.get(i).get("prize");
                 mScore[i] = solvingMissionList.get(i).get("score");
+                mUrl[i] = solvingMissionList.get(i).get("url");
             }
         }
 
@@ -229,12 +227,11 @@ public class MissionsFragment extends Fragment
             holder.time.setText(mTime[position % mTime.length]);
             holder.time.setTextColor(Color.BLACK);
 
-            String content = mContent[position % mContent.length];
             String type = mType[position % mType.length];
             String state = mState[position % mState.length];
 
             //missions type : MAIN,SUB,URG, set different icon
-            switch (type){
+            switch (type) {
                 case "0":
                     holder.type.setText("限");
                     holder.type.setTextColor(ContextCompat.getColor(getContext(), R.color.limit));
@@ -259,7 +256,6 @@ public class MissionsFragment extends Fragment
                 case "-1":
                     break;
                 case "0":
-//                    holder.state.setImageResource(R.drawable.state_waiting);
                     holder.state.setBackgroundResource(R.drawable.anim_gif_waiting);
                     Object ob_waiting = holder.state.getBackground();
                     AnimationDrawable anim_waiting = (AnimationDrawable) ob_waiting;
@@ -279,7 +275,7 @@ public class MissionsFragment extends Fragment
             holder.name.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //TODO:Intent to other activity
+
                     Context context = v.getContext();
                     Intent intent = new Intent(context, MissionPopActivity.class);
 
@@ -291,14 +287,14 @@ public class MissionsFragment extends Fragment
                     bundle.putString("type", mType[position % mType.length]);
                     bundle.putString("state", mState[position % mState.length]);
                     bundle.putString("content", mContent[position % mContent.length]);
-                    bundle.putString("url", mUrl[position % mUrl.length]);
                     bundle.putString("prize", mPrize[position % mPrize.length]);
                     bundle.putString("score", mScore[position % mScore.length]);
+                    bundle.putString("url", mUrl[position % mUrl.length]);
                     bundle.putString("uid",String.valueOf(uid));
                     bundle.putString("token",token);
 
                     intent.putExtras(bundle);
-                    startActivityForResult(intent, MY_MISSION_REFRESH);
+                    startActivityForResult(intent, 0);
                 }
             });
         }
@@ -308,55 +304,56 @@ public class MissionsFragment extends Fragment
             return solvingMissionList.size();
         }
 
-        //====================取得任務頁面顯示的內容===========================
+        //====================取得任務頁面顯示的內容====================
         //Parse json received from server
-        void parseJson (String info, String missionOrReport){
-
+        void parseJson(String info, String missionOrReport) {
             if(missionOrReport.equals("mission")){
                 missionList = new ArrayList<>();
                 try {
                     JSONObject payload = new JSONObject(new JSONObject(info).getString("payload"));
                     JSONArray objects = payload.getJSONArray("objects");
+
                     //Get mission number
                     LENGTH = objects.length();
-                    for(int i=0;i<LENGTH;i++){
+                    for(int i=0;i<LENGTH;i++) {
                         JSONObject subObject;
                         subObject = objects.getJSONObject(i);
                         HashMap<String,String> mission = new HashMap<>();
+
                         //put mid into hashmap
-                        mission.put("mid",subObject.getString("mid"));
+                        mission.put("mid", subObject.getString("mid"));
+
                         //put title into hashmap
-                        mission.put("title",subObject.getString("title"));
+                        mission.put("title", subObject.getString("title"));
 
                         //put content into hashmap
-                        mission.put("content",subObject.getString("content"));
-
-                        //put url into hashmap
-                        mission.put("url",subObject.getString("url"));
+                        mission.put("content", subObject.getString("content"));
 
                         //put prize into hashmap
-                        mission.put("prize",subObject.getString("prize"));
+                        mission.put("prize", subObject.getString("prize"));
 
                         //put score into hashmap
-                        mission.put("score",subObject.getString("score"));
+                        mission.put("score", subObject.getString("score"));
+
+                        //put url into hashmap
+                        mission.put("url", subObject.getString("url"));
 
                         //parse time, take hour&min only
                         //and put time_end into hashmap
                         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
                         try {
                             Date date = dateFormat.parse(subObject.getString("time_end"));
-                            mission.put("time_end",new SimpleDateFormat("HH:mm")
-                                    .format(date));
+                            mission.put("time_end",new SimpleDateFormat("HH:mm").format(date));
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }
 
                         //put class into hashmap
-                        if(subObject.getString("class").equals("URG")){
+                        if(subObject.getString("class").equals("URG")) {
                             mission.put("class","0");
-                        }else if(subObject.getString("class").equals("MAIN")){
+                        } else if(subObject.getString("class").equals("MAIN")) {
                             mission.put("class","1");
-                        }else if(subObject.getString("class").equals("SUB")){
+                        } else if(subObject.getString("class").equals("SUB")) {
                             mission.put("class","2");
                         }
                         missionList.add(mission);
@@ -364,7 +361,7 @@ public class MissionsFragment extends Fragment
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-            }else if(missionOrReport.equals("report")){
+            } else if(missionOrReport.equals("report")) {
                 reportList = new ArrayList<>();
                 System.out.println("report = ");
                 System.out.println(info);
@@ -389,7 +386,7 @@ public class MissionsFragment extends Fragment
 
                     JSONObject payload = new JSONObject(jObject.getString("payload"));
                     JSONArray objects = payload.getJSONArray("objects");
-                    for(int i=0;i<objects.length();i++){
+                    for(int i=0;i<objects.length();i++) {
                         JSONObject subObject;
                         subObject = objects.getJSONObject(i);
                         HashMap<String,String> report = new HashMap<>();
@@ -402,26 +399,29 @@ public class MissionsFragment extends Fragment
                 }
             }
         }
+
         //Add mission state
-        void missionState(){
-            for(int i=0;i<reportList.size();i++){
-                for(int j=0;j<missionList.size();j++){
+        void missionState() {
+            for(int i=0;i<reportList.size();i++) {
+                for(int j=0;j<missionList.size();j++) {
                     //find mid in each report
                     //and add status to the corresponding mission in missionlist
-                    if(reportList.get(i).get("mid").equals(missionList.get(j).get("mid"))){
-                        String status = reportList.get(i).get("status");   //0:being judged 1:success 2:fail
+                    if(reportList.get(i).get("mid").equals(missionList.get(j).get("mid"))) {
+                        String status = reportList.get(i).get("status");  //0:being judged 1:success 2:fail
                         missionList.get(j).put("status",status);
                         break;
                     }
                 }
             }
+
             //add ("status",-1) to the missions that doesn't appear in reportlist
-            for(int i=0;i<missionList.size();i++){
+            for(int i=0;i<missionList.size();i++) {
                 if(!missionList.get(i).containsKey("status")) {
                     missionList.get(i).put("status","-1");
                 }
             }
         }
+
         //sort mission order
         void missionSort(){
             unsolvedMissionList = new ArrayList<>();
@@ -429,18 +429,18 @@ public class MissionsFragment extends Fragment
             completedMissionList = new ArrayList<>();
 
             //filter out expired mission
-            for(int i=0;i<missionList.size();i++){
+            for(int i=0;i<missionList.size();i++) {
                 String missionTime = missionList.get(i).get("time_end");
                 String[] part = missionTime.split(":");
                 int hour = Integer.valueOf(part[0]);
                 int min = Integer.valueOf(part[1]);
-                if(hour<serverTimeHour){
-                    if(!missionList.get(i).get("status").equals("1")){
+                if(hour<serverTimeHour) {
+                    if(!missionList.get(i).get("status").equals("1")) {
                         missionList.get(i).put("expire","true");
                     }
-                }else if(hour==serverTimeHour){
-                    if(min<serverTimeMin){
-                        if(!missionList.get(i).get("status").equals("1")){
+                } else if(hour==serverTimeHour) {
+                    if(min<serverTimeMin) {
+                        if(!missionList.get(i).get("status").equals("1")) {
                             missionList.get(i).put("expire","true");
                         }
                     }
@@ -448,14 +448,14 @@ public class MissionsFragment extends Fragment
             }
 
             //classify the rest missions into three lists by status
-            for(int i=0;i<missionList.size();i++){
-                if(!missionList.get(i).containsKey("expire")){
+            for(int i=0;i<missionList.size();i++) {
+                if(!missionList.get(i).containsKey("expire")) {
                     HashMap mission = missionList.get(i);
-                    if(mission.get("status").equals("1")){
+                    if(mission.get("status").equals("1")) {
                         completedMissionList.add(mission);
-                    }else if(mission.get("status").equals("-1")){
+                    } else if(mission.get("status").equals("-1")) {
                         unsolvedMissionList.add(mission);
-                    }else{
+                    } else {
                         solvingMissionList.add(mission);
                     }
                 }
@@ -486,25 +486,18 @@ public class MissionsFragment extends Fragment
         }
     }
 
-
     //====================HTTP====================
-    //HTTPGet
     static class MyTaskGet extends AsyncTask<String,Void,String> {
         URL url = null;
         HttpURLConnection connection = null;
 
-        @Override
-        public void onPreExecute() {
-            super.onPreExecute();
-        }
         @Override
         public String doInBackground(String...arg0) {
             BufferedReader reader = null;
             StringBuilder stringBuilder;
             String urlStr = arg0[0];
 
-            try
-            {
+            try {
                 // create the HttpURLConnection
                 url = new URL(urlStr);
                 connection = (HttpURLConnection) url.openConnection();
@@ -524,41 +517,27 @@ public class MissionsFragment extends Fragment
                 stringBuilder = new StringBuilder();
 
                 String line;
-                while ((line = reader.readLine()) != null)
-                {
+                while ((line = reader.readLine()) != null) {
                     stringBuilder.append(line + "\n");
                 }
                 return stringBuilder.toString();
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 e.printStackTrace();
-            }
-            finally
-            {
+            } finally {
                 connection.disconnect();
-                // close the reader; this can throw an exception too, so
-                // wrap it in another try/catch block.
-                if (reader != null)
-                {
-                    try
-                    {
+                // close the reader; this can throw an exception too, so wrap it in another try/catch block.
+                if (reader != null) {
+                    try {
                         reader.close();
-                    }
-                    catch (Exception e)
-                    {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
             }
             return null;
         }
-        @Override
-        public void onPostExecute(String result) {
-            super.onPostExecute(result);
-        }
-
     }
+
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -566,15 +545,14 @@ public class MissionsFragment extends Fragment
 
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
+
     //show an alert dialog
     void Alert(String mes){
         new AlertDialog.Builder(getActivity())
                 .setMessage(mes)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                }).show();
+                    public void onClick(DialogInterface dialog, int which) {} })
+                .show();
     }
 }
