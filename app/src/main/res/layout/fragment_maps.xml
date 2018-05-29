@@ -30,6 +30,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="right"
+                    android:paddingTop="10dp"
                     android:text="POINT"
                     android:textSize="20dp"
                     android:textColor="@color/text_medium_grey"/>

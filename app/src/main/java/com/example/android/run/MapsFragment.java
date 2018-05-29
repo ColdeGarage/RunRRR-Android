@@ -18,11 +18,11 @@ import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -71,8 +71,19 @@ import static android.content.Context.MODE_PRIVATE;
  * create an instance of this fragment.
  */
 
-public class MapsFragment extends Fragment implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
+public class MapsFragment extends Fragment
+        implements OnMapReadyCallback,
+                    GoogleApiClient.ConnectionCallbacks,
+                    GoogleApiClient.OnConnectionFailedListener,
+                    LocationListener {
 
+    private MapView mMapView;
+    private GoogleMap googleMap;
+    //private GoogleApiClient googleApiClient;
+    private GoogleApiClient mGoogleApiClient;
+    private LocationRequest mLocationRequest;
+    private LocationManager mLocationMgr;
+    Location lastLocation;
     static MapsFragment instance = null;
     private PolygonOptions polygonOpt;
 
@@ -103,15 +114,11 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState)
-    {
+    public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
     }
 
-    MapView mMapView;
-    private GoogleMap googleMap;
-    private GoogleApiClient googleApiClient;
-    Location lastLocation;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -135,17 +142,17 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         if(!isNetworkAvailable()){
             Alert("Please check your internet connection, then try again.");
         }
+        final LocationManager manager = (LocationManager) getActivity().getSystemService( Context.LOCATION_SERVICE );
+        if ( !manager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
+            Alert("Please check your GPS.");
+        }
         //update location
         if(flag == 0){
             updateHandler = new Handler();
             updateRunnable = new Runnable() {
                 @Override
                 public void run() {
-                    final LocationManager manager = (LocationManager) getActivity().getSystemService( Context.LOCATION_SERVICE );
-                    if ( !manager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
-                        Alert("Please check your GPS.");
-                    }
-                    else if(lastLocation!=null){
+                    if(lastLocation!=null){
                         MyTaskPut updatePut = new MyTaskPut();
                         updatePut.execute(getResources().getString(R.string.apiURL)+"/member/update"
                                 ,"uid=" + String.valueOf(uid) + "&operator_uid=" + String.valueOf(uid) + "&token=" + token + "&position_n=" + String.valueOf(lastLocation.getLatitude())
@@ -160,26 +167,26 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                             e.printStackTrace();
                         }
 
-                        Log.i("update",valid + String.valueOf(lastLocation.getLatitude())+"  "+lastLocation.getLongitude());
+                       // Log.i("update",valid + String.valueOf(lastLocation.getLatitude())+"  "+lastLocation.getLongitude());
 
-                        //if invalid, show alert
-                        if(!valid && !show){
-                            num ++;
-                            if(num >= 4){   //一次五秒，數四次
-                                show = true;
-                                new AlertDialog.Builder(getContext())
-                                        .setCancelable(false)   //按到旁邊也不會消失
-                                        .setMessage("你超過邊界囉!")
-                                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                show = false;
-                                            }
-                                        }).show();
-                                num = 0;
-                            }
+                    //if invalid, show alert
+                    if (!valid && !show) {
+                        num++;
+                        if (num >= 4) {   //一次五秒，數四次
+                            show = true;
+                            new AlertDialog.Builder(getContext())
+                                    .setCancelable(false)   //按到旁邊也不會消失
+                                    .setMessage("你超過邊界囉!")
+                                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            show = false;
+                                        }
+                                    }).show();
+                            num = 0;
                         }
                     }
+                }
                     updateHandler.postDelayed(this, 5000);
                 }
             };
@@ -190,11 +197,16 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         return rootView;
     }
 
-//    @Override
-//    public void onPause() {
-//        super.onPause();
-//        updateHandler.removeCallbacks(updateRunnable);
-//    }
+    @Override
+    public void onPause() {
+        super.onPause();
+        //updateHandler.removeCallbacks(updateRunnable);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+    }
 
     public void Refresh(){
 //        // Create new fragment and transaction
@@ -223,7 +235,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     public void onMapReady(GoogleMap mgoogleMap) {
         googleMap = mgoogleMap;
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(24.794574, 120.992936), 17));
-        googleMap.getUiSettings().setZoomControlsEnabled(true);
+        googleMap.getUiSettings().setAllGesturesEnabled(true);
 
         //Initialize Google Play Services
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -232,8 +244,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                     == PackageManager.PERMISSION_GRANTED) {
                 //Location Permission already granted
                 System.out.println("not request");
-                buildGoogleApiClient();
                 googleMap.setMyLocationEnabled(true);
+                /*buildGoogleApiClient();
                 googleMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
                     @Override
                     public boolean onMyLocationButtonClick() {
@@ -246,10 +258,10 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                         return false;
                     }
                 });
-                initial(googleMap);
+                initial(googleMap);*/
             } else {
                 //Request Location Permission
-                System.out.println("request");
+                /*System.out.println("request");
                 checkLocationPermission();
                 buildGoogleApiClient();
                 googleMap.setMyLocationEnabled(true);
@@ -265,12 +277,12 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                         return false;
                     }
                 });
-                initial(googleMap);
+                */initial(googleMap);
             }
         }
         else {
-            buildGoogleApiClient();
             googleMap.setMyLocationEnabled(true);
+            /*buildGoogleApiClient();
             googleMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
                 @Override
                 public boolean onMyLocationButtonClick() {
@@ -282,14 +294,14 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                     }
                     return false;
                 }
-            });
+            });*/
             initial(googleMap);
         }
     }
     private void initial(GoogleMap mMap){
         final LocationManager manager = (LocationManager) getActivity().getSystemService( Context.LOCATION_SERVICE );
         if ( !manager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
-            Alert("Please check your GPS.");
+            //Alert("Please check your GPS.");
         }
 
         //clear old setting of map
@@ -324,10 +336,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
             String tagName = null;
             while (eventType != XmlPullParser.END_DOCUMENT) {
-                if(eventType == XmlPullParser.START_DOCUMENT) {
-                } else if(eventType == XmlPullParser.START_TAG) {
+                if(eventType == XmlPullParser.START_TAG) {
                     tagName = xpp.getName();
-                } else if(eventType == XmlPullParser.END_TAG) {
                 } else if(eventType == XmlPullParser.TEXT) {
                     if(tagName.equals("coordinates")){
                         String[] pointList = xpp.getText().split("\n");
@@ -586,7 +596,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     }
 
     //======================建立google api,FusedLocationApi===========================
-    protected synchronized void buildGoogleApiClient() {
+    /*protected synchronized void buildGoogleApiClient() {
         googleApiClient = new GoogleApiClient.Builder(getActivity().getApplicationContext())
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -594,11 +604,11 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                 .build();
 
             googleApiClient.connect();
-    }
+    }*/
 
     @Override
     public void onConnected(Bundle bundle) {
-        LocationRequest locationRequest = new LocationRequest();
+        /*LocationRequest locationRequest = new LocationRequest();
         locationRequest.setInterval(3000);
         locationRequest.setFastestInterval(2000);
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
@@ -607,25 +617,100 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                 == PackageManager.PERMISSION_GRANTED) {
             System.out.println("granted");
             LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
+        }*/
+        Location location = enableLocationAndGetLastLocation(true);
+
+        if (location != null) {
+            onLocationChanged(location);
+        }
+        else {
+
         }
     }
 
     @Override
-    public void onConnectionSuspended(int i) {
+    public void onConnectionSuspended(int cause) {
+        switch (cause) {
+            case CAUSE_NETWORK_LOST:
+                Toast.makeText(getContext(),"No Internet",Toast.LENGTH_SHORT).show();
+                break;
+            case CAUSE_SERVICE_DISCONNECTED:
+                Toast.makeText(getContext(), "Error",Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-
+        Toast.makeText(getContext(),"API error",Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onLocationChanged(Location location) {
-        lastLocation = location;
+        /*lastLocation = location;
 
-        System.out.println(location.getLatitude()+"   "+location.getLongitude());
+        System.out.println(location.getLatitude()+"   "+location.getLongitude());*/
+        googleMap.animateCamera(CameraUpdateFactory.newLatLng(
+                new LatLng(location.getLatitude(), location.getLongitude())
+        ));
     }
 
+    private Location enableLocationAndGetLastLocation(boolean on) {
+        if(ContextCompat.checkSelfPermission(getActivity().getApplicationContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION) !=
+                PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
+                    Manifest.permission.ACCESS_FINE_LOCATION)) {
+                new AlertDialog.Builder(getActivity().getApplicationContext())
+                        .setTitle("Location Permission Needed")
+                        .setMessage("This app needs the Location permission, please accept to use location functionality")
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                //Prompt the user once explanation has been shown
+                                ActivityCompat.requestPermissions(getActivity(),
+                                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                                        MY_PERMISSIONS_REQUEST_LOCATION );
+                            }
+                        })
+                        .create()
+                        .show();
+                return null;
+            } else {
+                // No explanation needed, we can request the permission.
+                ActivityCompat.requestPermissions(getActivity(),
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        MY_PERMISSIONS_REQUEST_LOCATION );
+                return null;
+            }
+        }
+
+        Location lastLocation = null;
+        if (on) {
+            lastLocation = LocationServices.FusedLocationApi
+                    .getLastLocation(mGoogleApiClient);
+            mLocationRequest = LocationRequest.create();
+            mLocationRequest.setInterval(5000);
+            mLocationRequest.setSmallestDisplacement(5);
+
+            if (mLocationMgr.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+                Toast.makeText(getActivity().getApplicationContext(),"GPS",Toast.LENGTH_SHORT).show();
+            } else if (mLocationMgr.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+                mLocationRequest.setPriority(LocationRequest.PRIORITY_LOW_POWER);
+                Toast.makeText(getActivity().getApplicationContext(),"Internet",Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getActivity().getApplicationContext(),"Please check your GPS or wifi.",Toast.LENGTH_SHORT).show();
+            }
+            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+
+        }
+        else {
+            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+
+        }
+
+        return lastLocation;
+    }
 
     //===================HTTP==========================
     //HTTPGet
@@ -786,6 +871,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
     }
 
+
+
     //show an alert dialog
     void Alert(String mes){
         new AlertDialog.Builder(getActivity())
@@ -804,5 +891,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
+
 }
 
