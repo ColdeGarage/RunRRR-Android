@@ -227,12 +227,17 @@ public class MoreFragment extends Fragment {
                     holder.bt_enter.setOnClickListener(new TextView.OnClickListener(){
                         @Override
                         public void onClick(View v) {
+                            String hunterUid = holder.editTextUid.getText().toString();
+                            String hunterPass = holder.editTextPass.getText().toString();
                             if(!isNetworkAvailable()){
                                 Alert("Please check your internet connection, then try again.");
+                            } else if (hunterUid.equals("")) {
+                                Alert("Please enter a HUNTER UID.");
+                            } else if (hunterPass.equals("")) {
+                                Alert("Please enter a HUNTER PASSWORD.");
                             }
                             else {
-                                String hunterUid = holder.editTextUid.getText().toString();
-                                String hunterPass = holder.editTextPass.getText().toString();
+
                                 //Log.i("text",hunterUid + "  " + hunterPass);
 
                                 MyTaskPut diePut = new MyTaskPut();

@@ -17,6 +17,7 @@
 package com.example.android.run;
 
 import android.app.FragmentTransaction;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -67,15 +68,7 @@ public class ViewPagerActivity extends AppCompatActivity{
         setContentView(R.layout.activity_view_pager);
 
         fm = getSupportFragmentManager();
-        //tab
-        /*tab_map = (ImageView) findViewById(R.id.tab_map);
-        tab_mission = (ImageView) findViewById(R.id.tab_mission);
-        tab_bag = (ImageView) findViewById(R.id.tab_bag);
-        tab_more = (ImageView) findViewById(R.id.tab_more);
-        pager_bar = findViewById(R.id.pager_bar);*/
-        //viewPager
-        /*title = (TextView) findViewById(R.id.title);
-        title.setText("地圖");*/
+
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         //tabLayout.setupWithViewPager(viewPager);

@@ -2,8 +2,12 @@ package com.example.android.run;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -19,6 +23,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -121,6 +127,8 @@ public class MapsFragment extends Fragment
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setScore();
+        //Notify();
+
     }
 
     @Override
@@ -235,7 +243,7 @@ public class MapsFragment extends Fragment
 
     //======================建立地圖==============================
     @Override
-    public void onMapReady(GoogleMap mgoogleMap) {
+    public void onMapReady(final GoogleMap mgoogleMap) {
         googleMap = mgoogleMap;
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(24.794574, 120.992936), 17));
         googleMap.getUiSettings().setAllGesturesEnabled(true);
@@ -254,6 +262,9 @@ public class MapsFragment extends Fragment
                         final LocationManager manager = (LocationManager) getActivity().getSystemService( Context.LOCATION_SERVICE );
                         if ( !manager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
                             Alert("Please check your GPS.");
+                        } else {
+                            LatLng latLng = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
+                            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,17));
                         }
                         return false;
                     }
@@ -325,7 +336,7 @@ public class MapsFragment extends Fragment
         System.out.println("init");
         //Toast.makeText(getActivity().getApplicationContext(),"initial",Toast.LENGTH_SHORT).show();
         if(myLocation!=null){
-            LatLng latLng = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
+            //LatLng latLng = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
             //move map camera
             //googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,17));
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(24.794574, 120.992936), 17));
@@ -409,6 +420,7 @@ public class MapsFragment extends Fragment
             for(HashMap<String,String> m : missionList){
                 double location_n = Double.parseDouble(m.get("location_n"));
                 double location_e = Double.parseDouble(m.get("location_e"));
+                System.out.println(location_e + ", " + location_n);
                 if(location_e!=0 && location_n!=0){
                     mMap.addMarker(new MarkerOptions()
                             .position(new LatLng(location_n,location_e))
@@ -916,6 +928,5 @@ public class MapsFragment extends Fragment
 
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
-
 }
 
