@@ -225,8 +225,8 @@ public class MoreFragment extends Fragment {
                 case 0: //Die
 
                     //add space at the beginning
-                    holder.editTextUid.setPadding(10, 0, 0, 0);
-                    holder.editTextPass.setPadding(10, 0, 0, 0);
+                    //holder.editTextUid.setPadding(20, 0, 0, 0);
+                    //holder.editTextPass.setPadding(20, 0, 0, 0);
 
                     holder.bt_enter.setOnClickListener(new TextView.OnClickListener(){
                         @Override
@@ -317,7 +317,7 @@ public class MoreFragment extends Fragment {
 
                     myTaskGet httpGet = null;
                     try {
-                        httpGet = new myTaskGet("http://coldegarage.tech:8081/api/v1.1/utility/0");
+                        httpGet = new myTaskGet(getResources().getString(R.string.apiURL) + "/api/v1.1/utility/0");
                     } catch (MalformedURLException e) {
                         e.printStackTrace();
                     }
@@ -337,7 +337,7 @@ public class MoreFragment extends Fragment {
                         public void onClick(View view) {
                             myTaskGet httpGet= null;
                             try {
-                                httpGet = new myTaskGet("http://coldegarage.tech:8081/api/v1.1/member/read?operator_uid="+String.valueOf(uid)+"&uid="+String.valueOf(uid)+"&token="+token);
+                                httpGet = new myTaskGet(getResources().getString(R.string.apiURL) + "/api/v1.1/member/read?operator_uid="+String.valueOf(uid)+"&uid="+String.valueOf(uid)+"&token="+token);
                             } catch (MalformedURLException e) {
                                 e.printStackTrace();
                             }

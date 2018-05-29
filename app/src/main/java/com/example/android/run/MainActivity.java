@@ -12,8 +12,11 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import org.json.JSONException;
@@ -31,7 +34,6 @@ public class MainActivity extends AppCompatActivity {
 
     boolean loginState;
     String account_in, pass_in;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,9 +48,12 @@ public class MainActivity extends AppCompatActivity {
             //Alert("Skip Login");
         }
 
+
+
         ImageView icon = (ImageView) findViewById(R.id.ic_login);
         TextView login = (TextView) findViewById(R.id.login);
         TextView about = (TextView) findViewById(R.id.about_us);
+        final ScrollView scrollView = (ScrollView) findViewById(R.id.scroll);
         final EditText acc = (EditText) findViewById(R.id.account);
         final EditText pass = (EditText) findViewById(R.id.password);
 
