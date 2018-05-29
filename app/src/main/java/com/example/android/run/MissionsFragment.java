@@ -63,6 +63,7 @@ import static android.content.Context.MODE_PRIVATE;
  */
 public class MissionsFragment extends Fragment {
     static MissionsFragment instance = null;
+    public static final int MY_MISSION_REFRESH = 0;
 
     private RecyclerView recyclerView;
     private ContentAdapter adapter;
@@ -294,7 +295,7 @@ public class MissionsFragment extends Fragment {
                     bundle.putString("token",token);
 
                     intent.putExtras(bundle);
-                    startActivityForResult(intent, 0);
+                    startActivityForResult(intent, MY_MISSION_REFRESH);
                 }
             });
         }
