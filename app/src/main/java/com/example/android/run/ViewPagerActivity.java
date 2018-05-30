@@ -46,21 +46,11 @@ import android.widget.TextView;
  * Provides UI for the main screen.
  */
 public class ViewPagerActivity extends AppCompatActivity{
-    //private boolean tabletSize;
     private FragmentManager fm;
     private ViewPager viewPager;
     private PagerTitleStrip pagerTitleStrip;
-
-    //static int bar_height;
-    //static int tab_height;
     private TabLayout tabLayout;
-    /*private View pager_bar;
-    private ImageView tab_map;
-    private ImageView tab_mission;
-    private ImageView tab_bag;
-    private ImageView tab_more;*/
     private TextView title;
-    //static int iCurrPage = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +66,7 @@ public class ViewPagerActivity extends AppCompatActivity{
         tabLayout.setSelectedTabIndicatorColor(0);
 
         FragmentStatePagerAdapter adapter = new FragPagerStateAdapter(fm);
-        //
+
         LayoutInflater inflater = this.getLayoutInflater();
 
         TabLayout.Tab tab = tabLayout.newTab();
@@ -115,34 +105,12 @@ public class ViewPagerActivity extends AppCompatActivity{
         imageView.setImageResource(R.drawable.more_icon);
         tabLayout.addTab(tab);
 
-        //
-
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager));
         viewPager.setAdapter(adapter);
         viewPager.setOffscreenPageLimit(3);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
 
     }
-
-        // setting the tab size depending on device size
-
-        /*tab_layout = (LinearLayout) findViewById(R.id.tab_layout);
-        tabletSize = getResources().getBoolean(R.bool.isTablet);
-
-        if (tabletSize) {
-            // convert dip to pixels
-            bar_height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 12, getResources().getDisplayMetrics());
-            tab_height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 135, getResources().getDisplayMetrics());
-            pager_bar.getLayoutParams().height = bar_height;
-            tab_layout.getLayoutParams().height = tab_height;
-        } else {
-            // convert dip to pixels
-            bar_height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, getResources().getDisplayMetrics());
-            tab_height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 95, getResources().getDisplayMetrics());
-            pager_bar.getLayoutParams().height = bar_height;
-            tab_layout.getLayoutParams().height = tab_height;
-        }*/
-
 
      class FragPagerStateAdapter extends FragmentStatePagerAdapter {
 
