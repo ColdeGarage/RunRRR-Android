@@ -12,8 +12,11 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import org.json.JSONException;
@@ -31,7 +34,6 @@ public class MainActivity extends AppCompatActivity {
 
     boolean loginState;
     String account_in, pass_in;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,24 +45,20 @@ public class MainActivity extends AppCompatActivity {
         * he/she will be directly leaded to Map*/
         if(readPrefs()){
             goMap();
-            //Alert("Skip Login");
         }
+
+
 
         ImageView icon = (ImageView) findViewById(R.id.ic_login);
         TextView login = (TextView) findViewById(R.id.login);
         TextView about = (TextView) findViewById(R.id.about_us);
+        final ScrollView scrollView = (ScrollView) findViewById(R.id.scroll);
         final EditText acc = (EditText) findViewById(R.id.account);
         final EditText pass = (EditText) findViewById(R.id.password);
 
         icon.setImageResource(R.drawable.ic_login);
-        if(!isNetworkAvailable()){
-            Alert("Please check your internet connection.");
-        }
         final LocationManager manager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
 
-        if ( !manager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
-            Alert("Please check your GPS.");
-        }
         //add space at the beginning
         acc.setPadding(10, 0, 0, 0);
         pass.setPadding(10, 0, 0, 0);
@@ -72,9 +70,11 @@ public class MainActivity extends AppCompatActivity {
                 pass_in = pass.getText().toString();
 
                 if(account_in.isEmpty()){
-                    Alert("Account can't be empty.");
+                    Alert("Email can't be empty.");
                 }else if(pass_in.isEmpty()) {
                     Alert("Password can't be empty.");
+                }else if (!isNetworkAvailable()){
+                    Alert("Please check your internet connection.");
                 }else {
                     //if account&password aren't empty, check whether it's valid
                     checkAccount();
@@ -348,5 +348,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+
 }
 

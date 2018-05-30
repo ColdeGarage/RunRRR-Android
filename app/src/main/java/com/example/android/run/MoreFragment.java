@@ -110,10 +110,6 @@ public class MoreFragment extends Fragment {
     {
         super.onActivityCreated(savedInstanceState);
 
-        //取得TextView元件並帶入text字串
-        //TextView mText = (TextView) getView().findViewById(R.id.list_title);
-        //mText.setText("輸入序號");
-
     }
 
     public void Refresh(){
@@ -225,18 +221,23 @@ public class MoreFragment extends Fragment {
                 case 0: //Die
 
                     //add space at the beginning
-                    holder.editTextUid.setPadding(10, 0, 0, 0);
-                    holder.editTextPass.setPadding(10, 0, 0, 0);
+                    //holder.editTextUid.setPadding(20, 0, 0, 0);
+                    //holder.editTextPass.setPadding(20, 0, 0, 0);
 
                     holder.bt_enter.setOnClickListener(new TextView.OnClickListener(){
                         @Override
                         public void onClick(View v) {
+                            String hunterUid = holder.editTextUid.getText().toString();
+                            String hunterPass = holder.editTextPass.getText().toString();
                             if(!isNetworkAvailable()){
                                 Alert("Please check your internet connection, then try again.");
+                            } else if (hunterUid.equals("")) {
+                                Alert("Please enter a HUNTER UID.");
+                            } else if (hunterPass.equals("")) {
+                                Alert("Please enter a HUNTER PASSWORD.");
                             }
                             else {
-                                String hunterUid = holder.editTextUid.getText().toString();
-                                String hunterPass = holder.editTextPass.getText().toString();
+
                                 //Log.i("text",hunterUid + "  " + hunterPass);
 
                                 MyTaskPut diePut = new MyTaskPut();
@@ -317,7 +318,7 @@ public class MoreFragment extends Fragment {
 
                     myTaskGet httpGet = null;
                     try {
-                        httpGet = new myTaskGet("http://coldegarage.tech:8081/api/v1.1/utility/0");
+                        httpGet = new myTaskGet(getResources().getString(R.string.apiURL) + "/api/v1.1/utility/0");
                     } catch (MalformedURLException e) {
                         e.printStackTrace();
                     }
@@ -337,7 +338,7 @@ public class MoreFragment extends Fragment {
                         public void onClick(View view) {
                             myTaskGet httpGet= null;
                             try {
-                                httpGet = new myTaskGet("http://coldegarage.tech:8081/api/v1.1/member/read?operator_uid="+String.valueOf(uid)+"&uid="+String.valueOf(uid)+"&token="+token);
+                                httpGet = new myTaskGet(getResources().getString(R.string.apiURL) + "/api/v1.1/member/read?operator_uid="+String.valueOf(uid)+"&uid="+String.valueOf(uid)+"&token="+token);
                             } catch (MalformedURLException e) {
                                 e.printStackTrace();
                             }
@@ -373,16 +374,20 @@ public class MoreFragment extends Fragment {
                         public void onClick(View v) {
                             //change login state
                             String KEY = "login";
-                            SharedPreferences settings = getContext().getSharedPreferences("data",MODE_PRIVATE);
-                            settings.edit().putBoolean(KEY,false)
-                                    .apply();
+                            if (!isNetworkAvailable()) {
+                                Alert("Please check your internet connection, then try again.");
+                            }else {
+                                SharedPreferences settings = getContext().getSharedPreferences("data",MODE_PRIVATE);
+                                settings.edit().putBoolean(KEY,false)
+                                        .apply();
 
-                            //intent to login
-                            Context context = v.getContext();
-                            MapsFragment.instance.updateHandler.removeCallbacks(MapsFragment.instance.updateRunnable);
-                            Intent intent = new Intent(context, MainActivity.class);
-                            context.startActivity(intent);
-                            getActivity().finish();
+                                //intent to login
+                                Context context = v.getContext();
+                                MapsFragment.instance.updateHandler.removeCallbacks(MapsFragment.instance.updateRunnable);
+                                Intent intent = new Intent(context, MainActivity.class);
+                                context.startActivity(intent);
+                                getActivity().finish();
+                            }
                         }
                     });
                     holder.moreItem_list.setBackgroundResource(R.color.logout);

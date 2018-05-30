@@ -29,6 +29,7 @@
     <color name="tab_mission">#58F88C</color>
     <color name="tab_bag">#3D8AFF</color>
     <color name="tab_more">#F7D63B</color>
+    <color name="text_color">#b20000</color>
 
     <color name="text_medium_grey">#939393</color>
     <color name="text_dark_grey">#757575</color>

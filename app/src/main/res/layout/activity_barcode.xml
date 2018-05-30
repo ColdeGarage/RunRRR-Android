@@ -6,7 +6,7 @@
     android:layout_height="200dp"
     android:fitsSystemWindows="true"
     android:background="@color/background_grey"
-    tools:context="com.example.android.run.LogoutActivity">
+    tools:context="com.example.android.run.ViewPagerActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
