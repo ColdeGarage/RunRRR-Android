@@ -53,13 +53,14 @@ public class MissionPopActivity extends AppCompatActivity {
     private String mid;
     private String mName;
     private String mTime;
-    private String mUrl;
-    private String mContent;
     private String mType;
     private String mState;
-    private String readDataFromHttp;
-    private String mScore;
+    private String mContent;
     private String mPrize;
+    private String mScore;
+    private String mUrl;
+
+    private String readDataFromHttp;
 
     private LinearLayout list;
     private TextView type;
@@ -100,15 +101,15 @@ public class MissionPopActivity extends AppCompatActivity {
         btnCancel = (TextView) findViewById(R.id.popCancelButton);
 
         bundleReciever = getIntent().getExtras();
+        mid = bundleReciever.getString("mid");
         mName = bundleReciever.getString("name");
         mTime = bundleReciever.getString("time");
-        mContent = bundleReciever.getString("content");
         mType = bundleReciever.getString("type");
         mState = bundleReciever.getString("state");
-        mUrl = bundleReciever.getString("url");
-        mid = bundleReciever.getString("mid");
+        mContent = bundleReciever.getString("content");
         mPrize = bundleReciever.getString("prize");
         mScore = bundleReciever.getString("score");
+        mUrl = bundleReciever.getString("url");
         uid = bundleReciever.getString("uid");
         token = bundleReciever.getString("token");
 

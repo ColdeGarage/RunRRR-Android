@@ -16,6 +16,8 @@
 
 package com.example.android.run;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -27,8 +29,12 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -66,6 +72,7 @@ public class MissionsFragment extends Fragment {
     public static final int MY_MISSION_REFRESH = 0;
 
     private RecyclerView recyclerView;
+    private SwipeRefreshLayout refreshLayout;
     private ContentAdapter adapter;
 
     private static int uid;
@@ -92,6 +99,17 @@ public class MissionsFragment extends Fragment {
         */
 
         recyclerView = (RecyclerView) rootView.findViewById(R.id.mission_recycler_view);
+
+        refreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.refresh_layout);
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                instance.Refresh();
+                //Notify();
+                refreshLayout.setRefreshing(false);
+            }
+        });
+
         adapter = new ContentAdapter(recyclerView.getContext());
         recyclerView.setAdapter(adapter);
         recyclerView.setHasFixedSize(true);
@@ -555,5 +573,22 @@ public class MissionsFragment extends Fragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {} })
                 .show();
+    }
+    private void Notify() {
+        int notificationID = 1;
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(getActivity())
+                        .setSmallIcon(R.drawable.ic_login)
+                        .setContentTitle("New Mission")
+                        .setContentText("Gogogo");
+// Creates an explicit intent for an Activity in your app
+        Intent intent = new Intent(getActivity(), ViewPagerActivity.class);
+        intent.putExtra("notificationID",notificationID);
+
+        PendingIntent resultPendingIntent = PendingIntent.getActivity(getActivity(),0,intent,0);
+        mBuilder.setContentIntent(resultPendingIntent);
+        NotificationManager mNotificationManager =
+                (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.notify(notificationID, mBuilder.build());
     }
 }
