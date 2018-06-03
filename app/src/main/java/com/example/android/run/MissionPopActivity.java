@@ -42,8 +42,6 @@ import java.net.URL;
 import java.net.URLEncoder;
 
 public class MissionPopActivity extends AppCompatActivity {
-
-    public static final String EXTRA_POSITION = "position";
     private static int liveOrDie;
     private static int rid;
     private static String photoUrl;
@@ -51,6 +49,8 @@ public class MissionPopActivity extends AppCompatActivity {
     private static String token;
 
     private Bundle bundleReciever;
+    private String readDataFromHttp;
+
     private String mid;
     private String mName;
     private String mTime;
@@ -60,8 +60,6 @@ public class MissionPopActivity extends AppCompatActivity {
     private String mPrize;
     private String mScore;
     private String mUrl;
-
-    private String readDataFromHttp;
 
     private LinearLayout list;
     private TextView type;
@@ -279,12 +277,11 @@ public class MissionPopActivity extends AppCompatActivity {
         finish();
     }
 
-    //====================取得任務頁面顯示的內容===========================
+    //====================取得任務頁面顯示的內容====================
     //Parse json received from server
-    void parseJson (String info, String missionOrReport){
+    private void parseJson (String info, String missionOrReport){
         if(missionOrReport.equals("member")) {
             try {
-//                    System.out.println(info);
                 JSONObject payload = new JSONObject(new JSONObject(info).getString("payload"));
                 JSONArray objects = payload.getJSONArray("objects");
                 JSONObject subObject = objects.getJSONObject(0);
@@ -298,11 +295,9 @@ public class MissionPopActivity extends AppCompatActivity {
                 JSONObject payload = new JSONObject(new JSONObject(info).getString("payload"));
                 JSONArray objects = payload.getJSONArray("objects");
                 int LENGTH = objects.length();
-                for(int i=0; i<LENGTH; i++){
-                    JSONObject subObject;
-                    subObject = objects.getJSONObject(i);
+                for(int i=0; i<LENGTH; i++) {
+                    JSONObject subObject = objects.getJSONObject(i);
                     if(subObject.getString("mid").equals(mid)) {
-//                        System.out.println("aaaaaa" + subObject.getString("mid") + "/" +mid);
                         rid = subObject.getInt("rid");
                         photoUrl = subObject.getString("url");
                     }
@@ -311,7 +306,6 @@ public class MissionPopActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
-
     }
 
     private static Bitmap getBitmapFromURL(String imageUrl) {
