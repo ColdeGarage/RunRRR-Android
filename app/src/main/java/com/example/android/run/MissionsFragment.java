@@ -29,10 +29,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
@@ -68,7 +66,7 @@ import static android.content.Context.MODE_PRIVATE;
  * Provides UI for the view with Tile.
  */
 public class MissionsFragment extends Fragment {
-    static MissionsFragment instance = null;
+    private static MissionsFragment instance = null;
     public static final int MY_MISSION_REFRESH = 0;
 
     private RecyclerView recyclerView;
@@ -92,11 +90,6 @@ public class MissionsFragment extends Fragment {
 
         //read uid and token
         readPrefs();
-
-        /*TODO:
-            * Sets up a SwipeRefreshLayout.OnRefreshListener that is invoked when the user
-            * performs a swipe-to-refresh gesture.
-        */
 
         recyclerView = (RecyclerView) rootView.findViewById(R.id.mission_recycler_view);
 
@@ -157,11 +150,11 @@ public class MissionsFragment extends Fragment {
 
     //====================建立RecyclerView====================
     public class ContentAdapter extends RecyclerView.Adapter<ViewHolder> {
-        ArrayList<HashMap<String,String>> missionList;
-        ArrayList<HashMap<String,String>> reportList;
-        ArrayList<HashMap<String,String>> solvingMissionList;
-        ArrayList<HashMap<String,String>> unsolvedMissionList;
-        ArrayList<HashMap<String,String>> completedMissionList;
+        private ArrayList<HashMap<String,String>> missionList;
+        private ArrayList<HashMap<String,String>> reportList;
+        private ArrayList<HashMap<String,String>> solvingMissionList;
+        private ArrayList<HashMap<String,String>> unsolvedMissionList;
+        private ArrayList<HashMap<String,String>> completedMissionList;
 
         // Set numbers of List in RecyclerView.
         private int LENGTH;
@@ -506,7 +499,7 @@ public class MissionsFragment extends Fragment {
     }
 
     //====================HTTP====================
-    static class MyTaskGet extends AsyncTask<String,Void,String> {
+    public static class MyTaskGet extends AsyncTask<String,Void,String> {
         URL url = null;
         HttpURLConnection connection = null;
 
@@ -566,7 +559,7 @@ public class MissionsFragment extends Fragment {
     }
 
     //show an alert dialog
-    void Alert(String mes){
+    void Alert(String mes) {
         new AlertDialog.Builder(getActivity())
                 .setMessage(mes)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -574,6 +567,7 @@ public class MissionsFragment extends Fragment {
                     public void onClick(DialogInterface dialog, int which) {} })
                 .show();
     }
+
     private void Notify() {
         int notificationID = 1;
         NotificationCompat.Builder mBuilder =
@@ -581,7 +575,7 @@ public class MissionsFragment extends Fragment {
                         .setSmallIcon(R.drawable.ic_login)
                         .setContentTitle("New Mission")
                         .setContentText("Gogogo");
-// Creates an explicit intent for an Activity in your app
+        // Creates an explicit intent for an Activity in your app
         Intent intent = new Intent(getActivity(), ViewPagerActivity.class);
         intent.putExtra("notificationID",notificationID);
 
