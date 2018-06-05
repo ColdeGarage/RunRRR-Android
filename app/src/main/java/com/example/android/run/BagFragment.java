@@ -77,7 +77,6 @@ public class BagFragment extends Fragment
     int toolNum=0;
 
     public static BagFragment getInstance() {
-
         synchronized (BagFragment.class) {
             instance = new BagFragment();
         }
@@ -85,8 +84,7 @@ public class BagFragment extends Fragment
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         readPrefs();
         recyclerView = (RecyclerView) inflater.inflate(
                 R.layout.recycler_view, container, false);
@@ -104,12 +102,11 @@ public class BagFragment extends Fragment
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState)
-    {
+    public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
     }
 
-    public void Refresh(){
+    public void Refresh() {
         try {
             adapter = new ContentAdapter(recyclerView.getContext());
         } catch (MalformedURLException e) {
@@ -118,12 +115,13 @@ public class BagFragment extends Fragment
         recyclerView.setAdapter(adapter);
     }
 
-    //=====================內存=====================
-    private void readPrefs(){
+    //====================內存====================
+    private void readPrefs() {
         SharedPreferences settings = getContext().getSharedPreferences("data",MODE_PRIVATE);
         uid = settings.getInt("uid",0);
         token = settings.getString("token","");
     }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         ImageView tool1;
         TextView name1;

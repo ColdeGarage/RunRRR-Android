@@ -42,13 +42,14 @@ import java.net.URL;
 import java.net.URLEncoder;
 
 public class MissionPopActivity extends AppCompatActivity {
+    public static int REQUEST_CAMERA = 0, SELECT_FILE = 1, RESELECT_FILE = 2, UPLOAD_FROM_GALLERY = 3;
+
     private static int liveOrDie;
     private static int rid;
     private static String photoUrl;
     private static String uid;
     private static String token;
 
-    private Bundle bundleReciever;
     private String readDataFromHttp;
 
     private String mid;
@@ -76,7 +77,6 @@ public class MissionPopActivity extends AppCompatActivity {
     private Intent galleryData;
     private Intent photoData;
 
-    private int REQUEST_CAMERA = 0, SELECT_FILE = 1 , RESELECT_FILE = 2  ,UPLOAD_FROM_GALLERY=3;
     private String userChoosenTask;
 
     @Override
@@ -99,7 +99,8 @@ public class MissionPopActivity extends AppCompatActivity {
         btnSelect = (TextView) findViewById(R.id.photoSelectButton);
         btnCancel = (TextView) findViewById(R.id.popCancelButton);
 
-        bundleReciever = getIntent().getExtras();
+        Bundle bundleReciever = getIntent().getExtras();
+
         mid = bundleReciever.getString("mid");
         mName = bundleReciever.getString("name");
         mTime = bundleReciever.getString("time");
@@ -112,7 +113,7 @@ public class MissionPopActivity extends AppCompatActivity {
         uid = bundleReciever.getString("uid");
         token = bundleReciever.getString("token");
 
-        final Resources resources = this.getResources();
+        final Resources resources = getResources();
 
         //get liveOrdie
         MissionsFragment.MyTaskGet httpGetMember = new MissionsFragment.MyTaskGet();
@@ -149,41 +150,36 @@ public class MissionPopActivity extends AppCompatActivity {
         selectedPhoto.setVisibility(View.GONE);
         btnSelect.setVisibility(View.GONE);
 
-        if(mUrl != null && mUrl!="") {
+        if(mUrl != null && !mUrl.equals("")) {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
                     //TODO Auto-generated method stub
                     final Bitmap mBitmap =
                             getBitmapFromURL(resources.getString(R.string.apiURL)+"/download/img/" + mUrl);
-//                    final Bitmap circularBitmap = ImageConverter.getRoundedCornerBitmap(mBitmap, 30);
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-//                            picture.setImageBitmap(circularBitmap);
                             if(mBitmap!=null) {
                                 picture.setImageBitmap(mBitmap);
                                 picture.setVisibility(View.VISIBLE);
                             }
                         }
                     });
-
                 }
             }).start();
         }
 
-        if(photoUrl != null && photoUrl != "") {
+        if(photoUrl != null && !photoUrl.equals("")) {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
                     //TODO Auto-generated method stub
                     final Bitmap mBitmap =
                             getBitmapFromURL(resources.getString(R.string.apiURL)+"/download/img/" + photoUrl);
-//                    final Bitmap circularBitmap = ImageConverter.getRoundedCornerBitmap(mBitmap, 30);
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-//                            picture.setImageBitmap(circularBitmap);
                             if(mBitmap!=null) {
                                 selectedPhoto.setImageBitmap(mBitmap);
                                 selectedPhoto.setVisibility(View.VISIBLE);
@@ -218,20 +214,20 @@ public class MissionPopActivity extends AppCompatActivity {
         //state type : -1:unsolved 0:being judged 1:success 2:fail
         switch (mState) {
             case "-1":
-                if(liveOrDie == 1){ //live
+                if(liveOrDie == 1) { //live
                     btnSelect.setVisibility(View.VISIBLE);
                 }
                 break;
-            case "0": //waiting
+            case "0": //being judged
                 state.setBackgroundResource(R.drawable.anim_gif_waiting);
                 Object ob_waiting = state.getBackground();
                 AnimationDrawable anim_waiting = (AnimationDrawable) ob_waiting;
                 anim_waiting.start();
                 break;
-            case "1": //passed
+            case "1": //success
                 state.setImageResource(R.drawable.state_passed);
                 break;
-            case "2": //failed
+            case "2": //fail
                 if(liveOrDie == 1){ //live
                     btnSelect.setVisibility(View.VISIBLE);
                 }
@@ -244,7 +240,7 @@ public class MissionPopActivity extends AppCompatActivity {
         btnSelect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!isNetworkAvailable()){
+                if(!isNetworkAvailable()) {
                     Alert("please check your internet connection");
                 }
                 else {
@@ -352,10 +348,9 @@ public class MissionPopActivity extends AppCompatActivity {
     }
 
     private void selectImage() {
-        final CharSequence[] items = { "Take Photo", "Choose from Library",
-                "Cancel" };
+        final CharSequence[] items = { "Take Photo", "Choose from Library", "Cancel" };
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(MissionPopActivity.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Add Photo!");
         builder.setItems(items, new DialogInterface.OnClickListener() {
             @Override
@@ -382,16 +377,14 @@ public class MissionPopActivity extends AppCompatActivity {
         builder.show();
     }
 
-    private void galleryIntent()
-    {
+    private void galleryIntent() {
         Intent intent = new Intent();
         intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);//
+        intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(Intent.createChooser(intent, "Select File"),SELECT_FILE);
     }
 
-    private void cameraIntent()
-    {
+    private void cameraIntent() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(intent, REQUEST_CAMERA);
     }
@@ -404,27 +397,24 @@ public class MissionPopActivity extends AppCompatActivity {
             if (requestCode == SELECT_FILE) {
                 galleryData = data;
                 Intent intent = new Intent(MissionPopActivity.this, CheckPickFromGalleryActivity.class);
-
                 startActivityForResult(intent, SELECT_FILE);
-            } else if (requestCode == REQUEST_CAMERA){
+            } else if (requestCode == REQUEST_CAMERA) {
                 photoData = data;
-
                 Intent intent = new Intent(MissionPopActivity.this, CheckPickFromGalleryActivity.class);
                 startActivityForResult(intent, REQUEST_CAMERA);
             }
         }
-        else if(resultCode == RESELECT_FILE){
-
+        else if(resultCode == RESELECT_FILE) {
             if (requestCode == SELECT_FILE) {
                 galleryIntent();
             } else if (requestCode == REQUEST_CAMERA) {
                 cameraIntent();
             }
         }
-        else if(resultCode == UPLOAD_FROM_GALLERY){
+        else if(resultCode == UPLOAD_FROM_GALLERY) {
             if (requestCode == SELECT_FILE) {
                 onSelectFromGalleryResult();
-            } else if (requestCode == REQUEST_CAMERA){
+            } else if (requestCode == REQUEST_CAMERA) {
                 onCaptureImageResult();
             }
         }
@@ -435,23 +425,17 @@ public class MissionPopActivity extends AppCompatActivity {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         thumbnail.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
 
-//        boolean result;
-
-//        result = Utility.checkPermission(Utility.MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE, MissionPopActivity.this);
-//        if(result)
         MediaStore.Images.Media.insertImage(getContentResolver(), thumbnail,
-                "Runrrr"+mid+System.currentTimeMillis() + ".jpg" , "this is what you take haha");
+                "Runrrr"+mid+System.currentTimeMillis() + ".jpg", "this is what you take haha");
 
         MissionPost(thumbnail);
         selectedPhoto.setImageBitmap(thumbnail);
         selectedPhoto.setVisibility(View.VISIBLE);
         btnSelect.setVisibility(View.GONE);
-
     }
 
     @SuppressWarnings("deprecation")
     private void onSelectFromGalleryResult() {
-
         Bitmap bm = null;
         if (galleryData != null) {
             try {
@@ -468,7 +452,7 @@ public class MissionPopActivity extends AppCompatActivity {
     }
 
     private void MissionPost(Bitmap bitmap){
-        if(mState.equals("2")){
+        if(mState.equals("2")) { //state type : -1:unsolved 0:being judged 1:success 2:fail
             //Convert Bitmap to String for "POST"
             photoPath = BitmapToString(bitmap);
 
@@ -515,7 +499,6 @@ public class MissionPopActivity extends AppCompatActivity {
         bitmap.compress(Bitmap.CompressFormat.JPEG, 40, baos);
         byte [] b = baos.toByteArray();
         String bitmapString = Base64.encodeToString(b, Base64.DEFAULT);
-//        System.out.println("bmstr=" + bitmapString);
         String encodeURL = null;
         try {
             encodeURL = URLEncoder.encode(bitmapString, "UTF-8");
@@ -524,17 +507,17 @@ public class MissionPopActivity extends AppCompatActivity {
         }
         return encodeURL;
     }
+
     //show an alert dialog
-    void Alert(String mes){
+    private void Alert(String mes) {
         new AlertDialog.Builder(MissionPopActivity.this)
                 .setMessage(mes)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                }).show();
+                    public void onClick(DialogInterface dialog, int which) {} })
+                .show();
     }
+
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -542,6 +525,7 @@ public class MissionPopActivity extends AppCompatActivity {
 
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
+
     //HTTPPost
     class MyTaskPost extends AsyncTask<Void,Void,String> {
 
@@ -624,6 +608,7 @@ public class MissionPopActivity extends AppCompatActivity {
         }
 
     }
+
     class MyTaskPut extends AsyncTask<String,Void,String> {
 
         @Override

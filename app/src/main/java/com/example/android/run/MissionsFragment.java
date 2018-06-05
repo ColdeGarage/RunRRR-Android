@@ -84,8 +84,7 @@ public class MissionsFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_missions, container, false);
 
         //read uid and token
@@ -559,7 +558,7 @@ public class MissionsFragment extends Fragment {
     }
 
     //show an alert dialog
-    void Alert(String mes) {
+    private void Alert(String mes) {
         new AlertDialog.Builder(getActivity())
                 .setMessage(mes)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
