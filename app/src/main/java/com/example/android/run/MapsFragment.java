@@ -150,11 +150,6 @@ public class MapsFragment extends Fragment
         mMapView = (MapView) rootView.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
         mMapView.onResume(); // needed to get the map to display immediately
-        /*try {
-            MapsInitializer.initialize(getActivity().getApplicationContext());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }*/
         mMapView.getMapAsync(this);
         //read uid and token
         readPrefs();
@@ -269,56 +264,12 @@ public class MapsFragment extends Fragment
                         return false;
                     }
                 });
-                /*buildGoogleApiClient();
-                googleMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
-                    @Override
-                    public boolean onMyLocationButtonClick() {
-                        if(lastLocation!=null){
-                            LatLng latLng = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
-                            //move map camera
-                            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,17));
-                            System.out.println("update");
-                        }
-                        return false;
-                    }
-                });
-                initial(googleMap);*/
             } else {
-                //Request Location Permission
-                /*System.out.println("request");
-                checkLocationPermission();
-                buildGoogleApiClient();
-                googleMap.setMyLocationEnabled(true);
-                googleMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
-                    @Override
-                    public boolean onMyLocationButtonClick() {
-                        if(lastLocation!=null){
-                            LatLng latLng = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
-                            //move map camera
-                            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,17));
-                            System.out.println("update");
-                        }
-                        return false;
-                    }
-                });
-                */initial(googleMap);
+           initial(googleMap);
             }
         }
         else {
             googleMap.setMyLocationEnabled(true);
-            /*buildGoogleApiClient();
-            googleMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
-                @Override
-                public boolean onMyLocationButtonClick() {
-                    if(lastLocation!=null){
-                        LatLng latLng = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
-                        //move map camera
-                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,17));
-                        System.out.println("update");
-                    }
-                    return false;
-                }
-            });*/
             initial(googleMap);
         }
     }
@@ -334,7 +285,6 @@ public class MapsFragment extends Fragment
         addMissionMarker(mMap);
         setScore();
         System.out.println("init");
-        //Toast.makeText(getActivity().getApplicationContext(),"initial",Toast.LENGTH_SHORT).show();
         if(myLocation!=null){
             //LatLng latLng = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
             //move map camera
@@ -632,16 +582,6 @@ public class MapsFragment extends Fragment
 
     @Override
     public void onConnected(Bundle bundle) {
-        /*LocationRequest locationRequest = new LocationRequest();
-        locationRequest.setInterval(3000);
-        locationRequest.setFastestInterval(2000);
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        if (ContextCompat.checkSelfPermission(getActivity().getApplicationContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-            System.out.println("granted");
-            LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
-        }*/
         Location location = enableLocationAndGetLastLocation(true);
 
         this.initial(googleMap);
