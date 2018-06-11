@@ -50,8 +50,6 @@ public class MissionPopActivity extends AppCompatActivity {
     private static String uid;
     private static String token;
 
-    private String readDataFromHttp;
-
     private String mid;
     private String mName;
     private String mTime;
@@ -72,11 +70,11 @@ public class MissionPopActivity extends AppCompatActivity {
     private TextView btnSelect;
     private TextView btnCancel;
 
+    private String readDataFromHttp;
     private ImageView selectedPhoto;
     private String photoPath;
     private Intent galleryData;
     private Intent photoData;
-
     private String userChoosenTask;
 
     @Override
@@ -468,8 +466,7 @@ public class MissionPopActivity extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
-        else {
+        } else {
             //Convert Bitmap to String for "POST"
             photoPath = BitmapToString(bitmap);
 
@@ -528,12 +525,6 @@ public class MissionPopActivity extends AppCompatActivity {
 
     //HTTPPost
     class MyTaskPost extends AsyncTask<Void,Void,String> {
-
-        @Override
-        public void onPreExecute() {
-            super.onPreExecute();
-        }
-
         @Override
         protected String doInBackground(Void... params) {
             URL url;
@@ -556,8 +547,7 @@ public class MissionPopActivity extends AppCompatActivity {
                 urlConnection.setUseCaches(false);
 
                 //Send request
-                DataOutputStream wr = new DataOutputStream(
-                        urlConnection.getOutputStream());
+                DataOutputStream wr = new DataOutputStream(urlConnection.getOutputStream());
 
                 //encode data in UTF-8
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(wr, "UTF-8"));
@@ -571,51 +561,30 @@ public class MissionPopActivity extends AppCompatActivity {
                 //read response
                 reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
                 stringBuilder = new StringBuilder();
-                String line ;
 
-                while ((line = reader.readLine()) != null)
-                {
+                String line ;
+                while ((line = reader.readLine()) != null) {
                     stringBuilder.append(line + "\n");
                 }
                 return stringBuilder.toString();
-
-            }catch(Exception e){
+            } catch(Exception e) {
                 e.printStackTrace();
-            }
-            finally {
+            } finally {
                 urlConnection.disconnect();
-                // close the reader; this can throw an exception too, so
-                // wrap it in another try/catch block.
-                if (reader != null)
-                {
-                    try
-                    {
+                // close the reader; this can throw an exception too, so wrap it in another try/catch block.
+                if (reader != null) {
+                    try {
                         reader.close();
-                    }
-                    catch (Exception e)
-                    {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
             }
-
             return null;
         }
-
-        @Override
-        public void onPostExecute(String result) {
-            super.onPostExecute(result);
-        }
-
     }
 
     class MyTaskPut extends AsyncTask<String,Void,String> {
-
-        @Override
-        public void onPreExecute() {
-            super.onPreExecute();
-        }
-
         @Override
         protected String doInBackground(String... arg0) {
             URL url;
@@ -640,8 +609,7 @@ public class MissionPopActivity extends AppCompatActivity {
                 urlConnection.setUseCaches(false);
 
                 //Send request
-                DataOutputStream wr = new DataOutputStream(
-                        urlConnection.getOutputStream());
+                DataOutputStream wr = new DataOutputStream( urlConnection.getOutputStream());
 
                 //encode data in UTF-8
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(wr, "UTF-8"));
@@ -657,39 +625,25 @@ public class MissionPopActivity extends AppCompatActivity {
                 stringBuilder = new StringBuilder();
                 String line ;
 
-                while ((line = reader.readLine()) != null)
-                {
+                while ((line = reader.readLine()) != null)     {
                     stringBuilder.append(line + "\n");
                 }
                 return stringBuilder.toString();
-
-            }catch(Exception e){
+            } catch(Exception e) {
                 e.printStackTrace();
-            }
-            finally {
+            } finally {
                 urlConnection.disconnect();
                 // close the reader; this can throw an exception too, so
                 // wrap it in another try/catch block.
-                if (reader != null)
-                {
-                    try
-                    {
+                if (reader != null) {
+                    try {
                         reader.close();
-                    }
-                    catch (Exception e)
-                    {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
             }
-
             return null;
         }
-
-        @Override
-        public void onPostExecute(String result) {
-            super.onPostExecute(result);
-        }
-
     }
 }
