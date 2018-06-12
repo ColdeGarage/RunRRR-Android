@@ -100,10 +100,10 @@ public class MissionPopActivity extends AppCompatActivity {
         btnCancel = (TextView) findViewById(R.id.popCancelButton);
 
         bundleReciever = getIntent().getExtras();
-        mName = bundleReciever.getString("name");
-        mTime = bundleReciever.getString("time");
+        mName = bundleReciever.getString("title");
+        mTime = bundleReciever.getString("time_end");
         mContent = bundleReciever.getString("content");
-        mType = bundleReciever.getString("type");
+        mType = bundleReciever.getString("class");
         mState = bundleReciever.getString("state");
         mUrl = bundleReciever.getString("url");
         mid = bundleReciever.getString("mid");

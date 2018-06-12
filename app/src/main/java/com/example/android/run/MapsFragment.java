@@ -2,9 +2,6 @@ package com.example.android.run;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -23,10 +20,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,7 +35,6 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -74,14 +67,6 @@ import static android.content.Context.LOCATION_SERVICE;
 import static android.content.Context.MODE_PRIVATE;
 import static com.example.android.run.MissionsFragment.MY_MISSION_REFRESH;
 
-/*
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link MapsFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link MapsFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 
 public class MapsFragment extends Fragment
         implements OnMapReadyCallback,
@@ -250,13 +235,12 @@ public class MapsFragment extends Fragment
                 for(HashMap<String,String> m : missionList) {
                     System.out.println("i="+ i +", "+markerList[i].getId());
                     if (markerList[i].equals(marker)) {
-                        Toast.makeText(getContext(),"CLICK",Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(getContext(),MissionPopActivity.class);
                         Bundle bundle = new Bundle();
                         bundle.putString("mid", m.get("mid"));
-                        bundle.putString("name", m.get("name"));
-                        bundle.putString("time", m.get("time"));
-                        bundle.putString("type", m.get("type"));
+                        bundle.putString("title", m.get("title"));
+                        bundle.putString("time_end", m.get("time_end"));
+                        bundle.putString("class", m.get("class"));
                         bundle.putString("state", String.valueOf(-1));
                         bundle.putString("content", m.get("content"));
                         bundle.putString("url", m.get("url"));
@@ -315,9 +299,6 @@ public class MapsFragment extends Fragment
         setScore();
         System.out.println("init");
         if(myLocation!=null){
-            //LatLng latLng = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
-            //move map camera
-            //googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,17));
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(24.794574, 120.992936), 17));
         }
     }
@@ -437,18 +418,18 @@ public class MapsFragment extends Fragment
                     HashMap<String,String> mission = new HashMap<>();
 
                     mission.put("mid",subObject.getString("mid"));
-                    mission.put("name",subObject.getString("title"));
+                    mission.put("title",subObject.getString("title"));
                     mission.put("content",subObject.getString("content"));
                     mission.put("url",subObject.getString("url"));
                     mission.put("prize",subObject.getString("prize"));
                     mission.put("score",subObject.getString("score"));
 
                     if(subObject.getString("class").equals("URG")){
-                        mission.put("type","0");
+                        mission.put("class","0");
                     }else if(subObject.getString("class").equals("MAIN")){
-                        mission.put("type","1");
+                        mission.put("class","1");
                     }else if(subObject.getString("class").equals("SUB")){
-                        mission.put("type","2");
+                        mission.put("class","2");
                     }
 
                     //parse time, take hour&min only
@@ -657,12 +638,9 @@ public class MapsFragment extends Fragment
 
             if (mLocationMgr.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                 mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-                //Toast.makeText(getActivity().getApplicationContext(),"GPS",Toast.LENGTH_SHORT).show();
             } else if (mLocationMgr.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
                 mLocationRequest.setPriority(LocationRequest.PRIORITY_LOW_POWER);
-                //Toast.makeText(getActivity().getApplicationContext(),"Internet",Toast.LENGTH_SHORT).show();
             } else {
-                //Toast.makeText(getActivity().getApplicationContext(),"Please check your GPS or wifi.",Toast.LENGTH_SHORT).show();
             }
             LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
         }
@@ -702,7 +680,6 @@ public class MapsFragment extends Fragment
                 connection.setRequestMethod("GET");
 
                 // 是否添加參數(ex : json...等)
-                //connection.setDoOutput(true);
 
                 // 設定TimeOut時間
                 connection.setReadTimeout(15*1000);
