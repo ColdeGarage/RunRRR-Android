@@ -150,7 +150,6 @@ public class BagPopActivity extends Activity {
                     try {
                         //get result from function "onPostExecute" in class "myTaskPost"
                         System.out.println(httpDelete.get());
-                        //System.out.println(readDataFromHttp);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -175,16 +174,18 @@ public class BagPopActivity extends Activity {
             }
         });
     }
+
     public void onBackPressed() {
         Intent intent = new Intent();
         if(needToReload){
-            setResult(2,intent);
+            setResult(BagFragment.REFRESH,intent);
         }
         else{
-            setResult(3,intent);
+            setResult(BagFragment.NOT_REFRESH,intent);
         }
         finish();
     }
+
     //HTTPPost
     class MyTaskDelete extends AsyncTask<Void,Void,String>{
 
@@ -266,13 +267,10 @@ public class BagPopActivity extends Activity {
         }
 
     }
+
     class myTaskGet extends AsyncTask<Void,Void,String> {
         myTaskGet(String toGet) throws MalformedURLException {
             url = new URL(toGet);
-        }
-        @Override
-        public void onPreExecute() {
-            super.onPreExecute();
         }
 
         URL url;
@@ -284,8 +282,6 @@ public class BagPopActivity extends Activity {
 
             try {
                 // create the HttpURLConnection
-                //http://192.168.0.2:8081/api/v1/tool/read
-                //url = new URL("http://192.168.0.2:8081/api/v1.1/pack/read?operator_uid=1"/*&tid="+tid*/); //Just use to try this function is able to work or not
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
                 // 使用甚麼方法做連線
@@ -322,10 +318,6 @@ public class BagPopActivity extends Activity {
             }
             return null;
         }
-        @Override
-        public void onPostExecute(String result) {
-            super.onPostExecute(result);
-        }
     }
 
     void ParseJson(String info){
@@ -349,13 +341,8 @@ public class BagPopActivity extends Activity {
         } else {
             System.out.print("Couldn't get json from server.");
         }
-        try {
-            JSONObject jObject = new JSONObject(info);
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
     }
+
     //show an alert dialog
     void Alert(String mes){
         new AlertDialog.Builder(BagPopActivity.this)

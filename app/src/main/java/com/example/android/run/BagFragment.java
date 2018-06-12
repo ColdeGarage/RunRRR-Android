@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
@@ -59,10 +60,12 @@ import static com.google.android.gms.internal.zzid.runOnUiThread;
 //Tab分頁class繼承Fragment
 public class BagFragment extends Fragment
 {
+    public static int REFRESH = 0, NOT_REFRESH = 1;
+
     private static int uid;
     private static String token;
-    static BagFragment instance = null;
-    private BagFragment.ContentAdapter adapter = null;
+    private static BagFragment instance = null;
+    private ContentAdapter adapter = null;
     private RecyclerView recyclerView;
 
     private ArrayList<ArrayList<HashMap<String, String>>> packList = new ArrayList<>();
@@ -86,8 +89,7 @@ public class BagFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         readPrefs();
-        recyclerView = (RecyclerView) inflater.inflate(
-                R.layout.recycler_view, container, false);
+        recyclerView = (RecyclerView) inflater.inflate(R.layout.recycler_view, container, false);
 
         try {
             adapter = new ContentAdapter(recyclerView.getContext());
@@ -99,11 +101,6 @@ public class BagFragment extends Fragment
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         return recyclerView;
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
     }
 
     public void Refresh() {
@@ -144,20 +141,16 @@ public class BagFragment extends Fragment
             tool3 = (ImageView) itemView.findViewById(R.id.toolImage3);
             name3 = (TextView) itemView.findViewById(R.id.toolName3);
             count3 = (TextView) itemView.findViewById(R.id.toolNumber3);
-
         }
     }
-    /*
-        * Adapter to display recycler view.
-        */
-    public class ContentAdapter extends RecyclerView.Adapter<BagFragment.ViewHolder> {
 
-
+    //Adapter to display recycler view.
+    public class ContentAdapter extends RecyclerView.Adapter<ViewHolder> {
         // Set numbers of List in RecyclerView.
         private int LENGTH;
 
         ContentAdapter(Context context) throws MalformedURLException {
-            if(!isNetworkAvailable()){
+            if(!isNetworkAvailable()) {
                 Alert("Please check your internet connection, then try again.");
             }
             packList.clear();
@@ -171,34 +164,37 @@ public class BagFragment extends Fragment
             pID.clear();
             toolNum=0;
             int money=0;
-            myTaskGet httpGet= new myTaskGet("http://coldegarage.tech:8081/api/v1.1/member/read?operator_uid="+String.valueOf(uid)+"&uid="+String.valueOf(uid)+"&token="+token);
+
+            Resources resources = context.getResources();
+            myTaskGet httpGet= new myTaskGet(resources.getString(R.string.apiURL)+"/member/read?operator_uid="+String.valueOf(uid)+"&uid="+String.valueOf(uid)+"&token="+token);
             httpGet.execute();
             try {
                 money = ParseJsonFromMemberForMoney(httpGet.get());
-            } catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
-            httpGet = new myTaskGet("http://coldegarage.tech:8081/api/v1.1/pack/read?operator_uid="+String.valueOf(uid)+"&uid="+String.valueOf(uid)+"&token="+token);
+            httpGet = new myTaskGet(resources.getString(R.string.apiURL)+"/pack/read?operator_uid="+String.valueOf(uid)+"&uid="+String.valueOf(uid)+"&token="+token);
             httpGet.execute();
             //get tools[] and clues[]
             try {
                 ParseJsonFromPack(httpGet.get());
-            } catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
             for(int i =0 ; toolIds[i]!=null ; i++) {
-                httpGet = new myTaskGet("http://coldegarage.tech:8081/api/v1.1/tool/read?operator_uid="+String.valueOf(uid)+"&uid="+String.valueOf(uid)+"&token="+token +"&tid="+toolIds[i]);
+                httpGet = new myTaskGet(resources.getString(R.string.apiURL)+"/tool/read?operator_uid="+String.valueOf(uid)+"&uid="+String.valueOf(uid)+"&token="+token +"&tid="+toolIds[i]);
                 httpGet.execute();
                 try {
                     ParseJsonFromTools(httpGet.get(),toolPIds[i]);
-                } catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
+
             for(int i =0 ;  clueIds[i] != null; i++) {
-                httpGet = new myTaskGet("http://coldegarage.tech:8081/api/v1.1/clue/read?operator_uid="+String.valueOf(uid)+"&uid="+String.valueOf(uid)+"&token="+token +"&cid="+clueIds[i]);
+                httpGet = new myTaskGet(resources.getString(R.string.apiURL)+"/clue/read?operator_uid="+String.valueOf(uid)+"&uid="+String.valueOf(uid)+"&token="+token +"&cid="+clueIds[i]);
                 httpGet.execute();
                 try {
                     ParseJsonFromClues(httpGet.get());
@@ -210,7 +206,6 @@ public class BagFragment extends Fragment
             System.out.println(packList);
             System.out.println("toolNum = " + toolNum);
 
-            //TODO Auto-generated method stub
             pName[0] = "金錢";
             pUrl[0] = "money.jpg";
             pCount[0] = String.valueOf(money);
@@ -223,14 +218,14 @@ public class BagFragment extends Fragment
 
                 if(i<=toolNum){
                     String[] pid = new String[50];
-                    pid[0] = packList.get(i-1).get(0).get("pid");
-                    for(int j=1; j < packList.get(i-1).size(); j++){
+                    for(int j=0; j < packList.get(i-1).size(); j++){
                         pid[j] = packList.get(i-1).get(j).get("pid");
                     }
                     pID.add(pid);
                 }
             }
         }
+
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             return new ViewHolder(LayoutInflater.from(parent.getContext()), parent);
@@ -242,21 +237,21 @@ public class BagFragment extends Fragment
             System.out.println("position=" + position);
             holder.name1.setText(pName[position*3]);
 
-            if(pCount[position*3] != "" && pCount[position*3] != "0" && pCount[position*3] != null) {
+            if(!pCount[position*3].equals("") && !pCount[position*3].equals("0") && pCount[position*3] != null) {
                 holder.count1.setText(" x" + pCount[position*3] + " ");
                 holder.count1.setVisibility(View.VISIBLE);
             } else {
                 holder.count1.setVisibility(View.INVISIBLE);
             }
             holder.name2.setText(pName[position*3+1]);
-            if(pCount[position*3+1] != "" && pCount[position*3+1] != "0" && pCount[position*3+1] != null) {
+            if(pCount[position*3+1].equals("") && pCount[position*3+1].equals("0") && pCount[position*3+1] != null) {
                 holder.count2.setText(" x" + pCount[position*3+1] + " ");
                 holder.count2.setVisibility(View.VISIBLE);
             } else {
                 holder.count2.setVisibility(View.INVISIBLE);
             }
             holder.name3.setText(pName[position*3+2]);
-            if(pCount[position*3+2] != "" && pCount[position*3+2] != "0" && pCount[position*3+2] != null) {
+            if(pCount[position*3+2].equals("") && pCount[position*3+2].equals("0") && pCount[position*3+2] != null) {
                 holder.count3.setText(" x" + pCount[position*3+2] + " ");
                 holder.count3.setVisibility(View.VISIBLE);
             } else {
@@ -266,10 +261,11 @@ public class BagFragment extends Fragment
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    //TODO Auto-generated method stub
+                    Resources resources = getContext().getResources();
+
                     if( !pUrl[position*3].equals("")) {
                         final Bitmap mBitmap =
-                                getBitmapFromURL("http://coldegarage.tech:8081/api/v1.1/download/img/" + pUrl[position * 3]);
+                                getBitmapFromURL(resources.getString(R.string.apiURL)+"/download/img/" + pUrl[position * 3]);
                         if(mBitmap!=null) {
                             final Bitmap circularBitmap = ImageConverter.getRoundedCornerBitmap(mBitmap, 30);
                             runOnUiThread(new Runnable() {
@@ -280,10 +276,10 @@ public class BagFragment extends Fragment
                             });
                         }
                     }
-                    //TODO Auto-generated method stub
-                    if( pUrl[position*3+1]!="" && pUrl[position*3+1]!=null) {
+
+                    if( !pUrl[position*3+1].equals("") && pUrl[position*3+1]!=null) {
                         final Bitmap mBitmap2 =
-                                getBitmapFromURL("http://coldegarage.tech:8081/api/v1.1/download/img/" + pUrl[position * 3 + 1]);
+                                getBitmapFromURL(resources.getString(R.string.apiURL)+"/download/img/" + pUrl[position * 3 + 1]);
                         if(mBitmap2!=null) {
                             final Bitmap circularBitmap2 = ImageConverter.getRoundedCornerBitmap(mBitmap2, 30);
                             runOnUiThread(new Runnable() {
@@ -293,10 +289,11 @@ public class BagFragment extends Fragment
                                 }
                             });
                         }
-                    }//TODO Auto-generated method stub
-                    if( pUrl[position*3+2]!="" && pUrl[position*3+2]!=null) {
+                    }
+
+                    if( !pUrl[position*3+2].equals("") && pUrl[position*3+2]!=null) {
                         final Bitmap mBitmap3 =
-                                getBitmapFromURL("http://coldegarage.tech:8081/api/v1.1/download/img/" + pUrl[position * 3 + 2]);
+                                getBitmapFromURL(resources.getString(R.string.apiURL)+"/download/img/" + pUrl[position * 3 + 2]);
                         if(mBitmap3!=null) {
                             final Bitmap circularBitmap3 = ImageConverter.getRoundedCornerBitmap(mBitmap3, 30);
                             runOnUiThread(new Runnable() {
@@ -313,8 +310,6 @@ public class BagFragment extends Fragment
             holder.tool1.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View vv) {
-                    int id = vv.getId();
-                    //TODO:Intent to other activity
                     Context context = vv.getContext();
 
                     Intent intent = new Intent(context, BagPopActivity.class);
@@ -331,15 +326,13 @@ public class BagFragment extends Fragment
                         bundle.putStringArray("IDs",pID.get(position*3-1));
                     }
                     intent.putExtras(bundle);
-                    startActivityForResult( intent, 2);
+                    startActivityForResult( intent, REFRESH);
                 }
             });
             if(LENGTH > position*3+1){
                 holder.tool2.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View vv) {
-                        int id = vv.getId();
-                        //TODO:Intent to other activity
                         Context context = vv.getContext();
 
                         Intent intent = new Intent(context, BagPopActivity.class);
@@ -355,7 +348,7 @@ public class BagFragment extends Fragment
                             bundle.putStringArray("IDs",pID.get(position*3));
                         }
                         intent.putExtras(bundle);
-                        startActivityForResult( intent, 2);
+                        startActivityForResult( intent, REFRESH);
                     }
                 });
             }
@@ -363,8 +356,6 @@ public class BagFragment extends Fragment
                 holder.tool3.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View vv) {
-                        int id = vv.getId();
-                        //TODO:Intent to other activity
                         Context context = vv.getContext();
 
                         Intent intent = new Intent(context, BagPopActivity.class);
@@ -380,12 +371,12 @@ public class BagFragment extends Fragment
                             bundle.putStringArray("IDs",pID.get(position*3+1));
                         }
                         intent.putExtras(bundle);
-                        startActivityForResult( intent, 2);
+                        startActivityForResult( intent, REFRESH);
                     }
                 });
             }
-
         }
+
         @Override
         public int getItemCount() {
             LENGTH = packList.size()+1;
@@ -394,22 +385,20 @@ public class BagFragment extends Fragment
             }
             else return (LENGTH/3);
         }
-
     }
-    // Call Back method  to get the Message form other Activity
+
+    // Call Back method to get the Message form other Activity
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        // check if the request code is same as what is passed  here it is 2
-        if(resultCode==2)
+        // check if the request code is same as what is passed here it is 0
+        if(resultCode==REFRESH)
         {
-            System.out.println("back with code 2");
+            System.out.println("back with code 0");
             Refresh();
         }
-        else if(resultCode==3){
-            System.out.println("back with code 3");
-
+        else if(resultCode==NOT_REFRESH){
+            System.out.println("back with code 1");
         }
 
     }
@@ -428,13 +417,13 @@ public class BagFragment extends Fragment
             return null;
         }
     }
+
     void ParseJsonFromPack(String info){
-        String jsonStr = info;
         int tool_index = 0;
         int clue_index = 0;
-        if (jsonStr != null) {
+        if (info != null) {
             try {
-                JSONObject jsonObj = new JSONObject(jsonStr);
+                JSONObject jsonObj = new JSONObject(info);
                 JSONObject payload = jsonObj.getJSONObject("payload");
                 // Getting JSON Array node
                 JSONArray objects = payload.getJSONArray("objects");
@@ -447,38 +436,28 @@ public class BagFragment extends Fragment
                     String id = c.getString("id");
                     String pid = c.getString("pid");
                     String  type = c.getString("class");
-                    // tmp hash map for single contact
-//                        System.out.println("type=" + type);
                     if(type.equals("TOOL")){
                         toolIds[tool_index] = id;
                         toolPIds[tool_index] = pid;
                         tool_index++;
-                    }
-                    else{
+                    } else{
                         clueIds[clue_index] = id;
                         clue_index++;
                     }
                 }
-
             } catch (final JSONException e) {
                 System.out.print("Json parsing error: " + e.getMessage());
             }
         } else {
             System.out.print("Couldn't get json from server.");
         }
-        try {
-            JSONObject jObject = new JSONObject(info);
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
     }
-    void ParseJsonFromTools(String info, String pid){
-        String jsonStr = info;
-        System.out.println("parse from tool"+jsonStr);
-        if (jsonStr != null) {
+
+    void ParseJsonFromTools(String info, String pid) {
+        System.out.println("parse from tool"+info);
+        if (info != null) {
             try {
-                JSONObject jsonObj = new JSONObject(jsonStr);
+                JSONObject jsonObj = new JSONObject(info);
                 JSONObject payload = jsonObj.getJSONObject("payload");
                 // Getting JSON Array node
                 JSONArray objects = payload.getJSONArray("objects");
@@ -514,8 +493,7 @@ public class BagFragment extends Fragment
                         int aa = Integer.parseInt(ct);
                         aa++;
                         packList.get(findIndex(tool.get("title"))).get(0).put("count", String.valueOf(aa));
-                    }
-                    else {
+                    } else {
                         tool.put("count","1");
                         toolKind.add(tool);
                         packList.add(toolKind);
@@ -528,55 +506,41 @@ public class BagFragment extends Fragment
         } else {
             System.out.print("Couldn't get json from server.");
         }
-        try {
-            JSONObject jObject = new JSONObject(info);
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
     }
-    int ParseJsonFromMemberForMoney(String info){
-        String jsonStr = info;
+
+    int ParseJsonFromMemberForMoney(String info) {
         int money=0;
-        if (jsonStr != null) {
+        if (info != null) {
             try {
                 System.out.println("member info = "+info);
-                JSONObject jsonObj = new JSONObject(jsonStr);
+                JSONObject jsonObj = new JSONObject(info);
                 JSONObject payload = jsonObj.getJSONObject("payload");
                 // Getting JSON Array node
                 JSONArray objects = payload.getJSONArray("objects");
                 // looping through All Contacts
                 JSONObject c = objects.getJSONObject(0);
                 money = c.getInt("money");
-
             } catch (final JSONException e) {
                 System.out.print("Json parsing error: " + e.getMessage());
             }
         } else {
             System.out.print("Couldn't get json from server.");
         }
-        try {
-            JSONObject jObject = new JSONObject(info);
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return  money;
+        return money;
     }
-    int findIndex(String target){
-        int i;
-        for (i=0; i<packList.size(); i++){
-            if(target.equals(packList.get(i).get(0).get("title"))){
+
+    int findIndex(String target) {
+        for (int i=0; i<packList.size(); i++){
+            if(target.equals(packList.get(i).get(0).get("title")))
                 return i;
-            }
         }
         return -1;
     }
-    void ParseJsonFromClues(String info){
-        String jsonStr = info;
-        if (jsonStr != null) {
+
+    void ParseJsonFromClues(String info) {
+        if (info != null) {
             try {
-                JSONObject jsonObj = new JSONObject(jsonStr);
+                JSONObject jsonObj = new JSONObject(info);
                 JSONObject payload = jsonObj.getJSONObject("payload");
                 // Getting JSON Array node
                 JSONArray objects = payload.getJSONArray("objects");
@@ -606,24 +570,15 @@ public class BagFragment extends Fragment
         } else {
             System.out.print("Couldn't get json from server.");
         }
-        try {
-            JSONObject jObject = new JSONObject(info);
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
     }
+
     class myTaskGet extends AsyncTask<Void,Void,String> {
+        URL url;
+
         myTaskGet(String toGet) throws MalformedURLException {
             url = new URL(toGet);
             System.out.println("url="+url);
         }
-        @Override
-        public void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        URL url;
 
         @Override
         public String doInBackground(Void... arg0) {
@@ -632,8 +587,6 @@ public class BagFragment extends Fragment
 
             try {
                 // create the HttpURLConnection
-                //http://192.168.0.2:8081/api/v1/tool/read
-                //url = new URL("http://192.168.0.2:8081/api/v1.1/pack/read?operator_uid=1"/*&tid="+tid*/); //Just use to try this function is able to work or not
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
                 // 使用甚麼方法做連線
@@ -654,14 +607,11 @@ public class BagFragment extends Fragment
                 while ((line = reader.readLine()) != null) {
                     stringBuilder.append(line + "\n");
                 }
-//                    System.out.println("happy~");
-//                    System.out.print(stringBuilder.toString());
                 return stringBuilder.toString();
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
-                // close the reader; this can throw an exception too, so
-                // wrap it in another try/catch block.
+                // close the reader; this can throw an exception too, so wrap it in another try/catch block.
                 if (reader != null) {
                     try {
                         reader.close();
@@ -672,11 +622,8 @@ public class BagFragment extends Fragment
             }
             return null;
         }
-        @Override
-        public void onPostExecute(String result) {
-            super.onPostExecute(result);
-        }
     }
+
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -684,15 +631,14 @@ public class BagFragment extends Fragment
 
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
+
     //show an alert dialog
-    void Alert(String mes){
+    private void Alert(String mes){
         new AlertDialog.Builder(getActivity())
                 .setMessage(mes)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                }).show();
+                    public void onClick(DialogInterface dialog, int which) {} })
+                .show();
     }
 }

@@ -321,7 +321,8 @@ public class MissionsFragment extends Fragment {
             if(missionOrReport.equals("mission")){
                 missionList = new ArrayList<>();
                 try {
-                    JSONObject payload = new JSONObject(new JSONObject(info).getString("payload"));
+                    JSONObject jsonObj = new JSONObject(info);
+                    JSONObject payload = jsonObj.getJSONObject("payload");
                     JSONArray objects = payload.getJSONArray("objects");
 
                     //Get mission number

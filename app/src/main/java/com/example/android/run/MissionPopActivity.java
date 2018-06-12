@@ -152,7 +152,6 @@ public class MissionPopActivity extends AppCompatActivity {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    //TODO Auto-generated method stub
                     final Bitmap mBitmap =
                             getBitmapFromURL(resources.getString(R.string.apiURL)+"/download/img/" + mUrl);
                     runOnUiThread(new Runnable() {
@@ -172,7 +171,6 @@ public class MissionPopActivity extends AppCompatActivity {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    //TODO Auto-generated method stub
                     final Bitmap mBitmap =
                             getBitmapFromURL(resources.getString(R.string.apiURL)+"/download/img/" + photoUrl);
                     runOnUiThread(new Runnable() {
@@ -276,7 +274,8 @@ public class MissionPopActivity extends AppCompatActivity {
     private void parseJson (String info, String missionOrReport){
         if(missionOrReport.equals("member")) {
             try {
-                JSONObject payload = new JSONObject(new JSONObject(info).getString("payload"));
+                JSONObject jsonObj = new JSONObject(info);
+                JSONObject payload = jsonObj.getJSONObject("payload");
                 JSONArray objects = payload.getJSONArray("objects");
                 JSONObject subObject = objects.getJSONObject(0);
                 liveOrDie = subObject.getInt("status");
@@ -286,7 +285,8 @@ public class MissionPopActivity extends AppCompatActivity {
         } else if(missionOrReport.equals("report")) {
             System.out.println(info);
             try {
-                JSONObject payload = new JSONObject(new JSONObject(info).getString("payload"));
+                JSONObject jsonObj = new JSONObject(info);
+                JSONObject payload = jsonObj.getJSONObject("payload");
                 JSONArray objects = payload.getJSONArray("objects");
                 int LENGTH = objects.length();
                 for(int i=0; i<LENGTH; i++) {
