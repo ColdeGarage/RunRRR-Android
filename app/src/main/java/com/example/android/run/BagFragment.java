@@ -237,21 +237,21 @@ public class BagFragment extends Fragment
             System.out.println("position=" + position);
             holder.name1.setText(pName[position*3]);
 
-            if(!pCount[position*3].equals("") && !pCount[position*3].equals("0") && pCount[position*3] != null) {
+            if(pCount[position*3]!="" && pCount[position*3]!="0" && pCount[position*3] != null) {
                 holder.count1.setText(" x" + pCount[position*3] + " ");
                 holder.count1.setVisibility(View.VISIBLE);
             } else {
                 holder.count1.setVisibility(View.INVISIBLE);
             }
             holder.name2.setText(pName[position*3+1]);
-            if(pCount[position*3+1].equals("") && pCount[position*3+1].equals("0") && pCount[position*3+1] != null) {
+            if(pCount[position*3+1]!="" && pCount[position*3+1]!="0" && pCount[position*3+1] != null) {
                 holder.count2.setText(" x" + pCount[position*3+1] + " ");
                 holder.count2.setVisibility(View.VISIBLE);
             } else {
                 holder.count2.setVisibility(View.INVISIBLE);
             }
             holder.name3.setText(pName[position*3+2]);
-            if(pCount[position*3+2].equals("") && pCount[position*3+2].equals("0") && pCount[position*3+2] != null) {
+            if(pCount[position*3+2]!="" && pCount[position*3+2]!="0" && pCount[position*3+2] != null) {
                 holder.count3.setText(" x" + pCount[position*3+2] + " ");
                 holder.count3.setVisibility(View.VISIBLE);
             } else {
@@ -263,7 +263,7 @@ public class BagFragment extends Fragment
                 public void run() {
                     Resources resources = getContext().getResources();
 
-                    if( !pUrl[position*3].equals("")) {
+                    if( pUrl[position*3]!="") {
                         final Bitmap mBitmap =
                                 getBitmapFromURL(resources.getString(R.string.apiURL)+"/download/img/" + pUrl[position * 3]);
                         if(mBitmap!=null) {
@@ -277,7 +277,7 @@ public class BagFragment extends Fragment
                         }
                     }
 
-                    if( !pUrl[position*3+1].equals("") && pUrl[position*3+1]!=null) {
+                    if( pUrl[position*3+1]!="" && pUrl[position*3+1]!=null) {
                         final Bitmap mBitmap2 =
                                 getBitmapFromURL(resources.getString(R.string.apiURL)+"/download/img/" + pUrl[position * 3 + 1]);
                         if(mBitmap2!=null) {
@@ -291,7 +291,7 @@ public class BagFragment extends Fragment
                         }
                     }
 
-                    if( !pUrl[position*3+2].equals("") && pUrl[position*3+2]!=null) {
+                    if( pUrl[position*3+2]!="" && pUrl[position*3+2]!=null) {
                         final Bitmap mBitmap3 =
                                 getBitmapFromURL(resources.getString(R.string.apiURL)+"/download/img/" + pUrl[position * 3 + 2]);
                         if(mBitmap3!=null) {
