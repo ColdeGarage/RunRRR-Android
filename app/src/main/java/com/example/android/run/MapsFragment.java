@@ -2,9 +2,6 @@ package com.example.android.run;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -23,10 +20,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,9 +35,9 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolygonOptions;
 
@@ -71,15 +65,8 @@ import java.util.HashMap;
 
 import static android.content.Context.LOCATION_SERVICE;
 import static android.content.Context.MODE_PRIVATE;
+import static com.example.android.run.MissionsFragment.MY_MISSION_REFRESH;
 
-/*
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link MapsFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link MapsFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 
 public class MapsFragment extends Fragment
         implements OnMapReadyCallback,
@@ -109,14 +96,12 @@ public class MapsFragment extends Fragment
     static int num = 0;
     static boolean show = false;
 
+    Marker[] markerList = new Marker[20];
+    ArrayList<HashMap<String,String>> missionList;
+    ArrayList<HashMap<String,String>> reportList;
+    int serverTimeHour,serverTimeMin;
+
     public static MapsFragment getInstance() {
-//        if( instance == null ) {
-//            synchronized (MapsFragment.class) {
-//                if (instance == null) {
-//                    instance = new MapsFragment();
-//                }
-//            }
-//        }
         synchronized (MapsFragment.class) {
                 instance = new MapsFragment();
         }
@@ -150,11 +135,6 @@ public class MapsFragment extends Fragment
         mMapView = (MapView) rootView.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
         mMapView.onResume(); // needed to get the map to display immediately
-        /*try {
-            MapsInitializer.initialize(getActivity().getApplicationContext());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }*/
         mMapView.getMapAsync(this);
         //read uid and token
         readPrefs();
@@ -247,6 +227,36 @@ public class MapsFragment extends Fragment
         googleMap = mgoogleMap;
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(24.794574, 120.992936), 17));
         googleMap.getUiSettings().setAllGesturesEnabled(true);
+        googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                System.out.println(marker.getId());
+                int i = 0;
+                for(HashMap<String,String> m : missionList) {
+                    System.out.println("i="+ i +", "+markerList[i].getId());
+                    if (markerList[i].equals(marker)) {
+                        Intent intent = new Intent(getContext(),MissionPopActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putString("mid", m.get("mid"));
+                        bundle.putString("title", m.get("title"));
+                        bundle.putString("time_end", m.get("time_end"));
+                        bundle.putString("class", m.get("class"));
+                        bundle.putString("state", String.valueOf(-1));
+                        bundle.putString("content", m.get("content"));
+                        bundle.putString("url", m.get("url"));
+                        bundle.putString("prize", m.get("prize"));
+                        bundle.putString("score", m.get("score"));
+                        bundle.putString("uid",String.valueOf(uid));
+                        bundle.putString("token",token);
+
+                        intent.putExtras(bundle);
+                        startActivityForResult(intent, MY_MISSION_REFRESH);
+                    }
+                    i++;
+                }
+                return true;
+            }
+        });
 
         //Initialize Google Play Services
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -269,56 +279,12 @@ public class MapsFragment extends Fragment
                         return false;
                     }
                 });
-                /*buildGoogleApiClient();
-                googleMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
-                    @Override
-                    public boolean onMyLocationButtonClick() {
-                        if(lastLocation!=null){
-                            LatLng latLng = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
-                            //move map camera
-                            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,17));
-                            System.out.println("update");
-                        }
-                        return false;
-                    }
-                });
-                initial(googleMap);*/
             } else {
-                //Request Location Permission
-                /*System.out.println("request");
-                checkLocationPermission();
-                buildGoogleApiClient();
-                googleMap.setMyLocationEnabled(true);
-                googleMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
-                    @Override
-                    public boolean onMyLocationButtonClick() {
-                        if(lastLocation!=null){
-                            LatLng latLng = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
-                            //move map camera
-                            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,17));
-                            System.out.println("update");
-                        }
-                        return false;
-                    }
-                });
-                */initial(googleMap);
+                initial(googleMap);
             }
         }
         else {
             googleMap.setMyLocationEnabled(true);
-            /*buildGoogleApiClient();
-            googleMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
-                @Override
-                public boolean onMyLocationButtonClick() {
-                    if(lastLocation!=null){
-                        LatLng latLng = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
-                        //move map camera
-                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,17));
-                        System.out.println("update");
-                    }
-                    return false;
-                }
-            });*/
             initial(googleMap);
         }
     }
@@ -328,20 +294,12 @@ public class MapsFragment extends Fragment
     }
     private void initial(GoogleMap mMap){
 
-        //clear old setting of map
-        //mMap.clear();
         setBoundary(mMap);
         addMissionMarker(mMap);
         setScore();
         System.out.println("init");
-        //Toast.makeText(getActivity().getApplicationContext(),"initial",Toast.LENGTH_SHORT).show();
         if(myLocation!=null){
-            //LatLng latLng = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
-            //move map camera
-            //googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,17));
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(24.794574, 120.992936), 17));
-
-//            System.out.println("init");
         }
     }
     private void setBoundary(GoogleMap mMap){
@@ -388,9 +346,6 @@ public class MapsFragment extends Fragment
         }
     }
 
-    ArrayList<HashMap<String,String>> missionList;
-    ArrayList<HashMap<String,String>> reportList;
-    int serverTimeHour,serverTimeMin;
     void addMissionMarker(GoogleMap mMap){
         String readDataFromHttp;
         MyTaskGet httpGetMission = new MyTaskGet();
@@ -417,16 +372,20 @@ public class MapsFragment extends Fragment
 
         //add marker for each mission
         if(!missionList.isEmpty()){
-            for(HashMap<String,String> m : missionList){
+            int i = 0;
+            for(HashMap<String,String> m  : missionList){
                 double location_n = Double.parseDouble(m.get("location_n"));
                 double location_e = Double.parseDouble(m.get("location_e"));
                 System.out.println(location_e + ", " + location_n);
                 if(location_e!=0 && location_n!=0){
-                    mMap.addMarker(new MarkerOptions()
-                            .position(new LatLng(location_n,location_e))
-                            .title(m.get("title")));
-                    //unhandle remove marker
+                    if(markerList[i] == null) {
+                        markerList[i] = mMap.addMarker(new MarkerOptions()
+                                .position(new LatLng(location_n, location_e))
+                                .title(m.get("title")));
+                    }
+                    System.out.println("i=" + i + ", " + markerList[i].getId());
                 }
+                i++;
             }
         }
     }
@@ -457,10 +416,21 @@ public class MapsFragment extends Fragment
                     JSONObject subObject;
                     subObject = objects.getJSONObject(i);
                     HashMap<String,String> mission = new HashMap<>();
-                    //put mid into hashmap
+
                     mission.put("mid",subObject.getString("mid"));
-                    //put title into hashmap
                     mission.put("title",subObject.getString("title"));
+                    mission.put("content",subObject.getString("content"));
+                    mission.put("url",subObject.getString("url"));
+                    mission.put("prize",subObject.getString("prize"));
+                    mission.put("score",subObject.getString("score"));
+
+                    if(subObject.getString("class").equals("URG")){
+                        mission.put("class","0");
+                    }else if(subObject.getString("class").equals("MAIN")){
+                        mission.put("class","1");
+                    }else if(subObject.getString("class").equals("SUB")){
+                        mission.put("class","2");
+                    }
 
                     //parse time, take hour&min only
                     //and put time_end into hashmap
@@ -578,70 +548,10 @@ public class MapsFragment extends Fragment
         }
     }
 
-    //======================要權限=======================
-    /*private void checkLocationPermission() {
-        if (ContextCompat.checkSelfPermission(getActivity().getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-
-            //ActivityCompat.requestPermissions(getActivity(),
-            //        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-            //        MY_PERMISSIONS_REQUEST_LOCATION );
-
-            // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
-                    Manifest.permission.ACCESS_FINE_LOCATION)) {
-                System.out.println("show dialog");
-
-                // Show an explanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
-                new AlertDialog.Builder(getActivity().getApplicationContext())
-                        .setTitle("Location Permission Needed")
-                        .setMessage("This app needs the Location permission, please accept to use location functionality")
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                //Prompt the user once explanation has been shown
-                                ActivityCompat.requestPermissions(getActivity(),
-                                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                                        MY_PERMISSIONS_REQUEST_LOCATION );
-                            }
-                        })
-                        .create()
-                        .show();
-            } else {
-                // No explanation needed, we can request the permission.
-                ActivityCompat.requestPermissions(getActivity(),
-                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                        MY_PERMISSIONS_REQUEST_LOCATION );
-            }
-        }
-
-    }*/
-
     //======================建立google api,FusedLocationApi===========================
-    /*protected synchronized void buildGoogleApiClient() {
-        googleApiClient = new GoogleApiClient.Builder(getActivity().getApplicationContext())
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build();
-
-            googleApiClient.connect();
-    }*/
 
     @Override
     public void onConnected(Bundle bundle) {
-        /*LocationRequest locationRequest = new LocationRequest();
-        locationRequest.setInterval(3000);
-        locationRequest.setFastestInterval(2000);
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        if (ContextCompat.checkSelfPermission(getActivity().getApplicationContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-            System.out.println("granted");
-            LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
-        }*/
         Location location = enableLocationAndGetLastLocation(true);
 
         this.initial(googleMap);
@@ -728,12 +638,9 @@ public class MapsFragment extends Fragment
 
             if (mLocationMgr.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                 mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-                //Toast.makeText(getActivity().getApplicationContext(),"GPS",Toast.LENGTH_SHORT).show();
             } else if (mLocationMgr.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
                 mLocationRequest.setPriority(LocationRequest.PRIORITY_LOW_POWER);
-                //Toast.makeText(getActivity().getApplicationContext(),"Internet",Toast.LENGTH_SHORT).show();
             } else {
-                //Toast.makeText(getActivity().getApplicationContext(),"Please check your GPS or wifi.",Toast.LENGTH_SHORT).show();
             }
             LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
         }
@@ -745,8 +652,6 @@ public class MapsFragment extends Fragment
     @Override
     public void onLocationChanged(Location location) {
         myLocation = location;
-        //Toast.makeText(getActivity().getApplicationContext(),myLocation.getLatitude() + ", " + myLocation.getLongitude(),Toast.LENGTH_SHORT).show();
-        //System.out.println(location.getLatitude()+"   "+location.getLongitude());
     }
 
     //===================HTTP==========================
@@ -775,7 +680,6 @@ public class MapsFragment extends Fragment
                 connection.setRequestMethod("GET");
 
                 // 是否添加參數(ex : json...等)
-                //connection.setDoOutput(true);
 
                 // 設定TimeOut時間
                 connection.setReadTimeout(15*1000);
@@ -822,8 +726,7 @@ public class MapsFragment extends Fragment
 
     }
 
-    //HTTPPUT
-    //Parameter in string array : [0] : api, [1] : parameter sended to db
+    //HTTP PUT
     class MyTaskPut extends AsyncTask<String,Void,String>{
 
         @Override

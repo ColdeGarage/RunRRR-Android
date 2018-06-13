@@ -101,10 +101,10 @@ public class MissionPopActivity extends AppCompatActivity {
         btnCancel = (TextView) findViewById(R.id.popCancelButton);
 
         bundleReciever = getIntent().getExtras();
-        mid = bundleReciever.getString("mid");
-        mName = bundleReciever.getString("name");
-        mTime = bundleReciever.getString("time");
-        mType = bundleReciever.getString("type");
+        mName = bundleReciever.getString("title");
+        mTime = bundleReciever.getString("time_end");
+        mContent = bundleReciever.getString("content");
+        mType = bundleReciever.getString("class");
         mState = bundleReciever.getString("state");
         mContent = bundleReciever.getString("content");
         mPrize = bundleReciever.getString("prize");
@@ -115,7 +115,7 @@ public class MissionPopActivity extends AppCompatActivity {
 
         //get liveOrdie
         MissionsFragment.MyTaskGet httpGetMember = new MissionsFragment.MyTaskGet();
-        httpGetMember.execute("http://coldegarage.tech:8081/api/v1.1/member/read?operator_uid="+uid+"&token="+token+"&uid="+uid);
+        httpGetMember.execute("http://nthuee.org:8081/api/v1.1/member/read?operator_uid="+uid+"&token="+token+"&uid="+uid);
 
         //get result from function "onPostExecute" in class "myTaskGet"
         try {
@@ -129,7 +129,7 @@ public class MissionPopActivity extends AppCompatActivity {
 
         //get missionPhoto
         MissionsFragment.MyTaskGet httpGetReport = new MissionsFragment.MyTaskGet();
-        httpGetReport.execute("http://coldegarage.tech:8081/api/v1.1/report/read?operator_uid="+uid+"&token="+token+"&uid="+uid);
+        httpGetReport.execute("http://nthuee.org:8081/api/v1.1/report/read?operator_uid="+uid+"&token="+token+"&uid="+uid);
 
         //get result from function "onPostExecute" in class "myTaskGet"
         try {
@@ -154,7 +154,7 @@ public class MissionPopActivity extends AppCompatActivity {
                 public void run() {
                     //TODO Auto-generated method stub
                     final Bitmap mBitmap =
-                            getBitmapFromURL("http://coldegarage.tech:8081/api/v1.1/download/img/" + mUrl);
+                            getBitmapFromURL("http://nthuee.org:8081/api/v1.1/download/img/" + mUrl);
 //                    final Bitmap circularBitmap = ImageConverter.getRoundedCornerBitmap(mBitmap, 30);
                     runOnUiThread(new Runnable() {
                         @Override
@@ -177,7 +177,7 @@ public class MissionPopActivity extends AppCompatActivity {
                 public void run() {
                     //TODO Auto-generated method stub
                     final Bitmap mBitmap =
-                            getBitmapFromURL("http://coldegarage.tech:8081/api/v1.1/download/img/" + photoUrl);
+                            getBitmapFromURL("http://nthuee.org:8081/api/v1.1/download/img/" + photoUrl);
 //                    final Bitmap circularBitmap = ImageConverter.getRoundedCornerBitmap(mBitmap, 30);
                     runOnUiThread(new Runnable() {
                         @Override
