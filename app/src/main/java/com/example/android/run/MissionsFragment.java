@@ -577,9 +577,9 @@ public class MissionsFragment extends Fragment {
                         .setContentText("Gogogo");
         // Creates an explicit intent for an Activity in your app
         Intent intent = new Intent(getActivity(), ViewPagerActivity.class);
-        intent.putExtra("notificationID",notificationID);
+        intent.putExtra("notificationID", notificationID);
 
-        PendingIntent resultPendingIntent = PendingIntent.getActivity(getActivity(),0,intent,0);
+        PendingIntent resultPendingIntent = PendingIntent.getActivity(getActivity(), 0, intent, 0);
         mBuilder.setContentIntent(resultPendingIntent);
         NotificationManager mNotificationManager =
                 (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
