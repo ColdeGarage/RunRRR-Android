@@ -16,20 +16,12 @@
 
 package com.example.android.run;
 
-import android.app.FragmentTransaction;
-import android.app.NotificationManager;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.location.LocationManager;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerTitleStrip;
 import android.support.v4.view.ViewPager;
@@ -168,22 +160,4 @@ public class ViewPagerActivity extends AppCompatActivity{
 
         return super.onKeyDown(keyCode, event);
     }
-    /*private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-    }*/
-    //show an alert dialog
-    /*void Alert(String mes){
-        new AlertDialog.Builder(ViewPagerActivity.this)
-                .setMessage(mes)
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                }).show();
-    }*/
 }

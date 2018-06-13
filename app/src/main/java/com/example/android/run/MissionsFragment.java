@@ -293,9 +293,9 @@ public class MissionsFragment extends Fragment {
                     //New Bundle object fot passing data
                     Bundle bundle = new Bundle();
                     bundle.putString("mid", mMid[position % mMid.length]);
-                    bundle.putString("name", mName[position % mName.length]);
-                    bundle.putString("time", mTime[position % mTime.length]);
-                    bundle.putString("type", mType[position % mType.length]);
+                    bundle.putString("title", mName[position % mName.length]);
+                    bundle.putString("time_end", mTime[position % mTime.length]);
+                    bundle.putString("class", mType[position % mType.length]);
                     bundle.putString("state", mState[position % mState.length]);
                     bundle.putString("content", mContent[position % mContent.length]);
                     bundle.putString("prize", mPrize[position % mPrize.length]);
