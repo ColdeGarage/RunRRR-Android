@@ -20,7 +20,7 @@ public class CheckPickFromGalleryActivity extends Activity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent();
-                setResult(2,intent);
+                setResult(MissionPopActivity.RESELECT_FILE,intent);
                 onBackPressed();
             }
         });
@@ -29,7 +29,7 @@ public class CheckPickFromGalleryActivity extends Activity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent();
-                setResult(3,intent);
+                setResult(MissionPopActivity.UPLOAD_FROM_GALLERY,intent);
                 onBackPressed();
             }
         });
