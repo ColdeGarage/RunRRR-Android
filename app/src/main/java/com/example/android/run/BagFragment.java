@@ -173,7 +173,7 @@ public class BagFragment extends Fragment
             pID.clear();
             toolNum=0;
             int money=0;
-            myTaskGet httpGet= new myTaskGet("http://coldegarage.tech:8081/api/v1.1/member/read?operator_uid="+String.valueOf(uid)+"&uid="+String.valueOf(uid)+"&token="+token);
+            myTaskGet httpGet= new myTaskGet("http://nthuee.org:8081/api/v1.1/member/read?operator_uid="+String.valueOf(uid)+"&uid="+String.valueOf(uid)+"&token="+token);
             httpGet.execute();
             try {
                 money = ParseJsonFromMemberForMoney(httpGet.get());
@@ -181,7 +181,7 @@ public class BagFragment extends Fragment
                 e.printStackTrace();
             }
 
-            httpGet = new myTaskGet("http://coldegarage.tech:8081/api/v1.1/pack/read?operator_uid="+String.valueOf(uid)+"&uid="+String.valueOf(uid)+"&token="+token);
+            httpGet = new myTaskGet("http://nthuee.org:8081/api/v1.1/pack/read?operator_uid="+String.valueOf(uid)+"&uid="+String.valueOf(uid)+"&token="+token);
             httpGet.execute();
             //get tools[] and clues[]
             try {
@@ -191,7 +191,7 @@ public class BagFragment extends Fragment
             }
 
             for(int i =0 ; toolIds[i]!=null ; i++) {
-                httpGet = new myTaskGet("http://coldegarage.tech:8081/api/v1.1/tool/read?operator_uid="+String.valueOf(uid)+"&uid="+String.valueOf(uid)+"&token="+token +"&tid="+toolIds[i]);
+                httpGet = new myTaskGet("http://nthuee.org:8081/api/v1.1/tool/read?operator_uid="+String.valueOf(uid)+"&uid="+String.valueOf(uid)+"&token="+token +"&tid="+toolIds[i]);
                 httpGet.execute();
                 try {
                     ParseJsonFromTools(httpGet.get(),toolPIds[i]);
@@ -200,7 +200,7 @@ public class BagFragment extends Fragment
                 }
             }
             for(int i =0 ;  clueIds[i] != null; i++) {
-                httpGet = new myTaskGet("http://coldegarage.tech:8081/api/v1.1/clue/read?operator_uid="+String.valueOf(uid)+"&uid="+String.valueOf(uid)+"&token="+token +"&cid="+clueIds[i]);
+                httpGet = new myTaskGet("http://nthuee.org:8081/api/v1.1/clue/read?operator_uid="+String.valueOf(uid)+"&uid="+String.valueOf(uid)+"&token="+token +"&cid="+clueIds[i]);
                 httpGet.execute();
                 try {
                     ParseJsonFromClues(httpGet.get());
@@ -271,7 +271,7 @@ public class BagFragment extends Fragment
                     //TODO Auto-generated method stub
                     if( !pUrl[position*3].equals("")) {
                         final Bitmap mBitmap =
-                                getBitmapFromURL("http://coldegarage.tech:8081/api/v1.1/download/img/" + pUrl[position * 3]);
+                                getBitmapFromURL("http://nthuee.org:8081/api/v1.1/download/img/" + pUrl[position * 3]);
                         if(mBitmap!=null) {
                             final Bitmap circularBitmap = ImageConverter.getRoundedCornerBitmap(mBitmap, 30);
                             runOnUiThread(new Runnable() {
@@ -285,7 +285,7 @@ public class BagFragment extends Fragment
                     //TODO Auto-generated method stub
                     if( pUrl[position*3+1]!="" && pUrl[position*3+1]!=null) {
                         final Bitmap mBitmap2 =
-                                getBitmapFromURL("http://coldegarage.tech:8081/api/v1.1/download/img/" + pUrl[position * 3 + 1]);
+                                getBitmapFromURL("http://nthuee.org:8081/api/v1.1/download/img/" + pUrl[position * 3 + 1]);
                         if(mBitmap2!=null) {
                             final Bitmap circularBitmap2 = ImageConverter.getRoundedCornerBitmap(mBitmap2, 30);
                             runOnUiThread(new Runnable() {
@@ -298,7 +298,7 @@ public class BagFragment extends Fragment
                     }//TODO Auto-generated method stub
                     if( pUrl[position*3+2]!="" && pUrl[position*3+2]!=null) {
                         final Bitmap mBitmap3 =
-                                getBitmapFromURL("http://coldegarage.tech:8081/api/v1.1/download/img/" + pUrl[position * 3 + 2]);
+                                getBitmapFromURL("http://nthuee.org:8081/api/v1.1/download/img/" + pUrl[position * 3 + 2]);
                         if(mBitmap3!=null) {
                             final Bitmap circularBitmap3 = ImageConverter.getRoundedCornerBitmap(mBitmap3, 30);
                             runOnUiThread(new Runnable() {

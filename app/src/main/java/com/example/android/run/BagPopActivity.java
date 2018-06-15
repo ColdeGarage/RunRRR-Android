@@ -72,7 +72,7 @@ public class BagPopActivity extends Activity {
         uid = bundleReciever.getString("uid");
         token = bundleReciever.getString("token");
         try {
-            myTaskGet httpGet= new myTaskGet("http://coldegarage.tech:8081/api/v1.1/member/read?operator_uid="+String.valueOf(uid)+"&uid="+String.valueOf(uid)+"&token="+token);
+            myTaskGet httpGet= new myTaskGet("http://nthuee.org:8081/api/v1.1/member/read?operator_uid="+String.valueOf(uid)+"&uid="+String.valueOf(uid)+"&token="+token);
             httpGet.execute();
             try {
                 ParseJson(httpGet.get());
@@ -201,7 +201,7 @@ public class BagPopActivity extends Activity {
             StringBuilder stringBuilder;
 
             try {
-                url = new URL("http://coldegarage.tech:8081/api/v1.1/pack/delete");
+                url = new URL("http://nthuee.org:8081/api/v1.1/pack/delete");
                 urlConnection = (HttpURLConnection) url.openConnection();
 
                 //連線方式
