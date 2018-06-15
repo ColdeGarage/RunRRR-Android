@@ -84,8 +84,6 @@ public class MapsFragment extends Fragment
     static MapsFragment instance = null;
     private PolygonOptions polygonOpt;
 
-    //show text content
-    private String text = "";
     private static int uid;
     private static String token;
     private static boolean valid;
@@ -112,7 +110,6 @@ public class MapsFragment extends Fragment
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setScore();
-        //Notify();
     }
 
     @Override
@@ -133,7 +130,7 @@ public class MapsFragment extends Fragment
         scoreView = (TextView)rootView.findViewById(R.id.score);
         mMapView = (MapView) rootView.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
-        mMapView.onResume(); // needed to get the map to display immediately
+        mMapView.onResume();
         mMapView.getMapAsync(this);
         //read uid and token
         readPrefs();
@@ -160,8 +157,6 @@ public class MapsFragment extends Fragment
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-
-                       // Log.i("update",valid + String.valueOf(lastLocation.getLatitude())+"  "+lastLocation.getLongitude());
 
                     //if invalid, show alert
                     if (!valid && !show) {
@@ -194,7 +189,6 @@ public class MapsFragment extends Fragment
     @Override
     public void onPause() {
         super.onPause();
-        //updateHandler.removeCallbacks(updateRunnable);
         mGoogleApiClient.disconnect();
     }
 
