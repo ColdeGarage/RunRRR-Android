@@ -78,13 +78,6 @@ public class MoreFragment extends Fragment {
     private OnExpandAdapter adapter;
 
     public static MoreFragment getInstance() {
-//        if( instance == null ) {
-//            synchronized (MoreFragment.class) {
-//                if (instance == null) {
-//                    instance = new MoreFragment();
-//                }
-//            }
-//        }
         synchronized (MoreFragment.class) {
                 instance = new MoreFragment();
         }
@@ -109,7 +102,6 @@ public class MoreFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
-
     }
 
     public void Refresh(){
