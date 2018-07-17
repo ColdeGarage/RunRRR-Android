@@ -130,7 +130,9 @@ public class MapsFragment extends Fragment
         scoreView = (TextView)rootView.findViewById(R.id.score);
         mMapView = (MapView) rootView.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
-        mMapView.onResume();
+
+        mMapView.onResume(); // needed to get the map to display immediately
+
         mMapView.getMapAsync(this);
         //read uid and token
         readPrefs();
