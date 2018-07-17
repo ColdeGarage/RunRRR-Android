@@ -35,7 +35,7 @@ import android.widget.TextView;
 /**
  * Provides UI for the main screen.
  */
-public class ViewPagerActivity extends AppCompatActivity{
+public class ViewPagerActivity extends AppCompatActivity {
     private FragmentManager fm;
     private ViewPager viewPager;
     private TabLayout tabLayout;

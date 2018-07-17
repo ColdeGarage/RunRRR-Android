@@ -172,6 +172,7 @@ public class MissionPopActivity extends AppCompatActivity {
                 public void run() {
                     final Bitmap mBitmap =
                             getBitmapFromURL(resources.getString(R.string.apiURL)+"/download/img/" + photoUrl);
+                    System.out.println("photoUrl = " + photoUrl);
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {

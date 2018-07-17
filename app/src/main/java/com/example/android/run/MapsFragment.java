@@ -113,7 +113,6 @@ public class MapsFragment extends Fragment
         super.onActivityCreated(savedInstanceState);
         setScore();
         //Notify();
-
     }
 
     @Override
@@ -196,7 +195,6 @@ public class MapsFragment extends Fragment
     public void onPause() {
         super.onPause();
         //updateHandler.removeCallbacks(updateRunnable);
-        enableLocationAndGetLastLocation(false);
         mGoogleApiClient.disconnect();
     }
 
