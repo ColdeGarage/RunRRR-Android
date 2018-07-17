@@ -22,9 +22,8 @@
     android:background="@color/background_grey" >
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="match_parent">
 
         <!-- Image圖片 -->
 
@@ -40,9 +39,9 @@
         <!-- Tab標籤 -->
         <TabWidget
             android:id="@android:id/tabs"
-            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="56dp" />
+            android:layout_height="56dp"
+            android:orientation="horizontal" />
 
         <FrameLayout
             android:id="@android:id/tabcontent"
