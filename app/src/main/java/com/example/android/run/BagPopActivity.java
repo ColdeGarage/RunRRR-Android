@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -90,6 +91,7 @@ public class BagPopActivity extends Activity {
 
         toolName.setText(name);
         toolContent.setText(content);
+        toolContent.setMovementMethod(new ScrollingMovementMethod());
         toolCount.setText(count);
 
         useButton.setText("USE");
