@@ -98,6 +98,7 @@ public class MissionPopActivity extends AppCompatActivity {
         btnCancel = (TextView) findViewById(R.id.popCancelButton);
 
         Bundle bundleReciever = getIntent().getExtras();
+        mid = bundleReciever.getString("mid");
         mName = bundleReciever.getString("title");
         mTime = bundleReciever.getString("time_end");
         mContent = bundleReciever.getString("content");
@@ -555,7 +556,7 @@ public class MissionPopActivity extends AppCompatActivity {
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(wr, "UTF-8"));
 
                 writer.write("uid=" + uid + "&token=" + token + "&operator_uid=" + uid + "&mid=" + mid + "&image=" + photoPath);
-
+                System.out.println("uid=" + uid + "&token=" + token + "&operator_uid=" + uid + "&mid=" + mid + "&image=" + photoPath);
                 //flush the data in buffer to server and close the writer
                 writer.flush();
                 writer.close();

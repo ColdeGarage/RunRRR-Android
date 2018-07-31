@@ -106,13 +106,11 @@ public class BagPopActivity extends Activity {
         useButton.setOnClickListener(new TextView.OnClickListener(){
             @Override
             public void onClick(View view) {
-                if(liveStatus==0){
+                if(liveStatus==0) {
                     Alert("你已經屎惹啊！不能用道具囉～");
-                }
-                else if(name.equals("金錢")){
+                } else if(name.equals("金錢")){
                     Alert("會有機會用到的，嘿嘿嘿");
-                }
-                else if(IDs != null && Integer.valueOf(bundleReciever.getString("COUNT"))-currentToolIndex>0) {
+                } else if(IDs != null && Integer.valueOf(bundleReciever.getString("COUNT"))-currentToolIndex>0) {
                     //POST email&password to server
                     MyTaskDelete httpDelete = new MyTaskDelete();
                     httpDelete.execute();
