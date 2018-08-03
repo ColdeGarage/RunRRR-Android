@@ -66,8 +66,6 @@ import static android.content.Context.MODE_PRIVATE;
  * Provides UI for the view with List.
  */
 public class MoreFragment extends Fragment {
-    //顯示文字內容
-    private String text = "";
     static MoreFragment instance = null;
     int uid;
     String token;
@@ -79,14 +77,13 @@ public class MoreFragment extends Fragment {
 
     public static MoreFragment getInstance() {
         synchronized (MoreFragment.class) {
-                instance = new MoreFragment();
+            instance = new MoreFragment();
         }
         return instance;
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootview = inflater.inflate(R.layout.fragment_more, container, false);
         recyclerView = (RecyclerView) rootview.findViewById(R.id.more_recycler_view);
         adapter = new OnExpandAdapter(recyclerView.getContext());
@@ -121,7 +118,7 @@ public class MoreFragment extends Fragment {
 
         public RelativeLayout r ;
 
-        public ViewHolder(final LayoutInflater inflater, ViewGroup parent) {
+        private ViewHolder(final LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.item_list_more, parent, false));
             moreItem_name = (TextView) itemView.findViewById(R.id.list_title);
             moreItem_list = (LinearLayout) itemView.findViewById(R.id.more_list);
@@ -428,10 +425,6 @@ public class MoreFragment extends Fragment {
             url = new URL(toGet);
             System.out.println("url="+url);
         }
-        @Override
-        public void onPreExecute() {
-            super.onPreExecute();
-        }
 
         URL url;
 
@@ -480,10 +473,6 @@ public class MoreFragment extends Fragment {
             }
             return null;
         }
-        @Override
-        public void onPostExecute(String result) {
-            super.onPostExecute(result);
-        }
     }
     class MyTaskPut extends AsyncTask<String,Void,String> {
         @Override
@@ -527,27 +516,21 @@ public class MoreFragment extends Fragment {
                 stringBuilder = new StringBuilder();
                 String line ;
 
-                while ((line = reader.readLine()) != null)
-                {
+                while ((line = reader.readLine()) != null) {
                     stringBuilder.append(line + "\n");
                 }
                 return stringBuilder.toString();
 
-            }catch(Exception e){
+            } catch(Exception e){
                 e.printStackTrace();
-            }
-            finally {
+            } finally {
                 urlConnection.disconnect();
                 // close the reader; this can throw an exception too, so
                 // wrap it in another try/catch block.
-                if (reader != null)
-                {
-                    try
-                    {
+                if (reader != null) {
+                    try {
                         reader.close();
-                    }
-                    catch (Exception e)
-                    {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
@@ -555,12 +538,6 @@ public class MoreFragment extends Fragment {
 
             return null;
         }
-
-        @Override
-        public void onPostExecute(String result) {
-            super.onPostExecute(result);
-        }
-
     }
     void ParseJsonForPhoneNumber(String info){
         if (info != null) {
@@ -600,7 +577,7 @@ public class MoreFragment extends Fragment {
                 JSONObject c = objects.getJSONObject(0);
 
                 MyTaskPut help = new MyTaskPut();
-                help.execute("http://coldegarage.tech:8081/api/v1.1/member/callhelp","uid=" + String.valueOf(uid) + "&operator_uid=" + String.valueOf(uid) + "&token=" + token
+                help.execute(getResources().getString(R.string.apiURL)+"/member/callhelp","uid=" + String.valueOf(uid) + "&operator_uid=" + String.valueOf(uid) + "&token=" + token
                         + "&position_e=" + c.getDouble("position_e") + "&position_n=" + c.getDouble("position_n"));
 
             } catch (final JSONException e) {
@@ -611,7 +588,6 @@ public class MoreFragment extends Fragment {
         }
         try {
             JSONObject jObject = new JSONObject(info);
-
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -713,6 +689,7 @@ public class MoreFragment extends Fragment {
         RectF bounds = new RectF(150, 50, 0, 0);
         barcode.drawBarcode(canvas, bounds);
     }
+
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
