@@ -98,13 +98,7 @@ public class MoreFragment extends Fragment {
         return rootview;
     }
 
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState)
-    {
-        super.onActivityCreated(savedInstanceState);
-    }
-
-    public void Refresh(){
+    public void Refresh() {
         adapter = new OnExpandAdapter(recyclerView.getContext());
         recyclerView.setAdapter(adapter);
     }
@@ -448,8 +442,6 @@ public class MoreFragment extends Fragment {
 
             try {
                 // create the HttpURLConnection
-                //http://192.168.0.2:8081/api/v1/tool/read
-                //url = new URL("http://192.168.0.2:8081/api/v1.1/pack/read?operator_uid=1"/*&tid="+tid*/); //Just use to try this function is able to work or not
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
                 // 使用甚麼方法做連線
@@ -494,12 +486,6 @@ public class MoreFragment extends Fragment {
         }
     }
     class MyTaskPut extends AsyncTask<String,Void,String> {
-
-        @Override
-        public void onPreExecute() {
-            super.onPreExecute();
-        }
-
         @Override
         protected String doInBackground(String... arg0) {
             URL url;
@@ -604,7 +590,7 @@ public class MoreFragment extends Fragment {
 
         if (info != null) {
             try {
-                System.out.println("linfo = "+info);
+                System.out.println("info = "+info);
 
                 JSONObject jsonObj = new JSONObject(info);
                 JSONObject payload = jsonObj.getJSONObject("payload");
