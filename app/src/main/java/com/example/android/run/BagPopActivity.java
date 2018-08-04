@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -90,6 +91,7 @@ public class BagPopActivity extends Activity {
 
         toolName.setText(name);
         toolContent.setText(content);
+        toolContent.setMovementMethod(new ScrollingMovementMethod());
         toolCount.setText(count);
 
         useButton.setText("USE");
@@ -104,13 +106,11 @@ public class BagPopActivity extends Activity {
         useButton.setOnClickListener(new TextView.OnClickListener(){
             @Override
             public void onClick(View view) {
-                if(liveStatus==0){
+                if(liveStatus==0) {
                     Alert("你已經屎惹啊！不能用道具囉～");
-                }
-                else if(name.equals("金錢")){
+                } else if(name.equals("金錢")){
                     Alert("會有機會用到的，嘿嘿嘿");
-                }
-                else if(IDs != null && Integer.valueOf(bundleReciever.getString("COUNT"))-currentToolIndex>0) {
+                } else if(IDs != null && Integer.valueOf(bundleReciever.getString("COUNT"))-currentToolIndex>0) {
                     //POST email&password to server
                     MyTaskDelete httpDelete = new MyTaskDelete();
                     httpDelete.execute();

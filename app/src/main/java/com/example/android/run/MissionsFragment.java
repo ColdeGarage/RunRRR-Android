@@ -318,6 +318,7 @@ public class MissionsFragment extends Fragment {
         //====================取得任務頁面顯示的內容====================
         //Parse json received from server
         private void parseJson(String info, String missionOrReport) {
+            System.out.println("info = "+info);
             if(missionOrReport.equals("mission")){
                 missionList = new ArrayList<>();
                 try {
