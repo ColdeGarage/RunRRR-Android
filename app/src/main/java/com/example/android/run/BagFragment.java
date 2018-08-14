@@ -28,6 +28,7 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -67,6 +68,7 @@ public class BagFragment extends Fragment
     private static BagFragment instance = null;
     private ContentAdapter adapter = null;
     private RecyclerView recyclerView;
+    private SwipeRefreshLayout refreshLayout;
 
     private ArrayList<ArrayList<HashMap<String, String>>> packList = new ArrayList<>();
     private String[] toolIds = new String[100];
@@ -89,7 +91,19 @@ public class BagFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         readPrefs();
-        recyclerView = (RecyclerView) inflater.inflate(R.layout.recycler_view, container, false);
+        View rootView = inflater.inflate(R.layout.recycler_view, container, false);
+
+        recyclerView = (RecyclerView) rootView.findViewById(R.id.bag_recycler_view);
+
+        refreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.refresh_layout);
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                instance.Refresh();
+                //Notify();
+                refreshLayout.setRefreshing(false);
+            }
+        });
 
         try {
             adapter = new ContentAdapter(recyclerView.getContext());
@@ -100,7 +114,7 @@ public class BagFragment extends Fragment
         recyclerView.setAdapter(adapter);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        return recyclerView;
+        return rootView;
     }
 
     public void Refresh() {
