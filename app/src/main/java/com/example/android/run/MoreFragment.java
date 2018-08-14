@@ -224,8 +224,7 @@ public class MoreFragment extends Fragment {
                                 //Log.i("text",hunterUid + "  " + hunterPass);
 
                                 MyTaskPut diePut = new MyTaskPut();
-                                diePut.execute(getResources().getString(R.string.apiURL) + "/member/liveordie"
-                                        , "uid=" + String.valueOf(uid) + "&operator_uid=" + hunterUid + "&token=" + hunterPass
+                                diePut.execute(getResources().getString(R.string.apiURL) + "/member/liveordie?uid=" + String.valueOf(uid) + "&operator_uid=" + hunterUid + "&token=" + hunterPass
                                                 + "&status=" + true);
 
                                 //get result from function "onPostExecute" in class "myTaskPut"
@@ -301,7 +300,7 @@ public class MoreFragment extends Fragment {
 
                     myTaskGet httpGet = null;
                     try {
-                        httpGet = new myTaskGet(getResources().getString(R.string.apiURL) + "/api/v1.1/utility/0");
+                        httpGet = new myTaskGet(getResources().getString(R.string.apiURL) + "/utility/0");
                     } catch (MalformedURLException e) {
                         e.printStackTrace();
                     }
@@ -321,7 +320,7 @@ public class MoreFragment extends Fragment {
                         public void onClick(View view) {
                             myTaskGet httpGet= null;
                             try {
-                                httpGet = new myTaskGet(getResources().getString(R.string.apiURL) + "/api/v1.1/member/read?operator_uid="+String.valueOf(uid)+"&uid="+String.valueOf(uid)+"&token="+token);
+                                httpGet = new myTaskGet(getResources().getString(R.string.apiURL) + "/member/read?operator_uid="+String.valueOf(uid)+"&uid="+String.valueOf(uid)+"&token="+token);
                             } catch (MalformedURLException e) {
                                 e.printStackTrace();
                             }
@@ -359,7 +358,7 @@ public class MoreFragment extends Fragment {
                             String KEY = "login";
                             if (!isNetworkAvailable()) {
                                 Alert("Please check your internet connection, then try again.");
-                            }else {
+                            } else {
                                 SharedPreferences settings = getContext().getSharedPreferences("data",MODE_PRIVATE);
                                 settings.edit().putBoolean(KEY,false)
                                         .apply();
@@ -563,8 +562,8 @@ public class MoreFragment extends Fragment {
             System.out.print("Couldn't get json from server.");
         }
     }
-    void ParseJsonForLocation(String info){
 
+    void ParseJsonForLocation(String info) {
         if (info != null) {
             try {
                 System.out.println("info = "+info);
@@ -577,7 +576,7 @@ public class MoreFragment extends Fragment {
                 JSONObject c = objects.getJSONObject(0);
 
                 MyTaskPut help = new MyTaskPut();
-                help.execute(getResources().getString(R.string.apiURL)+"/member/callhelp","uid=" + String.valueOf(uid) + "&operator_uid=" + String.valueOf(uid) + "&token=" + token
+                help.execute(getResources().getString(R.string.apiURL)+"/member/callhelp?uid=" + String.valueOf(uid) + "&operator_uid=" + String.valueOf(uid) + "&token=" + token
                         + "&position_e=" + c.getDouble("position_e") + "&position_n=" + c.getDouble("position_n"));
 
             } catch (final JSONException e) {
@@ -585,11 +584,6 @@ public class MoreFragment extends Fragment {
             }
         } else {
             System.out.print("Couldn't get json from server.");
-        }
-        try {
-            JSONObject jObject = new JSONObject(info);
-        } catch (JSONException e) {
-            e.printStackTrace();
         }
     }
     int parseJson (String info){
@@ -607,12 +601,10 @@ public class MoreFragment extends Fragment {
     public class MyView extends View {
         public MyView(Context context) {
             super(context);
-            // TODO Auto-generated constructor stub
         }
 
         @Override
         protected void onDraw(Canvas canvas) {
-            // TODO Auto-generated method stub
             super.onDraw(canvas);
 
             //show the barcode
