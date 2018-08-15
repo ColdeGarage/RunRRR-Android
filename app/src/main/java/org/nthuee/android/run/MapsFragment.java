@@ -1,4 +1,4 @@
-package com.example.android.run;
+package org.nthuee.android.run;
 
 import android.Manifest;
 import android.app.AlertDialog;
@@ -65,7 +65,7 @@ import java.util.HashMap;
 
 import static android.content.Context.LOCATION_SERVICE;
 import static android.content.Context.MODE_PRIVATE;
-import static com.example.android.run.MissionsFragment.MY_MISSION_REFRESH;
+import static org.nthuee.android.run.MissionsFragment.MY_MISSION_REFRESH;
 
 
 public class MapsFragment extends Fragment
@@ -243,7 +243,7 @@ public class MapsFragment extends Fragment
                         bundle.putString("token",token);
 
                         intent.putExtras(bundle);
-                        startActivityForResult(intent, MY_MISSION_REFRESH);
+                        startActivityForResult(intent, MissionsFragment.MY_MISSION_REFRESH);
                     }
                     i++;
                 }

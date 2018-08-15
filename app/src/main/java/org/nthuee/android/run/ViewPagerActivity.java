@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.android.run;
+package org.nthuee.android.run;
 
 import android.content.DialogInterface;
 import android.content.Intent;

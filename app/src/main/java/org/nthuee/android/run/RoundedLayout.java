@@ -1,4 +1,4 @@
-package com.example.android.run;
+package org.nthuee.android.run;
 
 import android.content.Context;
 import android.graphics.Canvas;

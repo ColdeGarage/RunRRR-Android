@@ -1,4 +1,4 @@
-package com.example.android.run;
+package org.nthuee.android.run;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -99,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             //get result from function "onPostExecute" in class "myTaskPost"
             readDataFromHttp = httpPost.get();
+            System.out.println(readDataFromHttp);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -208,6 +209,8 @@ public class MainActivity extends AppCompatActivity {
                 //encode data in UTF-8
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(wr, "UTF-8"));
 
+                String msg = "email=" + account_in + "&password=" + pass_in;
+                System.out.println(msg);
                 writer.write("email=" + account_in + "&password=" + pass_in);
 
                 //flush the data in buffer to server and close the writer
