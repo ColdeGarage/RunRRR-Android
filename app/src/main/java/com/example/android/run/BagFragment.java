@@ -251,24 +251,40 @@ public class BagFragment extends Fragment
             System.out.println("position=" + position);
             holder.name1.setText(pName[position*3]);
 
-            if(pCount[position*3]!="" && pCount[position*3]!="0" && pCount[position*3] != null) {
-                holder.count1.setText(" x" + pCount[position*3] + " ");
-                holder.count1.setVisibility(View.VISIBLE);
-            } else {
+            try {
+                if (!pCount[position * 3].equals("") && !pCount[position * 3].equals("0") && pCount[position * 3] != null) {
+                    holder.count1.setText(" x" + pCount[position * 3] + " ");
+                    holder.count1.setVisibility(View.VISIBLE);
+                } else {
+                    holder.count1.setVisibility(View.INVISIBLE);
+                }
+            } catch(NullPointerException e) {
                 holder.count1.setVisibility(View.INVISIBLE);
             }
+
             holder.name2.setText(pName[position*3+1]);
-            if(pCount[position*3+1]!="" && pCount[position*3+1]!="0" && pCount[position*3+1] != null) {
-                holder.count2.setText(" x" + pCount[position*3+1] + " ");
-                holder.count2.setVisibility(View.VISIBLE);
-            } else {
+
+            try {
+                if (!pCount[position * 3 + 1].equals("") && !pCount[position * 3 + 1].equals("0") && pCount[position * 3 + 1] != null) {
+                    holder.count2.setText(" x" + pCount[position * 3 + 1] + " ");
+                    holder.count2.setVisibility(View.VISIBLE);
+                } else {
+                    holder.count2.setVisibility(View.INVISIBLE);
+                }
+            } catch(NullPointerException e) {
                 holder.count2.setVisibility(View.INVISIBLE);
             }
+
             holder.name3.setText(pName[position*3+2]);
-            if(pCount[position*3+2]!="" && pCount[position*3+2]!="0" && pCount[position*3+2] != null) {
-                holder.count3.setText(" x" + pCount[position*3+2] + " ");
-                holder.count3.setVisibility(View.VISIBLE);
-            } else {
+
+            try {
+                if (!pCount[position * 3 + 2].equals("") && !pCount[position * 3 + 2].equals("0") && pCount[position * 3 + 2] != null) {
+                    holder.count3.setText(" x" + pCount[position * 3 + 2] + " ");
+                    holder.count3.setVisibility(View.VISIBLE);
+                } else {
+                    holder.count3.setVisibility(View.INVISIBLE);
+                }
+            } catch(NullPointerException e) {
                 holder.count3.setVisibility(View.INVISIBLE);
             }
 
@@ -277,46 +293,58 @@ public class BagFragment extends Fragment
                 public void run() {
                     Resources resources = getContext().getResources();
 
-                    if( pUrl[position*3]!="") {
-                        final Bitmap mBitmap =
-                                getBitmapFromURL(resources.getString(R.string.apiURL)+"/download/img/" + pUrl[position * 3]);
-                        if(mBitmap!=null) {
-                            final Bitmap circularBitmap = ImageConverter.getRoundedCornerBitmap(mBitmap, 30);
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    holder.tool1.setImageBitmap(circularBitmap);
-                                }
-                            });
+                    try {
+                        if (!pUrl[position * 3].equals("")) {
+                            final Bitmap mBitmap =
+                                    getBitmapFromURL(resources.getString(R.string.apiURL) + "/download/img/" + pUrl[position * 3]);
+                            if (mBitmap != null) {
+                                final Bitmap circularBitmap = ImageConverter.getRoundedCornerBitmap(mBitmap, 30);
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        holder.tool1.setImageBitmap(circularBitmap);
+                                    }
+                                });
+                            }
                         }
+                    } catch(NullPointerException e) {
+                        e.printStackTrace();
                     }
 
-                    if( pUrl[position*3+1]!="" && pUrl[position*3+1]!=null) {
-                        final Bitmap mBitmap2 =
-                                getBitmapFromURL(resources.getString(R.string.apiURL)+"/download/img/" + pUrl[position * 3 + 1]);
-                        if(mBitmap2!=null) {
-                            final Bitmap circularBitmap2 = ImageConverter.getRoundedCornerBitmap(mBitmap2, 30);
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    holder.tool2.setImageBitmap(circularBitmap2);
-                                }
-                            });
+                    try {
+                        if (!pUrl[position * 3 + 1].equals("") && pUrl[position * 3 + 1] != null) {
+                            final Bitmap mBitmap2 =
+                                    getBitmapFromURL(resources.getString(R.string.apiURL) + "/download/img/" + pUrl[position * 3 + 1]);
+                            if (mBitmap2 != null) {
+                                final Bitmap circularBitmap2 = ImageConverter.getRoundedCornerBitmap(mBitmap2, 30);
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        holder.tool2.setImageBitmap(circularBitmap2);
+                                    }
+                                });
+                            }
                         }
+                    } catch(NullPointerException e) {
+                        e.printStackTrace();
                     }
 
-                    if( pUrl[position*3+2]!="" && pUrl[position*3+2]!=null) {
-                        final Bitmap mBitmap3 =
-                                getBitmapFromURL(resources.getString(R.string.apiURL)+"/download/img/" + pUrl[position * 3 + 2]);
-                        if(mBitmap3!=null) {
-                            final Bitmap circularBitmap3 = ImageConverter.getRoundedCornerBitmap(mBitmap3, 30);
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    holder.tool3.setImageBitmap(circularBitmap3);
-                                }
-                            });
+                    try {
+                        if (!pUrl[position * 3 + 2].equals("") && pUrl[position * 3 + 2] != null) {
+                            final Bitmap mBitmap3 =
+                                    getBitmapFromURL(resources.getString(R.string.apiURL) + "/download/img/" + pUrl[position * 3 + 2]);
+                            if (mBitmap3 != null) {
+                                final Bitmap circularBitmap3 = ImageConverter.getRoundedCornerBitmap(mBitmap3, 30);
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        holder.tool3.setImageBitmap(circularBitmap3);
+                                    }
+                                });
+                            }
                         }
+                    } catch(NullPointerException e) {
+                        e.printStackTrace();
                     }
                 }
             }).start();
@@ -381,7 +409,7 @@ public class BagFragment extends Fragment
                         bundle.putString("IMAGEURL",pUrl[position*3+2]);
                         bundle.putString("CONTENT",pContent[position*3+2]);
                         bundle.putString("COUNT",pCount[position*3+2]);
-                        if(position*3+2<=toolNum){
+                        if(position*3+2<=toolNum) {
                             bundle.putStringArray("IDs",pID.get(position*3+1));
                         }
                         intent.putExtras(bundle);
