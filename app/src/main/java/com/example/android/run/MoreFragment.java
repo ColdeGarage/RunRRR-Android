@@ -218,13 +218,9 @@ public class MoreFragment extends Fragment {
                                 Alert("Please enter a HUNTER UID.");
                             } else if (hunterPass.equals("")) {
                                 Alert("Please enter a HUNTER PASSWORD.");
-                            }
-                            else {
-
-                                //Log.i("text",hunterUid + "  " + hunterPass);
-
+                            } else {
                                 MyTaskPut diePut = new MyTaskPut();
-                                diePut.execute(getResources().getString(R.string.apiURL) + "/member/liveordie?uid=" + String.valueOf(uid) + "&operator_uid=" + hunterUid + "&token=" + hunterPass
+                                diePut.execute(getResources().getString(R.string.apiURL) + "/member/liveordie", "uid=" + String.valueOf(uid) + "&operator_uid=" + hunterUid + "&token=" + hunterPass
                                                 + "&status=" + true);
 
                                 //get result from function "onPostExecute" in class "myTaskPut"
@@ -420,12 +416,12 @@ public class MoreFragment extends Fragment {
     }
 
     class myTaskGet extends AsyncTask<Void,Void,String> {
+        URL url;
+
         myTaskGet(String toGet) throws MalformedURLException {
             url = new URL(toGet);
             System.out.println("url="+url);
         }
-
-        URL url;
 
         @Override
         public String doInBackground(Void... arg0) {
@@ -454,14 +450,11 @@ public class MoreFragment extends Fragment {
                 while ((line = reader.readLine()) != null) {
                     stringBuilder.append(line + "\n");
                 }
-//                    System.out.println("happy~");
-//                    System.out.print(stringBuilder.toString());
                 return stringBuilder.toString();
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
-                // close the reader; this can throw an exception too, so
-                // wrap it in another try/catch block.
+                // close the reader; this can throw an exception too, so wrap it in another try/catch block.
                 if (reader != null) {
                     try {
                         reader.close();
@@ -473,6 +466,7 @@ public class MoreFragment extends Fragment {
             return null;
         }
     }
+
     class MyTaskPut extends AsyncTask<String,Void,String> {
         @Override
         protected String doInBackground(String... arg0) {
@@ -498,8 +492,7 @@ public class MoreFragment extends Fragment {
                 urlConnection.setUseCaches(false);
 
                 //Send request
-                DataOutputStream wr = new DataOutputStream(
-                        urlConnection.getOutputStream());
+                DataOutputStream wr = new DataOutputStream(urlConnection.getOutputStream());
 
                 //encode data in UTF-8
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(wr, "UTF-8"));
@@ -513,14 +506,13 @@ public class MoreFragment extends Fragment {
                 //read response
                 reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
                 stringBuilder = new StringBuilder();
-                String line ;
+                String line;
 
                 while ((line = reader.readLine()) != null) {
                     stringBuilder.append(line + "\n");
                 }
                 return stringBuilder.toString();
-
-            } catch(Exception e){
+            } catch(Exception e) {
                 e.printStackTrace();
             } finally {
                 urlConnection.disconnect();
@@ -534,10 +526,10 @@ public class MoreFragment extends Fragment {
                     }
                 }
             }
-
             return null;
         }
     }
+
     void ParseJsonForPhoneNumber(String info){
         if (info != null) {
             try {
@@ -576,7 +568,7 @@ public class MoreFragment extends Fragment {
                 JSONObject c = objects.getJSONObject(0);
 
                 MyTaskPut help = new MyTaskPut();
-                help.execute(getResources().getString(R.string.apiURL)+"/member/callhelp?uid=" + String.valueOf(uid) + "&operator_uid=" + String.valueOf(uid) + "&token=" + token
+                help.execute(getResources().getString(R.string.apiURL)+"/member/callhelp", "uid=" + String.valueOf(uid) + "&operator_uid=" + String.valueOf(uid) + "&token=" + token
                         + "&position_e=" + c.getDouble("position_e") + "&position_n=" + c.getDouble("position_n"));
 
             } catch (final JSONException e) {
@@ -689,15 +681,14 @@ public class MoreFragment extends Fragment {
 
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
+
     //show an alert dialog
     void Alert(String mes){
         new AlertDialog.Builder(getActivity())
                 .setMessage(mes)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                }).show();
+                    public void onClick(DialogInterface dialog, int which) {} })
+                .show();
     }
 }
