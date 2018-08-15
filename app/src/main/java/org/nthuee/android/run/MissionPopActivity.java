@@ -612,7 +612,7 @@ public class MissionPopActivity extends AppCompatActivity {
                 urlConnection.setUseCaches(false);
 
                 //Send request
-                DataOutputStream wr = new DataOutputStream( urlConnection.getOutputStream());
+                DataOutputStream wr = new DataOutputStream(urlConnection.getOutputStream());
 
                 //encode data in UTF-8
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(wr, "UTF-8"));
@@ -626,9 +626,9 @@ public class MissionPopActivity extends AppCompatActivity {
                 //read response
                 reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
                 stringBuilder = new StringBuilder();
-                String line ;
+                String line;
 
-                while ((line = reader.readLine()) != null)     {
+                while ((line = reader.readLine()) != null) {
                     stringBuilder.append(line + "\n");
                 }
                 return stringBuilder.toString();
