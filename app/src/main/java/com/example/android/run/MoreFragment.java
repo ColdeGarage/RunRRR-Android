@@ -71,7 +71,6 @@ public class MoreFragment extends Fragment {
     String token;
     String helpInfo = "";
 
-    private View rootview;
     private RecyclerView recyclerView;
     private OnExpandAdapter adapter;
 
@@ -84,24 +83,18 @@ public class MoreFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        rootview = inflater.inflate(R.layout.fragment_more, container, false);
-        recyclerView = (RecyclerView) rootview.findViewById(R.id.more_recycler_view);
+        View rootView = inflater.inflate(R.layout.fragment_more, container, false);
+        recyclerView = (RecyclerView) rootView.findViewById(R.id.more_recycler_view);
         adapter = new OnExpandAdapter(recyclerView.getContext());
         recyclerView.setAdapter(adapter);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         readPrefs();
 
-        return rootview;
+        return rootView;
     }
 
-    public void Refresh() {
-        adapter = new OnExpandAdapter(recyclerView.getContext());
-        recyclerView.setAdapter(adapter);
-    }
-
-    public static class ViewHolder extends RecyclerView.ViewHolder{
-
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView moreItem_name;
         public LinearLayout moreItem_list;
         public LinearLayout moreItem_die;
@@ -408,6 +401,7 @@ public class MoreFragment extends Fragment {
             return LENGTH;
         }
     }
+
     //========================內存=========================
     private void readPrefs(){
         SharedPreferences settings = getContext().getSharedPreferences("data",MODE_PRIVATE);
@@ -530,7 +524,7 @@ public class MoreFragment extends Fragment {
         }
     }
 
-    void ParseJsonForPhoneNumber(String info){
+    void ParseJsonForPhoneNumber(String info) {
         if (info != null) {
             try {
                 System.out.println("info = "+info);
@@ -578,7 +572,7 @@ public class MoreFragment extends Fragment {
             System.out.print("Couldn't get json from server.");
         }
     }
-    int parseJson (String info){
+    int parseJson (String info) {
         int brea = -1;
         if(info!=null) {
             try {
@@ -590,6 +584,7 @@ public class MoreFragment extends Fragment {
         }
         return brea;
     }
+
     public class MyView extends View {
         public MyView(Context context) {
             super(context);
@@ -683,7 +678,7 @@ public class MoreFragment extends Fragment {
     }
 
     //show an alert dialog
-    void Alert(String mes){
+    void Alert(String mes) {
         new AlertDialog.Builder(getActivity())
                 .setMessage(mes)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
