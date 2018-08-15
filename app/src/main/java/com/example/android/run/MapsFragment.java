@@ -147,7 +147,7 @@ public class MapsFragment extends Fragment
                     setScore();
                     if(myLocation!=null){
                         MyTaskPut updatePut = new MyTaskPut();
-                        updatePut.execute(getResources().getString(R.string.apiURL)+"/member/update?uid=" + String.valueOf(uid) + "&operator_uid=" + String.valueOf(uid) + "&token=" + token + "&position_n=" + String.valueOf(myLocation.getLatitude())
+                        updatePut.execute(getResources().getString(R.string.apiURL)+"/member/update", "uid=" + String.valueOf(uid) + "&operator_uid=" + String.valueOf(uid) + "&token=" + token + "&position_n=" + String.valueOf(myLocation.getLatitude())
                                         + "&position_e=" + String.valueOf(myLocation.getLongitude()));
 
                         //get result from function "onPostExecute" in class "myTaskPut"
@@ -654,17 +654,12 @@ public class MapsFragment extends Fragment
         HttpURLConnection connection = null;
 
         @Override
-        public void onPreExecute() {
-            super.onPreExecute();
-        }
-        @Override
         public String doInBackground(String...arg0) {
             BufferedReader reader = null;
             StringBuilder stringBuilder;
             String urlStr = arg0[0];
 
-            try
-            {
+            try {
                 // create the HttpURLConnection
                 url = new URL(urlStr);
                 connection = (HttpURLConnection) url.openConnection();
@@ -683,50 +678,29 @@ public class MapsFragment extends Fragment
                 stringBuilder = new StringBuilder();
 
                 String line;
-                while ((line = reader.readLine()) != null)
-                {
+                while ((line = reader.readLine()) != null) {
                     stringBuilder.append(line + "\n");
                 }
                 return stringBuilder.toString();
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 e.printStackTrace();
-            }
-            finally
-            {
+            } finally {
                 connection.disconnect();
-                // close the reader; this can throw an exception too, so
-                // wrap it in another try/catch block.
-                if (reader != null)
-                {
-                    try
-                    {
+                // close the reader; this can throw an exception too, so wrap it in another try/catch block.
+                if (reader != null) {
+                    try {
                         reader.close();
-                    }
-                    catch (Exception e)
-                    {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
             }
             return null;
         }
-        @Override
-        public void onPostExecute(String result) {
-            super.onPostExecute(result);
-        }
-
     }
 
     //HTTP PUT
     class MyTaskPut extends AsyncTask<String,Void,String>{
-
-        @Override
-        public void onPreExecute() {
-            super.onPreExecute();
-        }
-
         @Override
         protected String doInBackground(String... arg0) {
             URL url;
@@ -768,43 +742,27 @@ public class MapsFragment extends Fragment
                 stringBuilder = new StringBuilder();
                 String line ;
 
-                while ((line = reader.readLine()) != null)
-                {
+                while ((line = reader.readLine()) != null) {
                     stringBuilder.append(line + "\n");
                 }
                 return stringBuilder.toString();
-
-            }catch(Exception e){
+            } catch(Exception e) {
                 e.printStackTrace();
-            }
-            finally {
+            } finally {
                 urlConnection.disconnect();
                 // close the reader; this can throw an exception too, so
                 // wrap it in another try/catch block.
-                if (reader != null)
-                {
-                    try
-                    {
+                if (reader != null) {
+                    try {
                         reader.close();
-                    }
-                    catch (Exception e)
-                    {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
             }
-
             return null;
         }
-
-        @Override
-        public void onPostExecute(String result) {
-            super.onPostExecute(result);
-        }
-
     }
-
-
 
     //show an alert dialog
     void Alert(String mes){
@@ -812,17 +770,8 @@ public class MapsFragment extends Fragment
                 .setMessage(mes)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                }).show();
-    }
-    private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+                    public void onClick(DialogInterface dialog, int which) {} })
+                .show();
     }
 }
 
