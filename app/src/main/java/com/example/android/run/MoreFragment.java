@@ -24,7 +24,6 @@ import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.RectF;
 import android.graphics.Typeface;
-import android.graphics.drawable.GradientDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -131,18 +130,6 @@ public class MoreFragment extends Fragment {
             r = (RelativeLayout) moreItem_barcode.findViewById(R.id.relative);
 
             btYes = (TextView) moreItem_logout.findViewById(R.id.logout_yes);
-            /*
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int id = v.getId();
-                    //TODO:Intent to other activity
-                    Context context = v.getContext();
-                    Intent intent = new Intent(context, AboutUsActivity.class);
-                    //intent.putExtra(DetailActivity.EXTRA_POSITION, getAdapterPosition());
-                    context.startActivity(intent);
-                }
-            });*/
         }
     }
 
@@ -158,8 +145,7 @@ public class MoreFragment extends Fragment {
         //Record item position
         private int currentItem = -1;
 
-        public OnExpandAdapter(Context context) {
-
+        private OnExpandAdapter(Context context) {
             Resources resources = context.getResources();
             mMoreList = resources.getStringArray(R.array.more);
         }
@@ -177,8 +163,6 @@ public class MoreFragment extends Fragment {
         @Override
         public void onBindViewHolder(final ViewHolder holder, final int position) {
             final String moreItem = mMoreList[position % mMoreList.length];
-            GradientDrawable itemShape;
-            int itemColor;
             System.out.println("more on bind bind bind");
             holder.moreItem_name.setText(moreItem);
 
@@ -192,20 +176,14 @@ public class MoreFragment extends Fragment {
             holder.moreItem_sos.setVisibility(View.GONE);
             holder.moreItem_logout.setVisibility(View.GONE);
 
-            //Set background color
-            switch(position){
+            switch(position) {
                 case 0: //Die
-
-                    //add space at the beginning
-                    //holder.editTextUid.setPadding(20, 0, 0, 0);
-                    //holder.editTextPass.setPadding(20, 0, 0, 0);
-
                     holder.bt_enter.setOnClickListener(new TextView.OnClickListener(){
                         @Override
                         public void onClick(View v) {
                             String hunterUid = holder.editTextUid.getText().toString();
                             String hunterPass = holder.editTextPass.getText().toString();
-                            if(!isNetworkAvailable()){
+                            if(!isNetworkAvailable()) {
                                 Alert("Please check your internet connection, then try again.");
                             } else if (hunterUid.equals("")) {
                                 Alert("Please enter a HUNTER UID.");
@@ -227,12 +205,9 @@ public class MoreFragment extends Fragment {
                                                 .setMessage("You are dead.")
                                                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                                     @Override
-                                                    public void onClick(DialogInterface dialog, int which) {
-
-                                                    }
-                                                }).show();
+                                                    public void onClick(DialogInterface dialog, int which) {} })
+                                                .show();
                                     }
-
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
