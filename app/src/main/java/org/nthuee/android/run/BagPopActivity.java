@@ -108,7 +108,7 @@ public class BagPopActivity extends Activity {
             public void onClick(View view) {
                 if(liveStatus==0) {
                     Alert("你已經屎惹啊！不能用道具囉～");
-                } else if(name.equals("金錢")){
+                } else if(name.equals("金錢")) {
                     Alert("會有機會用到的，嘿嘿嘿");
                 } else if(IDs != null && Integer.valueOf(bundleReciever.getString("COUNT"))-currentToolIndex>0) {
                     //POST email&password to server
@@ -121,7 +121,7 @@ public class BagPopActivity extends Activity {
                     String count = " 擁有: " + currentToolNumber;
                     toolCount.setText(count);
                     Alert("你使用了一個 " + name + "!");
-                } else{
+                } else {
                     Alert("此物品已用盡或無法使用");
                 }
             }
@@ -168,8 +168,9 @@ public class BagPopActivity extends Activity {
 
                 //encode data in UTF-8
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(wr, "UTF-8"));
-                System.out.println("operator_uid=" + uid + "&uid=" + uid + "&token=" + token + "&pid="+IDs[currentToolIndex]);
-                writer.write("operator_uid=" + uid + "&uid=" + uid + "&token=" + token + "&pid="+IDs[currentToolIndex]);
+                System.out.println("operator_uid=" + uid + "&uid=" + uid + "&token=" + token + "&pid="+IDs[currentToolIndex-1]);
+                System.out.println(currentToolIndex);
+                writer.write("operator_uid=" + uid + "&uid=" + uid + "&token=" + token + "&pid="+IDs[currentToolIndex-1]);
 
                 //flush the data in buffer to server and close the writer
                 writer.flush();
