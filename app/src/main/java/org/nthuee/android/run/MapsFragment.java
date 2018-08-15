@@ -146,8 +146,7 @@ public class MapsFragment extends Fragment
                     setScore();
                     if(myLocation!=null){
                         MyTaskPut updatePut = new MyTaskPut();
-                        updatePut.execute(getResources().getString(R.string.apiURL)+"/member/update"
-                                ,"uid=" + String.valueOf(uid) + "&operator_uid=" + String.valueOf(uid) + "&token=" + token + "&position_n=" + String.valueOf(myLocation.getLatitude())
+                        updatePut.execute(getResources().getString(R.string.apiURL)+"/member/update?uid=" + String.valueOf(uid) + "&operator_uid=" + String.valueOf(uid) + "&token=" + token + "&position_n=" + String.valueOf(myLocation.getLatitude())
                                         + "&position_e=" + String.valueOf(myLocation.getLongitude()));
 
                         //get result from function "onPostExecute" in class "myTaskPut"
