@@ -1,4 +1,4 @@
-package com.example.android.run;
+package org.nthuee.android.run;
 
 import android.Manifest;
 import android.annotation.TargetApi;

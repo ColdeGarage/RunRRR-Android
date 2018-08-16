@@ -1,4 +1,4 @@
-package com.example.android.run;
+package org.nthuee.android.run;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -12,7 +12,7 @@ import android.widget.RelativeLayout;
  * Created by user on 2017/7/26.
  */
 
-public class RoundedLayout extends RelativeLayout {
+public class  RoundedLayout extends RelativeLayout {
 
     private Path mPathCorners = new Path();
     private Path mPathCircle = new Path();

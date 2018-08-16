@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.android.run;
+package org.nthuee.android.run;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -197,6 +197,7 @@ public class MissionsFragment extends Fragment {
             httpGetReport.execute(resources.getString(R.string.apiURL)+"/report/read?operator_uid="+String.valueOf(uid)+"&token="+token+"&uid="+String.valueOf(uid));
             try {
                 readDataFromHttp = httpGetReport.get();
+                System.out.println(readDataFromHttp);
                 parseJson(readDataFromHttp,"report");
             } catch (Exception e) {
                 e.printStackTrace();

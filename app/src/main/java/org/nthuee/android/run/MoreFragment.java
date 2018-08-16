@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.android.run;
+package org.nthuee.android.run;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -310,10 +310,12 @@ public class MoreFragment extends Fragment {
                             myTaskGet httpGet= null;
                             try {
                                 httpGet = new myTaskGet(getResources().getString(R.string.apiURL) + "/member/read?operator_uid="+String.valueOf(uid)+"&uid="+String.valueOf(uid)+"&token="+token);
+                                httpGet.execute();
                             } catch (MalformedURLException e) {
                                 e.printStackTrace();
                             }
-                            httpGet.execute();
+
+                            Alert("原地待命");
 
                             try {
                                 ParseJsonForLocation(httpGet.get());
@@ -322,7 +324,6 @@ public class MoreFragment extends Fragment {
                             } catch (ExecutionException e) {
                                 e.printStackTrace();
                             }
-                            Alert("原地待命");
                         }
                     });
                     holder.moreItem_list.setBackgroundResource(R.color.sos);

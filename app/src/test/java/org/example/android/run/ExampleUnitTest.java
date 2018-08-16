@@ -1,4 +1,4 @@
-package com.example.android.run;
+package org.example.android.run;
 
 import org.junit.Test;
 
