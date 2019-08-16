@@ -53,7 +53,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import static android.content.Context.MODE_PRIVATE;
-import static com.google.android.gms.internal.zzid.runOnUiThread;
 
 /**
  * Provides UI for the view with Cards.
@@ -93,9 +92,9 @@ public class BagFragment extends Fragment
         readPrefs();
         View rootView = inflater.inflate(R.layout.recycler_view, container, false);
 
-        recyclerView = (RecyclerView) rootView.findViewById(R.id.bag_recycler_view);
+        recyclerView = rootView.findViewById(R.id.bag_recycler_view);
 
-        refreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.refresh_layout);
+        refreshLayout = rootView.findViewById(R.id.refresh_layout);
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -133,7 +132,7 @@ public class BagFragment extends Fragment
         token = settings.getString("token","");
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    private class ViewHolder extends RecyclerView.ViewHolder {
         ImageView tool1;
         TextView name1;
         TextView count1;
@@ -146,15 +145,15 @@ public class BagFragment extends Fragment
 
         ViewHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.fragment_bag, parent, false));
-            tool1 = (ImageView) itemView.findViewById(R.id.toolImage1);
-            name1 = (TextView) itemView.findViewById(R.id.toolName1);
-            count1 = (TextView) itemView.findViewById(R.id.toolNumber1);
-            tool2 = (ImageView) itemView.findViewById(R.id.toolImage2);
-            name2 = (TextView) itemView.findViewById(R.id.toolName2);
-            count2 = (TextView) itemView.findViewById(R.id.toolNumber2);
-            tool3 = (ImageView) itemView.findViewById(R.id.toolImage3);
-            name3 = (TextView) itemView.findViewById(R.id.toolName3);
-            count3 = (TextView) itemView.findViewById(R.id.toolNumber3);
+            tool1 = itemView.findViewById(R.id.toolImage1);
+            name1 =  itemView.findViewById(R.id.toolName1);
+            count1 =  itemView.findViewById(R.id.toolNumber1);
+            tool2 =  itemView.findViewById(R.id.toolImage2);
+            name2 =  itemView.findViewById(R.id.toolName2);
+            count2 =  itemView.findViewById(R.id.toolNumber2);
+            tool3 =  itemView.findViewById(R.id.toolImage3);
+            name3 =  itemView.findViewById(R.id.toolName3);
+            count3 =  itemView.findViewById(R.id.toolNumber3);
         }
     }
 
@@ -180,7 +179,7 @@ public class BagFragment extends Fragment
             int money=0;
 
             Resources resources = context.getResources();
-            myTaskGet httpGet= new myTaskGet(resources.getString(R.string.apiURL)+"/member/read?operator_uid="+String.valueOf(uid)+"&uid="+String.valueOf(uid)+"&token="+token);
+            myTaskGet httpGet= new myTaskGet(resources.getString(R.string.apiURL)+"/member/read?operator_uid="+uid+"&uid="+uid+"&token="+token);
             httpGet.execute();
             try {
                 money = ParseJsonFromMemberForMoney(httpGet.get());
@@ -188,7 +187,7 @@ public class BagFragment extends Fragment
                 e.printStackTrace();
             }
 
-            httpGet = new myTaskGet(resources.getString(R.string.apiURL)+"/pack/read?operator_uid="+String.valueOf(uid)+"&uid="+String.valueOf(uid)+"&token="+token);
+            httpGet = new myTaskGet(resources.getString(R.string.apiURL)+"/pack/read?operator_uid="+uid+"&uid="+uid+"&token="+token);
             httpGet.execute();
             //get tools[] and clues[]
             try {
@@ -198,7 +197,7 @@ public class BagFragment extends Fragment
             }
 
             for(int i =0 ; toolIds[i]!=null ; i++) {
-                httpGet = new myTaskGet(resources.getString(R.string.apiURL)+"/tool/read?operator_uid="+String.valueOf(uid)+"&uid="+String.valueOf(uid)+"&token="+token +"&tid="+toolIds[i]);
+                httpGet = new myTaskGet(resources.getString(R.string.apiURL)+"/tool/read?operator_uid="+uid+"&uid="+uid+"&token="+token +"&tid="+toolIds[i]);
                 httpGet.execute();
                 try {
                     ParseJsonFromTools(httpGet.get(),toolPIds[i]);
@@ -208,7 +207,7 @@ public class BagFragment extends Fragment
             }
 
             for(int i =0 ;  clueIds[i] != null; i++) {
-                httpGet = new myTaskGet(resources.getString(R.string.apiURL)+"/clue/read?operator_uid="+String.valueOf(uid)+"&uid="+String.valueOf(uid)+"&token="+token +"&cid="+clueIds[i]);
+                httpGet = new myTaskGet(resources.getString(R.string.apiURL)+"/clue/read?operator_uid="+uid+"&uid="+uid+"&token="+token +"&cid="+clueIds[i]);
                 httpGet.execute();
                 try {
                     ParseJsonFromClues(httpGet.get());
@@ -282,7 +281,7 @@ public class BagFragment extends Fragment
                                 getBitmapFromURL(resources.getString(R.string.apiURL)+"/download/img/" + pUrl[position * 3]);
                         if(mBitmap!=null) {
                             final Bitmap circularBitmap = ImageConverter.getRoundedCornerBitmap(mBitmap, 30);
-                            runOnUiThread(new Runnable() {
+                           getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                     holder.tool1.setImageBitmap(circularBitmap);
@@ -296,7 +295,7 @@ public class BagFragment extends Fragment
                                 getBitmapFromURL(resources.getString(R.string.apiURL)+"/download/img/" + pUrl[position * 3 + 1]);
                         if(mBitmap2!=null) {
                             final Bitmap circularBitmap2 = ImageConverter.getRoundedCornerBitmap(mBitmap2, 30);
-                            runOnUiThread(new Runnable() {
+                            getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                     holder.tool2.setImageBitmap(circularBitmap2);
@@ -310,7 +309,7 @@ public class BagFragment extends Fragment
                                 getBitmapFromURL(resources.getString(R.string.apiURL)+"/download/img/" + pUrl[position * 3 + 2]);
                         if(mBitmap3!=null) {
                             final Bitmap circularBitmap3 = ImageConverter.getRoundedCornerBitmap(mBitmap3, 30);
-                            runOnUiThread(new Runnable() {
+                            getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                     holder.tool3.setImageBitmap(circularBitmap3);
