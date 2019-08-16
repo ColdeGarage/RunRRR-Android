@@ -10,8 +10,6 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -65,7 +63,6 @@ import java.util.HashMap;
 
 import static android.content.Context.LOCATION_SERVICE;
 import static android.content.Context.MODE_PRIVATE;
-import static org.nthuee.android.run.MissionsFragment.MY_MISSION_REFRESH;
 
 
 public class MapsFragment extends Fragment
@@ -127,8 +124,8 @@ public class MapsFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_maps, container, false);
-        scoreView = (TextView)rootView.findViewById(R.id.score);
-        mMapView = (MapView) rootView.findViewById(R.id.mapView);
+        scoreView = rootView.findViewById(R.id.score);
+        mMapView = rootView.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
 
         mMapView.onResume(); // needed to get the map to display immediately
@@ -146,8 +143,8 @@ public class MapsFragment extends Fragment
                     setScore();
                     if(myLocation!=null){
                         MyTaskPut updatePut = new MyTaskPut();
-                        updatePut.execute(getResources().getString(R.string.apiURL)+"/member/update", "uid=" + String.valueOf(uid) + "&operator_uid=" + String.valueOf(uid) + "&token=" + token + "&position_n=" + String.valueOf(myLocation.getLatitude())
-                                        + "&position_e=" + String.valueOf(myLocation.getLongitude()));
+                        updatePut.execute(getResources().getString(R.string.apiURL)+"/member/update", "uid=" + uid + "&operator_uid=" + uid + "&token=" + token + "&position_n=" + myLocation.getLatitude()
+                                        + "&position_e=" + myLocation.getLongitude());
 
                         //get result from function "onPostExecute" in class "myTaskPut"
                         try {
@@ -215,8 +212,8 @@ public class MapsFragment extends Fragment
 
     //======================建立地圖==============================
     @Override
-    public void onMapReady(final GoogleMap mgoogleMap) {
-        googleMap = mgoogleMap;
+    public void onMapReady(final GoogleMap mGoogleMap) {
+        googleMap = mGoogleMap;
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(24.794574, 120.992936), 17));
         googleMap.getUiSettings().setAllGesturesEnabled(true);
         googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
@@ -398,7 +395,7 @@ public class MapsFragment extends Fragment
     }
     //Parse json received from server
     void parseJson (String info, String instru){
-        if(instru.equals("mission")){
+        if(instru.equals("mission")) {
             missionList = new ArrayList<>();
             try {
                 JSONObject payload = new JSONObject(new JSONObject(info).getString("payload"));
@@ -446,7 +443,7 @@ public class MapsFragment extends Fragment
                 e.printStackTrace();
             }
 
-        }else if(instru.equals("report")){
+        } else if(instru.equals("report")) {
             reportList = new ArrayList<>();
             try {
                 JSONObject jObject = new JSONObject(info);

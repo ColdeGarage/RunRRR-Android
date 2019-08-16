@@ -132,11 +132,11 @@ public class MissionsFragment extends Fragment {
         private ViewHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.item_list_missions, parent, false));
 
-            list = (LinearLayout) itemView.findViewById(R.id.list_mission);
-            type = (TextView) itemView.findViewById(R.id.list_type);
-            name = (TextView) itemView.findViewById(R.id.list_name);
-            time = (TextView) itemView.findViewById(R.id.list_time);
-            state = (ImageView) itemView.findViewById(R.id.list_state);
+            list = itemView.findViewById(R.id.list_mission);
+            type = itemView.findViewById(R.id.list_type);
+            name = itemView.findViewById(R.id.list_name);
+            time = itemView.findViewById(R.id.list_time);
+            state = itemView.findViewById(R.id.list_state);
         }
     }
 
@@ -180,7 +180,7 @@ public class MissionsFragment extends Fragment {
 
             //get mission list from server
             MyTaskGet httpGetMission = new MyTaskGet();
-            httpGetMission.execute(resources.getString(R.string.apiURL)+"/mission/read?operator_uid="+String.valueOf(uid)+"&token="+token);
+            httpGetMission.execute(resources.getString(R.string.apiURL)+"/mission/read?operator_uid="+uid+"&token="+token);
 
             //get result from function "onPostExecute" in class "myTaskGet"
             try {
@@ -215,7 +215,8 @@ public class MissionsFragment extends Fragment {
 
             // Set missions data to string array
             for(int i=0;i<solvingMissionList.size();i++) {
-                mMid[i] = solvingMissionList.get(i).get("mid");
+
+
                 mName[i] = solvingMissionList.get(i).get("title");
                 mTime[i] = solvingMissionList.get(i).get("time_end");
                 mType[i] = solvingMissionList.get(i).get("class");
