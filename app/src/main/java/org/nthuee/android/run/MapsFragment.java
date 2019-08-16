@@ -91,7 +91,7 @@ public class MapsFragment extends Fragment
     static int num = 0;
     static boolean show = false;
 
-    Marker[] markerList = new Marker[20];
+    Marker[] markerList = new Marker[50];
     ArrayList<HashMap<String,String>> missionList;
     ArrayList<HashMap<String,String>> reportList;
     int serverTimeHour,serverTimeMin;
@@ -222,26 +222,28 @@ public class MapsFragment extends Fragment
                 System.out.println(marker.getId());
                 int i = 0;
                 for(HashMap<String,String> m : missionList) {
-                    System.out.println("i="+ i +", "+markerList[i].getId());
-                    if (markerList[i].equals(marker)) {
-                        Intent intent = new Intent(getContext(),MissionPopActivity.class);
-                        Bundle bundle = new Bundle();
-                        bundle.putString("mid", m.get("mid"));
-                        bundle.putString("title", m.get("title"));
-                        bundle.putString("time_end", m.get("time_end"));
-                        bundle.putString("class", m.get("class"));
-                        bundle.putString("state", String.valueOf(-1));
-                        bundle.putString("content", m.get("content"));
-                        bundle.putString("url", m.get("url"));
-                        bundle.putString("prize", m.get("prize"));
-                        bundle.putString("score", m.get("score"));
-                        bundle.putString("uid",String.valueOf(uid));
-                        bundle.putString("token",token);
+                    System.out.print(markerList);
+                    if(markerList[i]!=null) {
+                        if (markerList[i].equals(marker)) {
+                            Intent intent = new Intent(getContext(),MissionPopActivity.class);
+                            Bundle bundle = new Bundle();
+                            bundle.putString("mid", m.get("mid"));
+                            bundle.putString("title", m.get("title"));
+                            bundle.putString("time_end", m.get("time_end"));
+                            bundle.putString("class", m.get("class"));
+                            bundle.putString("state", String.valueOf(-1));
+                            bundle.putString("content", m.get("content"));
+                            bundle.putString("url", m.get("url"));
+                            bundle.putString("prize", m.get("prize"));
+                            bundle.putString("score", m.get("score"));
+                            bundle.putString("uid",String.valueOf(uid));
+                            bundle.putString("token",token);
 
-                        intent.putExtras(bundle);
-                        startActivityForResult(intent, MissionsFragment.MY_MISSION_REFRESH);
+                            intent.putExtras(bundle);
+                            startActivityForResult(intent, MissionsFragment.MY_MISSION_REFRESH);
+                        }
+                        i++;
                     }
-                    i++;
                 }
                 return true;
             }
